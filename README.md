@@ -16,10 +16,10 @@ Available for download at https://github.com/kasbst/puttystorm/releases/latest
 ### Preview
 ![Alt text](/img/LoginForm.png?raw=true "Login Form")
 
-![Alt text](/img/MainForm.png?raw=true "Login Form")
+![Alt text](/img/MainForm.png?raw=true "Main Form")
 
-![Alt text](/img/AdvancedForm.png?raw=true "Login Form")
+![Alt text](/img/AdvancedForm.png?raw=true "Advanced Form")
 
-![Alt text](/img/SessionsForm.png?raw=true "Login Form")
+![Alt text](/img/SessionsForm.png?raw=true "Sessions Form")
 
-![Alt text](/img/ManageSessions.png?raw=true "Login Form")
+![Alt text](/img/ManageSessions.png?raw=true "Manage Sessions")
