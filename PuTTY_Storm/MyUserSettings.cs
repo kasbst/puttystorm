@@ -1,0 +1,68 @@
+﻿/*
+ * Copyright (c) 2016 Karol Sebesta
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions: 
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ * 
+ * This software is inspired by Jim Radford's http://www.jimradford.com
+ * SuperPutty and various http://stackoverflow.com/ user ideas.
+ */
+
+using System.Configuration;
+
+namespace PuTTY_Storm
+{
+    
+    /// <summary>
+    /// Save path to the putty.exe
+    /// </summary>
+    class MyUserSettings : ApplicationSettingsBase
+    {
+        #region PUTTY_PATH
+        [UserScopedSetting()]
+        [DefaultSettingValue("<N/A - Set PuTTY Path>")]
+        public string putty_path
+        {
+            get
+            {
+                return ((string)this["putty_path"]);
+            }
+            set
+            {
+                this["putty_path"] = (string)value;
+            }
+        }
+        #endregion
+
+        #region PASSWORD_SECRET
+        [UserScopedSetting()]
+        [DefaultSettingValue(null)]
+        public string password_secret
+        {
+            get
+            {
+                return ((string)this["password_secret"]);
+            }
+            set
+            {
+                this["password_secret"] = (string)value;
+            }
+        }
+        #endregion
+    }
+
+}
