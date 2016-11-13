@@ -11,7 +11,7 @@ Lightweight tabbed window manager for putty sessions
  
 ### TODO
  - Implement split screen within the SessionsForm (in progress)
- - Security improvements (encryption)
+ - Security improvements (encryption) NOTE: This is an early test version - use at your own risk!
  
 ### License
 Licensed under a liberal MIT/X11 License, which allows this program and source code to be used in both commercial and non-commercial applications. Complete text can be found in the License.txt file.
