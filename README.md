@@ -1,6 +1,18 @@
 # PuTTYStorm
 Lightweight tabbed window manager for putty sessions
 
+### Features
+ - Open multiple sessions with one click
+ - Draggable TabControl
+ - Fast session tabs management (right click on session tab for quick close)
+ - Group sessions to custom defined groups for easy sessions password management
+ - Secure Login (hashed SHA256) and encrypted sesssions passwords (secured AES string encryption with random IV)
+ - Search already saved sessions
+ 
+### TODO
+ - Implement split screen within the SessionsForm (in progress)
+ - Security improvements (encryption)
+ 
 ### License
 Licensed under a liberal MIT/X11 License, which allows this program and source code to be used in both commercial and non-commercial applications. Complete text can be found in the License.txt file.
 
