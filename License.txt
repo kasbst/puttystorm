@@ -1,3 +1,4 @@
+
 Copyright (c) 2016 Karol Sebesta
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,3 +20,4 @@ THE SOFTWARE.
   
 This software is inspired by Jim Radford's http://www.jimradford.com
 SuperPutty and various http://stackoverflow.com/ users ideas.
+
