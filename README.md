@@ -9,7 +9,7 @@ Lightweight tabbed window manager for putty sessions
  - Secure Login (hashed SHA256) and encrypted sesssions passwords (secured AES string encryption with random IV)
  - Search already saved sessions
  
-### TODO
+### ToDo
  - Implement split screen within the SessionsForm (in progress)
  - Security improvements (encryption) NOTE: This is an early test version - use at your own risk!
  
