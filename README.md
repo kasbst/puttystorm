@@ -11,6 +11,7 @@ Lightweight tabbed window manager for putty sessions
  - Vertical split screen (Activate - CTRL + F1 | Deactivate - CTRL + F2)
  
 ### ToDo
+ - Add file manager for fast and easy files upload/download from the server
  - Security improvements (encryption) NOTE: This is an early test version - use at your own risk!
  
 ### License
