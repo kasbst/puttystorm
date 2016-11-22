@@ -8,9 +8,9 @@ Lightweight tabbed window manager for putty sessions
  - Group sessions to custom defined groups for easy sessions password management
  - Secure Login (hashed SHA256) and encrypted sesssions passwords (secured AES string encryption with random IV)
  - Search already saved sessions
+ - Vertical split screen
  
 ### ToDo
- - Implement split screen within the SessionsForm (in progress)
  - Security improvements (encryption) NOTE: This is an early test version - use at your own risk!
  
 ### License
@@ -33,5 +33,7 @@ Available for download at https://github.com/kasbst/puttystorm/releases/latest
 ![Alt text](/img/AdvancedForm.png?raw=true "Advanced Form")
 
 ![Alt text](/img/SessionsForm.png?raw=true "Sessions Form")
+
+![Alt text](/img/SplitScreen.png?raw=true "Split Screen")
 
 ![Alt text](/img/ManageSessions.png?raw=true "Manage Sessions")
