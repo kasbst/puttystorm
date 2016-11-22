@@ -808,14 +808,17 @@ namespace PuTTY_Storm
         /// It contains controls to open new putty session, search for saved sessions and Manage already saved
         /// sessions.
         /// 
-        /// 2) TabControl where putty sessions are opened inside of TabPages.
+        /// 2) TabControls with split screen implemeneted where putty sessions are opened inside of TabPages.
         /// </summary>
         DraggableTabControl tabcontrol1;
+        DraggableTabControl tabcontrol2;
         SessionsForm SessionsForm;
         List<Panel> panelsList;
-        List<ProcessInfo> my_ProcessInfo_List;
+        List<ProcessInfo> my_ProcessInfo_List_TC_1;
+        List<ProcessInfo> my_ProcessInfo_List_TC_2;
         Panel new_connect_panel;
         OpenPuTTY now;
+        SplitContainer SessionsSplitContainer;
 
         private void Connect_Click(object sender, EventArgs e)
         {
@@ -826,10 +829,19 @@ namespace PuTTY_Storm
             }
 
             panelsList = new List<Panel>();
-            my_ProcessInfo_List = new List<ProcessInfo>();
-            tabcontrol1 = new DraggableTabControl(my_ProcessInfo_List);
+            my_ProcessInfo_List_TC_1 = new List<ProcessInfo>();
+            my_ProcessInfo_List_TC_2 = new List<ProcessInfo>();
+            SessionsSplitContainer = new SplitContainer();
 
-            SessionsForm = new SessionsForm(my_ProcessInfo_List, tabcontrol1);
+            tabcontrol1 = new DraggableTabControl(my_ProcessInfo_List_TC_1, my_ProcessInfo_List_TC_2, SessionsSplitContainer);
+            tabcontrol2 = new DraggableTabControl(my_ProcessInfo_List_TC_1, my_ProcessInfo_List_TC_2, SessionsSplitContainer);
+
+            SessionsSplitContainer.Dock = DockStyle.Fill;
+            SessionsSplitContainer.BorderStyle = BorderStyle.Fixed3D;
+            SessionsSplitContainer.SplitterDistance = 75;
+            SessionsSplitContainer.Panel1.AutoScroll = true;
+
+            SessionsForm = new SessionsForm(my_ProcessInfo_List_TC_1, tabcontrol1, SessionsSplitContainer);
             SessionsForm.FormClosed += new FormClosedEventHandler(SessionsForm_FormClosed);
             this.Hide();
 
@@ -880,7 +892,7 @@ namespace PuTTY_Storm
                     panels.AutoSize = true;
                     panels.Dock = DockStyle.Fill;
                     tabpage.Controls.Add(panels);
-                    my_ProcessInfo_List.Add(now.start_putty(panels, i, process, hostname, username, password, mus.putty_path, SessionsForm));
+                    my_ProcessInfo_List_TC_1.Add(now.start_putty(panels, i, process, hostname, username, password, mus.putty_path, SessionsSplitContainer));
                     tabcontrol1.TabPages.Add(tabpage);
                 }
             }
@@ -890,8 +902,16 @@ namespace PuTTY_Storm
             tabcontrol1.Resize += new EventHandler(Tabcontrol1_Resize);
             tabcontrol1.HandleDestroyed += new EventHandler(Tabcontrol1_HandleDestroyed);
 
+            tabcontrol2.MouseClick += new MouseEventHandler(Tabcontrol2_MouseClick);
+            tabcontrol2.Resize += new EventHandler(Tabcontrol2_Resize);
+            tabcontrol2.Appearance = TabAppearance.FlatButtons;
+            tabcontrol2.HandleDestroyed += new EventHandler(Tabcontrol2_HandleDestroyed);
+
             Panel tabcontrol_panel = new Panel();
             tabcontrol_panel.Dock = DockStyle.Fill;
+
+            Panel tabcontrol_panel_2 = new Panel();
+            tabcontrol_panel_2.Dock = DockStyle.Fill;
 
             new_connect_panel = new Panel();
             new_connect_panel.Size = new Size(0, 30);
@@ -926,36 +946,73 @@ namespace PuTTY_Storm
             SessionsForm.ResizeEnd += new EventHandler(SessionsForm_ResizeEnd);
             SessionsForm.SizeChanged += new EventHandler(SessionsForm_SizeChanged);
             tabcontrol1.MouseEnter += new EventHandler(Tabcontrol1_MouseEnter);
+            tabcontrol2.MouseEnter += new EventHandler(Tabcontrol2_MouseEnter);
 
             tabcontrol1.Dock = DockStyle.Fill;
             tabcontrol1.AutoSize = true;
+            tabcontrol1.Name = "TABCONTROL_1";
+
+            tabcontrol2.Dock = DockStyle.Fill;
+            tabcontrol2.AutoSize = true;
+            tabcontrol2.Name = "TABCONTROL_2";
 
             tabcontrol_panel.Controls.Add(tabcontrol1);
+            tabcontrol_panel_2.Controls.Add(tabcontrol2);
 
-            SessionsForm.Controls.Add(tabcontrol_panel);
+            SessionsSplitContainer.Panel1.Controls.Add(tabcontrol_panel);
+            SessionsSplitContainer.Panel2.Controls.Add(tabcontrol_panel_2);
+            SessionsSplitContainer.Panel2Collapsed = true;
+
+            SessionsForm.Controls.Add(SessionsSplitContainer);
             SessionsForm.Controls.Add(new_connect_panel);
 
             SessionsForm.Show();
         }
 
         /// <summary>
-        /// Handle focus between SessionsForm/TabControl and putty.exe window.
+        /// Handle focus between SessionsForm/TabControl1 and putty.exe window.
         /// </summary>
         private void Tabcontrol1_MouseEnter(object sender, EventArgs e)
         {
             if (!tabcontrol1.Focused)
             {
-                tabcontrol1.Focus();
-                NativeMethods.SetForegroundWindow(my_ProcessInfo_List.ElementAt(tabcontrol1.SelectedIndex).mainhandle);
-                FlashWindow(SessionsForm.Handle, FLASHW_STOP);
+                if (!this.Visible)
+                {
+                    if (my_ProcessInfo_List_TC_1.Count > 0) {
+                        tabcontrol1.Focus();
+                        NativeMethods.SetForegroundWindow(my_ProcessInfo_List_TC_1.ElementAt(tabcontrol1.SelectedIndex).mainhandle);
+                        FlashWindow(SessionsForm.Handle, FLASHW_STOP);
+                        Console.WriteLine("Tabcontrol1 focused");
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Handle focus between SessionsForm/TabControl2 and putty.exe window.
+        /// </summary>
+        private void Tabcontrol2_MouseEnter(object sender, EventArgs e)
+        {
+            if (!tabcontrol2.Focused)
+            {
+                if (!this.Visible)
+                {
+                    if (my_ProcessInfo_List_TC_2.Count > 0)
+                    {
+                        tabcontrol2.Focus();
+                        NativeMethods.SetForegroundWindow(my_ProcessInfo_List_TC_2.ElementAt(tabcontrol2.SelectedIndex).mainhandle);
+                        FlashWindow(SessionsForm.Handle, FLASHW_STOP);
+                        Console.WriteLine("Tabcontrol2 focused");
+                    }
+                }
             }
         }
 
         private void SessionsForm_ResizeEnd(object sender, EventArgs e)
         {
-            if (my_ProcessInfo_List.Count > 0)
+            if (my_ProcessInfo_List_TC_1.Count > 0)
             {
-                NativeMethods.SetForegroundWindow(my_ProcessInfo_List.ElementAt(tabcontrol1.SelectedIndex).mainhandle);
+                NativeMethods.SetForegroundWindow(my_ProcessInfo_List_TC_1.ElementAt(tabcontrol1.SelectedIndex).mainhandle);
             }
         }
 
@@ -963,18 +1020,18 @@ namespace PuTTY_Storm
 
         private void SessionsForm_SizeChanged(object sender, EventArgs e)
         {
-            if (my_ProcessInfo_List.Count > 0)
+            if (my_ProcessInfo_List_TC_1.Count > 0)
             {
                 if (SessionsForm.WindowState == FormWindowState.Maximized)
                 {
-                    NativeMethods.SetForegroundWindow(my_ProcessInfo_List.ElementAt(tabcontrol1.SelectedIndex).mainhandle);
+                    NativeMethods.SetForegroundWindow(my_ProcessInfo_List_TC_1.ElementAt(tabcontrol1.SelectedIndex).mainhandle);
                     Previous_WindowState = "Maximized";
                     Console.WriteLine("SessionsForm maximized");
                 }
 
                 if (SessionsForm.WindowState == FormWindowState.Minimized)
                 {
-                    NativeMethods.SetForegroundWindow(my_ProcessInfo_List.ElementAt(tabcontrol1.SelectedIndex).mainhandle);
+                    NativeMethods.SetForegroundWindow(my_ProcessInfo_List_TC_1.ElementAt(tabcontrol1.SelectedIndex).mainhandle);
                     Previous_WindowState = "Minimized";
                     Console.WriteLine("SessionsForm minimized");
                 }
@@ -983,7 +1040,7 @@ namespace PuTTY_Storm
                 {
                     if (Previous_WindowState == "Maximized" || Previous_WindowState == "Minimized")
                     {
-                        NativeMethods.SetForegroundWindow(my_ProcessInfo_List.ElementAt(tabcontrol1.SelectedIndex).mainhandle);
+                        NativeMethods.SetForegroundWindow(my_ProcessInfo_List_TC_1.ElementAt(tabcontrol1.SelectedIndex).mainhandle);
                         Previous_WindowState = "Normal";
                         Console.WriteLine("SessionsForm normal");
                     }
@@ -1152,7 +1209,7 @@ namespace PuTTY_Storm
                 panels.AutoSize = true;
                 panels.Dock = DockStyle.Fill;
                 tabpage.Controls.Add(panels);
-                my_ProcessInfo_List.Add(now.start_putty(panels, i, process, new_hostname, new_username, new_password, mus.putty_path, SessionsForm));
+                my_ProcessInfo_List_TC_1.Add(now.start_putty(panels, i, process, new_hostname, new_username, new_password, mus.putty_path, SessionsSplitContainer));
                 tabcontrol1.TabPages.Add(tabpage);
             }
 
@@ -1186,6 +1243,58 @@ namespace PuTTY_Storm
 
         private void Process_Exited(object sender, System.EventArgs e)
         {
+            _Process_Exited(my_ProcessInfo_List_TC_1, tabcontrol1);
+            _Process_Exited(my_ProcessInfo_List_TC_2, tabcontrol2);
+            Process_Disposed = false;           
+        }
+
+        private void Removetabpage(int i, TabControl tabcontrol)
+        {
+            if (tabcontrol.InvokeRequired)
+            {               
+                tabcontrol.Invoke(new Action<int, TabControl>(Removetabpage), i, tabcontrol);
+                return;
+            }
+
+            var tabpage_current = tabcontrol.TabPages[i];
+            tabcontrol.TabPages.Remove(tabpage_current);
+        }
+
+        private void Selecttab (int i, TabControl tabcontrol)
+        {
+            if (tabcontrol.InvokeRequired)
+            {
+                tabcontrol.Invoke(new Action<int, TabControl>(Selecttab), i, tabcontrol);
+                return;
+            }
+            tabcontrol.SelectTab(i);
+        }
+
+        private void RemoveSplitScreen (TabControl tabcontrol)
+        {
+            if (SessionsSplitContainer.InvokeRequired)
+            {
+                SessionsSplitContainer.Invoke(new Action<TabControl> (RemoveSplitScreen), tabcontrol);
+                return;
+            }
+            if (my_ProcessInfo_List_TC_1.Count == 1 && my_ProcessInfo_List_TC_2.Count == 0)
+            {
+                SessionsSplitContainer.Panel2Collapsed = true;
+            }
+
+            if (my_ProcessInfo_List_TC_2.Count == 1 && my_ProcessInfo_List_TC_1.Count == 0)
+            {
+                SessionsSplitContainer.Panel2Collapsed = true;
+            }
+
+            if (my_ProcessInfo_List_TC_2.Count == 1 && tabcontrol.Name == "TABCONTROL_2")
+            {
+                SessionsSplitContainer.Panel2Collapsed = true;
+            }
+        }
+
+        private void _Process_Exited(List<ProcessInfo> my_ProcessInfo_List, TabControl tabcontrol)
+        {
             //Console.WriteLine("TabCount: " + tabcontrol1.TabCount);
             //Console.WriteLine(Process_Disposed);
             if (!Process_Disposed && my_ProcessInfo_List != null)
@@ -1193,70 +1302,70 @@ namespace PuTTY_Storm
                 //Console.WriteLine("Process count: " + my_ProcessInfo_List.Count);
                 //Console.WriteLine("TabCount: " + tabcontrol1.TabCount);
                 for (int i = 0; i < my_ProcessInfo_List.Count; i++)
-                {   
+                {
                     if (my_ProcessInfo_List[i].process != null && my_ProcessInfo_List[i].process.HasExited)
                     {
-                        Removetabpage(i);
+                        RemoveSplitScreen(tabcontrol);
+                        Removetabpage(i, tabcontrol);
                         my_ProcessInfo_List.RemoveAt(i);
 
-                        for (int j = 0; j < tabcontrol1.TabCount; j++)
+                        for (int j = 0; j < tabcontrol.TabCount; j++)
                         {
                             ProcessInfo temp_count = my_ProcessInfo_List[j];
                             temp_count.count = j;
                             my_ProcessInfo_List[j] = temp_count;
                         }
 
-                        if (tabcontrol1.TabCount != 0)
+                        if (tabcontrol.TabCount != 0)
                         {
                             if (i != 0)
                             {
-                                Selecttab(i - 1);
+                                Selecttab(i - 1, tabcontrol);
                                 NativeMethods.SetForegroundWindow(my_ProcessInfo_List.ElementAt(i - 1).mainhandle);
                             }
                             else
                             {
-                                Selecttab(i);
+                                Selecttab(i, tabcontrol);
                                 NativeMethods.SetForegroundWindow(my_ProcessInfo_List.ElementAt(i).mainhandle);
                             }
                         }
                     }
                 }
             }
-            Process_Disposed = false;           
-        }
-
-        private void Removetabpage(int i)
-        {
-            if (tabcontrol1.InvokeRequired)
-            {
-                tabcontrol1.Invoke(new Action<int>(Removetabpage), i);
-                return;
-            }
-
-            var tabpage_current = tabcontrol1.TabPages[i];
-            tabcontrol1.TabPages.Remove(tabpage_current);
-        }
-
-        private void Selecttab (int i)
-        {
-            if (tabcontrol1.InvokeRequired)
-            {
-                tabcontrol1.Invoke(new Action<int>(Selecttab), i);
-                return;
-            }
-            tabcontrol1.SelectTab(i);
         }
 
         /// <summary>
-        /// Handle Tabpage removal and process disposal when right click on Tabpage.
+        /// Handle Tabpage removal and process disposal when right click on Tabpage
+        /// cotnained within tabcontrol1.
         /// </summary>
         private void Tabcontrol1_MouseClick(object sender, MouseEventArgs e)
         {
+            Console.Write("Tabconbtrol1 mouse click\n");
             var tabControl = sender as TabControl;
+
+            _TabControlFastHandling(tabControl, my_ProcessInfo_List_TC_1, e);
+        }
+
+        /// <summary>
+        /// Handle Tabpage removal and process disposal when right click on Tabpage
+        /// cotnained within tabcontrol2.
+        /// </summary>
+        private void Tabcontrol2_MouseClick(object sender, MouseEventArgs e)
+        {
+            Console.Write("Tabconbtrol2 mouse click\n");
+            var tabControl = sender as TabControl;
+
+            _TabControlFastHandling(tabControl, my_ProcessInfo_List_TC_2, e);
+        }
+
+        /// <summary>
+        /// Helper method for Tabcontrol1_MouseClick & Tabcontrol2_MouseClick
+        /// </summary>
+        private void _TabControlFastHandling(TabControl tabControl, List<ProcessInfo> my_ProcessInfo_List, MouseEventArgs e)
+        {
             TabPage tabPageCurrent = null;
             int my_tabindex = 0;
             Process_Disposed = false;
-            Console.Write("Tabconbtrol mouse click\n");
 
             for (int i = 0; i < tabControl.TabCount; i++)
             {
@@ -1281,6 +1390,22 @@ namespace PuTTY_Storm
                 // putty.exe process.
                 if (e.Button == MouseButtons.Right)
                 {
+                    // Remove split screen if we are going to close the last tabpage!!
+                    if (my_ProcessInfo_List_TC_1.Count == 1 && my_ProcessInfo_List_TC_2.Count == 0)
+                    {
+                        SessionsSplitContainer.Panel2Collapsed = true;
+                    }
+
+                    if (my_ProcessInfo_List_TC_2.Count == 1 && my_ProcessInfo_List_TC_1.Count == 0)
+                    {
+                        SessionsSplitContainer.Panel2Collapsed = true;
+                    }
+
+                    if (my_ProcessInfo_List_TC_2.Count == 1 && tabControl.Name == "TABCONTROL_2")
+                    {
+                        SessionsSplitContainer.Panel2Collapsed = true;
+                    }
+
                     tabControl.TabPages.Remove(tabPageCurrent);
                     if (my_ProcessInfo_List.ElementAt(my_tabindex).panel != null)
                     {
@@ -1313,27 +1438,42 @@ namespace PuTTY_Storm
         }
 
         /// <summary>
-        /// On TabControl resize event, always move the putty.exe window so it is where it should be.
+        /// On TabControl1 resize event, always move the putty.exe window so it is where it should be.
         /// </summary>
         void Tabcontrol1_Resize(object sender, EventArgs e)
         {
-            foreach (ProcessInfo my_ProcessInfo in my_ProcessInfo_List)
+            foreach (ProcessInfo my_ProcessInfo in my_ProcessInfo_List_TC_1)
             {
                 if (my_ProcessInfo.mainhandle != IntPtr.Zero)
                 {
-                    NativeMethods.MoveWindow(my_ProcessInfo.mainhandle, -8, -30, SessionsForm.Width - 7, SessionsForm.Height - 57, true);
+                    NativeMethods.MoveWindow(my_ProcessInfo.mainhandle, -8, -30, SessionsSplitContainer.Panel1.Width + 5, SessionsSplitContainer.Panel1.Height + 5, true);
                 }
                 base.OnResize(e);
             }
         }
 
         /// <summary>
-        /// When closing PuTTY STORM sessions form, which contains a TabControl - dispose
-        /// all putty.exe processes.
+        /// On TabControl2 resize event, always move the putty.exe window so it is where it should be.
+        /// </summary>
+        void Tabcontrol2_Resize(object sender, EventArgs e)
+        {
+            foreach (ProcessInfo my_ProcessInfo in my_ProcessInfo_List_TC_2)
+            {
+                if (my_ProcessInfo.mainhandle != IntPtr.Zero)
+                {
+                    NativeMethods.MoveWindow(my_ProcessInfo.mainhandle, -8, -30, SessionsSplitContainer.Panel2.Width + 5, SessionsSplitContainer.Panel2.Height + 5, true);
+                }
+                base.OnResize(e);
+            }
+        }
+
+        /// <summary>
+        /// When closing PuTTY STORM sessions form, which contains TabControls - dispose
+        /// all putty.exe processes within tabcontrol1.
         /// </summary>
         void Tabcontrol1_HandleDestroyed(object sender, EventArgs e)
         {
-            foreach (ProcessInfo my_ProcessInfo in my_ProcessInfo_List) {
+            foreach (ProcessInfo my_ProcessInfo in my_ProcessInfo_List_TC_1) {
                 // Stop the application
                 if (my_ProcessInfo.mainhandle != IntPtr.Zero)
                 {
@@ -1349,7 +1489,33 @@ namespace PuTTY_Storm
                 }
                 base.OnHandleDestroyed(e);
             }
-            my_ProcessInfo_List = null;
+            my_ProcessInfo_List_TC_1 = null;
+        }
+
+        /// <summary>
+        /// When closing PuTTY STORM sessions form, which contains TabControls - dispose
+        /// all putty.exe processes within tabcontrol2.
+        /// </summary>
+        void Tabcontrol2_HandleDestroyed(object sender, EventArgs e)
+        {
+            foreach (ProcessInfo my_ProcessInfo in my_ProcessInfo_List_TC_2)
+            {
+                // Stop the application
+                if (my_ProcessInfo.mainhandle != IntPtr.Zero)
+                {
+                    // Post a colse message
+                    //PostMessage(processes[i].MainWindowHandle, (uint)WindowLongFlags2.WM_CLOSE, 0, 0);
+
+                    // Delay for it to get the message
+                    //System.Threading.Thread.Sleep(1000);
+
+                    // Clear internal handle
+                    IntPtr HandleDestroy = my_ProcessInfo.mainhandle;
+                    HandleDestroy = IntPtr.Zero;
+                }
+                base.OnHandleDestroyed(e);
+            }
+            my_ProcessInfo_List_TC_2 = null;
         }
 
         #region Flashing windows

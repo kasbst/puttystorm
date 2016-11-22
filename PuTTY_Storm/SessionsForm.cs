@@ -32,25 +32,33 @@ namespace PuTTY_Storm
 {
     class SessionsForm : FormHelper
     {
-        List<ProcessInfo> my_ProcessInfo_List;
+        List<ProcessInfo> my_ProcessInfo_List_TC_1;
         TabControl tabcontrol1;
+        SplitContainer SessionsSplitContainer;
+
         const int MYACTION_HOTKEY_ID1 = 1;
         const int MYACTION_HOTKEY_ID2 = 2;
+        const int MYACTION_HOTKEY_ID3 = 3;
+        const int MYACTION_HOTKEY_ID4 = 4;
 
         /// <summary>
         /// Initialize PuTTY STORM sessions form (Form2) and register hotkeys for
         /// easy and fast swithing between TabPages.
         /// </summary>
-        public SessionsForm(List<ProcessInfo> _my_ProcessInfo_List, TabControl _tabcontrol1)
+        public SessionsForm(List<ProcessInfo> _my_ProcessInfo_List_TC_1, TabControl _tabcontrol1, SplitContainer _SessionsSplitContainer)
         {
             this.tabcontrol1 = _tabcontrol1;
-            this.my_ProcessInfo_List = _my_ProcessInfo_List;
+            this.my_ProcessInfo_List_TC_1 = _my_ProcessInfo_List_TC_1;
+            this.SessionsSplitContainer = _SessionsSplitContainer;
 
             // Modifier keys codes: Alt = 1, Ctrl = 2, Shift = 4, Win = 8
             // Compute the addition of each combination of the keys you want to be pressed
             // ALT+CTRL = 1 + 2 = 3 , CTRL+SHIFT = 2 + 4 = 6...
             NativeMethods.RegisterHotKey(this.Handle, MYACTION_HOTKEY_ID1, 2, (int)Keys.Tab);
             NativeMethods.RegisterHotKey(this.Handle, MYACTION_HOTKEY_ID2, 6, (int)Keys.Tab);
+
+            NativeMethods.RegisterHotKey(this.Handle, MYACTION_HOTKEY_ID3, 2, (int)Keys.F1);
+            NativeMethods.RegisterHotKey(this.Handle, MYACTION_HOTKEY_ID4, 2, (int)Keys.F2);
 
             WindowEvents = new GlobalWindowEvents();
             SessionsForm.WindowEvents.SystemSwitch += new EventHandler<GlobalWindowEventArgs>(OnSystemSwitch);
@@ -83,10 +91,11 @@ namespace PuTTY_Storm
         /// Override WndProc, so we can handle focus when switching between applications 
         /// using ALT+TAB and using registered hotkeys.
         /// </summary>
+        /// 
         protected override void WndProc(ref Message m)
         {          
             base.WndProc(ref m);
-            if (my_ProcessInfo_List.Count > 0)
+            if (my_ProcessInfo_List_TC_1.Count > 0)
             {
                 // Trap WM_ACTIVATE when we get active
                 if (m.Msg == 6 && m.WParam.ToInt32() == 1)
@@ -95,7 +104,7 @@ namespace PuTTY_Storm
                     {
                         if (isSwitchingViaAltTab == true)
                         {
-                            NativeMethods.SetForegroundWindow(my_ProcessInfo_List.ElementAt(tabcontrol1.SelectedIndex).mainhandle);
+                            NativeMethods.SetForegroundWindow(my_ProcessInfo_List_TC_1.ElementAt(tabcontrol1.SelectedIndex).mainhandle);
                         }
                     }
                 }
@@ -112,7 +121,7 @@ namespace PuTTY_Storm
                     {
                         tabcontrol1.SelectedIndex = tabcontrol1.SelectedIndex + 1;
                     }
-                    NativeMethods.SetForegroundWindow(my_ProcessInfo_List.ElementAt(tabcontrol1.SelectedIndex).mainhandle);
+                    NativeMethods.SetForegroundWindow(my_ProcessInfo_List_TC_1.ElementAt(tabcontrol1.SelectedIndex).mainhandle);
                 }
 
                 if (m.Msg == 0x0312 && m.WParam.ToInt32() == MYACTION_HOTKEY_ID2)
@@ -127,8 +136,20 @@ namespace PuTTY_Storm
                     {
                         tabcontrol1.SelectedIndex = tabcontrol1.SelectedIndex - 1;
                     }
-                    NativeMethods.SetForegroundWindow(my_ProcessInfo_List.ElementAt(tabcontrol1.SelectedIndex).mainhandle);
+                    NativeMethods.SetForegroundWindow(my_ProcessInfo_List_TC_1.ElementAt(tabcontrol1.SelectedIndex).mainhandle);
                 }
+            }
+
+            if (m.Msg == 0x0312 && m.WParam.ToInt32() == MYACTION_HOTKEY_ID3)
+            {
+                Console.WriteLine("Split Screen Enabled");
+                SessionsSplitContainer.Panel2Collapsed = false;
+            }
+
+            if (m.Msg == 0x0312 && m.WParam.ToInt32() == MYACTION_HOTKEY_ID4)
+            {
+                Console.WriteLine("Split Screen Disabled");
+                SessionsSplitContainer.Panel2Collapsed = true;
             }
 
         }

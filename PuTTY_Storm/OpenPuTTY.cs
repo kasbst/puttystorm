@@ -46,7 +46,7 @@ namespace PuTTY_Storm
     class OpenPuTTY
     {
         public ProcessInfo start_putty(Panel panel, int count, Process process, string hostname,
-            string username, string password, string putty_path, Form form2)
+            string username, string password, string putty_path, SplitContainer SessionsSplitContainer)
         {
             ProcessInfo myProcessInfo = new ProcessInfo();
 
@@ -97,7 +97,7 @@ namespace PuTTY_Storm
             myProcessInfo.panel = panel;
             myProcessInfo.process = process;
             NativeMethods.SetWindowLong(myProcessInfo.mainhandle, NativeMethods.GWL_STYLE, NativeMethods.WS_VISIBLE + NativeMethods.WS_CAPTION);
-            NativeMethods.MoveWindow(myProcessInfo.mainhandle, -8, -30, form2.Width - 5, form2.Height - 57, true);
+            NativeMethods.MoveWindow(myProcessInfo.mainhandle, -8, -30, SessionsSplitContainer.Panel1.Width + 5, SessionsSplitContainer.Panel1.Height + 5, true);
 
             StreamWriter inputWriter = process.StandardInput;
             StreamReader outputReader = process.StandardOutput;
