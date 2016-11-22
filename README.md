@@ -8,7 +8,7 @@ Lightweight tabbed window manager for putty sessions
  - Group sessions to custom defined groups for easy sessions password management
  - Secure Login (hashed SHA256) and encrypted sesssions passwords (secured AES string encryption with random IV)
  - Search already saved sessions
- - Vertical split screen
+ - Vertical split screen (Activate - CTRL + F1 | Deactivate - CTRL + F2)
  
 ### ToDo
  - Security improvements (encryption) NOTE: This is an early test version - use at your own risk!
