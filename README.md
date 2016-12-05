@@ -9,7 +9,7 @@ Lightweight tabbed window manager for putty sessions
  - Secure Login (hashed SHA256) and encrypted sesssions passwords (secured AES string encryption with random IV)
  - Search already saved sessions
  - Vertical split screen (Activate - CTRL + F1 | Deactivate - CTRL + F2)
- - SFTP Manager (Activate CTRL + F3)
+ - SFTP Manager with fast access (Activate CTRL + F3). It connects to the currently selected tab (session)
  
 ### ToDo
  - Global HotKeys Manager
