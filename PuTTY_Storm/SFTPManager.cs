@@ -160,11 +160,11 @@ namespace PuTTY_Storm
             DownloadLabel.Text = text;
         }
 
-        private void Modify_DownloadBytesLabel(Label DownloadBytesLabel, int value)
+        private void Modify_DownloadBytesLabel(Label DownloadBytesLabel, ulong value)
         {
             if (DownloadBytesLabel.InvokeRequired)
             {
-                DownloadBytesLabel.Invoke(new Action<Label, int>(Modify_DownloadBytesLabel), DownloadBytesLabel, value);
+                DownloadBytesLabel.Invoke(new Action<Label, ulong>(Modify_DownloadBytesLabel), DownloadBytesLabel, value);
                 return;
             }
 
@@ -205,13 +205,13 @@ namespace PuTTY_Storm
                         int pct = Convert.ToInt32(((double)sftpAsyncr.DownloadedBytes / (double)fileSize) * 100);
 
                         double temp = (double)sftpAsyncr.DownloadedBytes / (double)fileSize;
-                        Console.WriteLine("Downloaded Bytes: " + Convert.ToInt32(sftpAsyncr.DownloadedBytes));
+                        Console.WriteLine("Downloaded Bytes: " + sftpAsyncr.DownloadedBytes);
                         Console.WriteLine("Downloaded: " + temp);
                         Console.WriteLine("File size is: " + fileSize);
                         Console.WriteLine(pct);
                         Modify_progressBar1(progressBar1, pct);
                         Modify_DownloadLabel(DownloadLabel, "Status: " + pct + " %");
-                        Modify_DownloadBytesLabel(DownloadBytesLabel, (int)sftpAsyncr.DownloadedBytes);
+                        Modify_DownloadBytesLabel(DownloadBytesLabel, sftpAsyncr.DownloadedBytes);
                     }
                     client.EndDownloadFile(asyncr);
 
@@ -348,11 +348,11 @@ namespace PuTTY_Storm
             UploadLabel.Text = text;
         }
 
-        private void Modify_UploadBytesLabel(Label UploadBytesLabel, int value)
+        private void Modify_UploadBytesLabel(Label UploadBytesLabel, ulong value)
         {
             if (UploadBytesLabel.InvokeRequired)
             {
-                UploadBytesLabel.Invoke(new Action<Label, int>(Modify_UploadBytesLabel), UploadBytesLabel, value);
+                UploadBytesLabel.Invoke(new Action<Label, ulong>(Modify_UploadBytesLabel), UploadBytesLabel, value);
                 return;
             }
 
@@ -394,13 +394,13 @@ namespace PuTTY_Storm
                         int pct = Convert.ToInt32(((double)sftpAsyncrUpload.UploadedBytes / (double)localFileSize) * 100);
 
                         double temp = (double)sftpAsyncrUpload.UploadedBytes / (double)localFileSize;
-                        Console.WriteLine("Uploaded Bytes: " + Convert.ToInt32(sftpAsyncrUpload.UploadedBytes));
+                        Console.WriteLine("Uploaded Bytes: " + sftpAsyncrUpload.UploadedBytes);
                         Console.WriteLine("Uploaded: " + temp);
                         Console.WriteLine("File size is: " + localFileSize);
                         Console.WriteLine(pct);
                         Modify_progressBar2(progressBar2, pct);
                         Modify_UploadLabel(UploadLabel, "Status: " + pct + " %");
-                        Modify_UploadBytesLabel(UploadBytesLabel, (int)sftpAsyncrUpload.UploadedBytes);
+                        Modify_UploadBytesLabel(UploadBytesLabel, sftpAsyncrUpload.UploadedBytes);
                     }
                     client.EndUploadFile(asyncr);
 
