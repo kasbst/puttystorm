@@ -9,7 +9,7 @@ Lightweight tabbed window manager for putty sessions
  - Secure Login (hashed SHA256) and encrypted sesssions passwords (secured AES string encryption with random IV)
  - Search already saved sessions
  - Vertical split screen (Activate - CTRL + F1 | Deactivate - CTRL + F2)
- - SFTP Manager with fast access (Activate CTRL + F3). It connects to the currently selected tab (session)
+ - SFTP Manager with fast access (Activate CTRL + F3). It connects to the currently selected tab (session) and uploads/downloads files to/from user's home directory
  
 ### ToDo
  - Global HotKeys Manager
@@ -40,3 +40,5 @@ Available for download at https://github.com/kasbst/puttystorm/releases/latest
 ![Alt text](/img/SplitScreen.png?raw=true "Split Screen")
 
 ![Alt text](/img/ManageSessions.png?raw=true "Manage Sessions")
+
+![Alt text](/img/SFTPManager.png?raw=true "SFTP Manager")
