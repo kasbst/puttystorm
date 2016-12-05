@@ -411,11 +411,13 @@ namespace PuTTY_Storm
 
             splitcontainer1 = new SplitContainer();
             splitcontainer1.Dock = DockStyle.Fill;
-            splitcontainer1.BackColor = Color.SlateGray;
-            splitcontainer1.BorderStyle = BorderStyle.Fixed3D;
+            splitcontainer1.BackColor = Color.White;
+            splitcontainer1.BorderStyle = BorderStyle.FixedSingle;
             splitcontainer1.SplitterDistance = 70;
             splitcontainer1.Panel1.AutoScroll = true;
             splitcontainer1.IsSplitterFixed = true;
+            splitcontainer1.Panel1.BackColor = Color.SlateGray;
+            splitcontainer1.Panel2.BackColor = Color.SlateGray;
 
             Label panel1_add_groups_header = new Label();
             custom_controls.initialize_advanced_add_group_label_header(panel1_add_groups_header);
@@ -841,7 +843,7 @@ namespace PuTTY_Storm
             SessionsSplitContainer.SplitterDistance = 75;
             SessionsSplitContainer.Panel1.AutoScroll = true;
 
-            SessionsForm = new SessionsForm(my_ProcessInfo_List_TC_1, tabcontrol1, SessionsSplitContainer);
+            SessionsForm = new SessionsForm(my_ProcessInfo_List_TC_1, tabcontrol1, tabcontrol2, SessionsSplitContainer, containers_list);
             SessionsForm.FormClosed += new FormClosedEventHandler(SessionsForm_FormClosed);
             this.Hide();
 
@@ -976,7 +978,10 @@ namespace PuTTY_Storm
         {
             if (!tabcontrol1.Focused)
             {
-                if (!this.Visible)
+                Form SFTPManager = Application.OpenForms["SFTPManager"];
+                Form SelectSFTPConnectionForm = Application.OpenForms["SelectSFTPConnectionForm"];
+
+                if (!((this.Visible) || (SFTPManager != null && SFTPManager.Visible) || (SelectSFTPConnectionForm != null && SelectSFTPConnectionForm.Visible)))
                 {
                     if (my_ProcessInfo_List_TC_1.Count > 0) {
                         tabcontrol1.Focus();
@@ -995,7 +1000,10 @@ namespace PuTTY_Storm
         {
             if (!tabcontrol2.Focused)
             {
-                if (!this.Visible)
+                Form SFTPManager = Application.OpenForms["SFTPManager"];
+                Form SelectSFTPConnectionForm = Application.OpenForms["SelectSFTPConnectionForm"];
+
+                if (!((this.Visible) || (SFTPManager != null && SFTPManager.Visible) || (SelectSFTPConnectionForm != null && SelectSFTPConnectionForm.Visible)))
                 {
                     if (my_ProcessInfo_List_TC_2.Count > 0)
                     {

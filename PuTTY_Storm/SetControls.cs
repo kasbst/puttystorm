@@ -334,12 +334,12 @@ namespace PuTTY_Storm
 
         public void initialize_advanced_group_divider(Label label)
         {
-            label.BackColor = Color.SlateGray;
+            label.BackColor = Color.White;
             label.ForeColor = Color.White;
-            label.BorderStyle = BorderStyle.Fixed3D;
-            label.Location = new Point(3, 90);
+            label.BorderStyle = BorderStyle.FixedSingle;
+            label.Location = new Point(6, 90);
             label.Text = "";
-            label.Size = new Size(350, 2);
+            label.Size = new Size(350, 4);
         }
 
         /// <summary>
@@ -418,12 +418,12 @@ namespace PuTTY_Storm
         /// </summary>
         public void initialize_panel2_advanced_login_secret_divider(Label label)
         {
-            label.BackColor = Color.SlateGray;
+            label.BackColor = Color.White;
             label.ForeColor = Color.White;
-            label.BorderStyle = BorderStyle.Fixed3D;
-            label.Location = new Point(3, 250);
+            label.BorderStyle = BorderStyle.FixedSingle;
+            label.Location = new Point(5, 250);
             label.Text = "";
-            label.Size = new Size(400, 2);
+            label.Size = new Size(400, 4);
         }
 
         public void initialize_panel2_advanced_login_main_label(Label label)
