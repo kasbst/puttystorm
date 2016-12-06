@@ -191,12 +191,16 @@ namespace PuTTY_Storm
 
                 Console.WriteLine("File size is: " + fileSize);
 
-                using (MemoryStream ms = new MemoryStream())
+                string name = remoteFileName;
+                int pos = name.LastIndexOf("/") + 1;
+                String localFileName = DownloadPathTextbox.Text + "/" + name.Substring(pos, name.Length - pos);
+
+                using (FileStream fs = new FileStream(localFileName, FileMode.Create, FileAccess.Write))
                 {
                     Console.WriteLine("Begin Async Download!");
                     Modify_DownloadStatusTextBox(DownloadStatusTextBox, "Downloading file " + remoteFileName + " ..." + System.Environment.NewLine);
 
-                    IAsyncResult asyncr = client.BeginDownloadFile(remoteFileName, ms);
+                    IAsyncResult asyncr = client.BeginDownloadFile(remoteFileName, fs);
                     sftpAsyncr = (SftpDownloadAsyncResult)asyncr;
 
 
@@ -215,15 +219,7 @@ namespace PuTTY_Storm
                     }
                     client.EndDownloadFile(asyncr);
 
-                    string name = remoteFileName;
-                    int pos = name.LastIndexOf("/") + 1;
-                    String localFileName = DownloadPathTextbox.Text + "/" + name.Substring(pos, name.Length - pos);
-
-                    FileStream fs = new FileStream(localFileName, FileMode.Create, FileAccess.Write);
-
-                    ms.WriteTo(fs);
                     fs.Close();
-                    ms.Close();
                 }
 
                 if (sftpAsyncr.IsDownloadCanceled)
