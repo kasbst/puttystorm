@@ -175,18 +175,32 @@ namespace PuTTY_Storm
             {
                 if (SessionsSplitContainer.Panel2Collapsed == true)
                 {
-                    Console.WriteLine("SFTP Manager started without splitscreen enabled!");
-                    var credentials = GetSFTPCredentials(containers_list, tabcontrol1, null);
-                    StartSFTPManager(credentials);
+                    if (tabcontrol1.TabCount > 0)
+                    {
+                        Console.WriteLine("SFTP Manager started without splitscreen enabled!");
+                        var credentials = GetSFTPCredentials(containers_list, tabcontrol1, null);
+                        StartSFTPManager(credentials);
+                    } else
+                    {
+                        MessageBox.Show("Unable to start SFTP Manager - No active sessions!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                        return;
+                    }
                 } else
                 {
                     Console.WriteLine("SFTP Manager started but split screen is enabled, we have to decide which server to use!");
 
                     if (tabcontrol2.TabCount == 0)
                     {
-                        Console.WriteLine("Split screen enabled but tabcontrol2 is empty");
-                        var credentials = GetSFTPCredentials(containers_list, tabcontrol1, null);
-                        StartSFTPManager(credentials);
+                        if (tabcontrol1.TabCount > 0)
+                        {
+                            Console.WriteLine("Split screen enabled but tabcontrol2 is empty");
+                            var credentials = GetSFTPCredentials(containers_list, tabcontrol1, null);
+                            StartSFTPManager(credentials);
+                        } else
+                        {
+                            MessageBox.Show("Unable to start SFTP Manager - No active sessions!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                            return;
+                        }
                     } else
                     {
                         Console.WriteLine("Split screen enabled and tabcontrol2 contains active sessions");
