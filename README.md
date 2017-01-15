@@ -13,7 +13,6 @@ Lightweight tabbed window manager for putty sessions
  
 ### ToDo
  - Global HotKeys Manager
- - Automatic backup of configuration files
  - Security improvements (encryption) NOTE: This is an early test version - use at your own risk!
  
 ### License
