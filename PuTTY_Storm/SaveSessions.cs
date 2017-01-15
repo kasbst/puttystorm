@@ -115,6 +115,8 @@ namespace PuTTY_Storm
                 writer.WriteEndElement();
                 writer.WriteEndDocument();
             }
+
+            Backup_Sessions();
         }
 
         /// <summary>
@@ -162,6 +164,135 @@ namespace PuTTY_Storm
                 writer.WriteEndElement();
                 writer.WriteEndDocument();
             }
+
+            Backup_Groups();
         }
+
+        /// <summary>
+        /// Make a backup of groups.xml file after each save file operation.
+        /// </summary>
+        private void Backup_Groups()
+        {
+            try
+            {
+                String FilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                "PuTTYStorm", "groups.xml");
+
+                if (File.Exists(FilePath))
+                {
+                    String NewFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                                        "PuTTYStorm", "groups-" + DateTime.Now.ToString("yyyy-MM-dd-HHmmssfff") + ".xml");
+                    File.Copy(FilePath, NewFilePath);
+                }
+            } catch(Exception e)
+            {
+                MessageBox.Show(e.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            }
+
+            DeleteOldGroups();
+        }
+
+        /// <summary>
+        /// Make a backup of sesssions.xml file after each save file operation.
+        /// </summary>
+        private void Backup_Sessions()
+        {
+            try
+            {
+                String FilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                "PuTTYStorm", "sessions.xml");
+
+                if (File.Exists(FilePath))
+                {
+                    String NewFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                                        "PuTTYStorm", "sessions-" + DateTime.Now.ToString("yyyy-MM-dd-HHmmssfff") + ".xml");
+                    File.Copy(FilePath, NewFilePath);
+                }
+            } catch(Exception e)
+            {
+                MessageBox.Show(e.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            }
+
+            DeleteOldSessions();
+        }
+
+        /// <summary>
+        /// Delete old sessions-*.xml backup files. Order them youngest first, skips the first 20, and deletes the rest.
+        /// Always keep the 20 most recent files.
+        /// </summary>
+        List<FileInfo> Sessionsfi;
+        private void DeleteOldSessions()
+        {
+            try
+            {
+                if (Directory.Exists(Path.Combine(Environment.GetFolderPath
+                    (Environment.SpecialFolder.MyDocuments), "PuTTYStorm")))
+                {
+
+                    String FolderPath = Path.Combine(Environment.GetFolderPath
+                    (Environment.SpecialFolder.MyDocuments), "PuTTYStorm");
+
+                    String FilesToDelete = @"sessions-*";
+                    var fileList = Directory.GetFiles(FolderPath, FilesToDelete);
+
+                    Console.WriteLine("### Number of session-* files: " + fileList.Count());
+
+                    Sessionsfi = new List<FileInfo>();
+
+                    foreach (var file in fileList)
+                    {
+                        Sessionsfi.Add(new FileInfo(file));
+                    }
+
+                    foreach (var f in Sessionsfi.OrderByDescending(x => x.CreationTime).Skip(20))
+                    {
+                        f.Delete();
+                    }
+                }
+            } catch(Exception e)
+            {
+                MessageBox.Show(e.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            }
+        }
+
+        /// <summary>
+        /// Delete old groups-*.xml backup files. Order them youngest first, skips the first 20, and deletes the rest.
+        /// Always keep the 20 most recent files.
+        /// </summary>
+        List<FileInfo> Groupsfi;
+        private void DeleteOldGroups()
+        {
+            try
+            {
+                if (Directory.Exists(Path.Combine(Environment.GetFolderPath
+                    (Environment.SpecialFolder.MyDocuments), "PuTTYStorm")))
+                {
+                    String FolderPath = Path.Combine(Environment.GetFolderPath
+                    (Environment.SpecialFolder.MyDocuments), "PuTTYStorm");
+
+                    String FilesToDelete = @"groups-*";
+                    var fileList = Directory.GetFiles(FolderPath, FilesToDelete);
+
+                    Console.WriteLine("### Number of groups-* files: " + fileList.Count());
+
+                    Groupsfi = new List<FileInfo>();
+
+                    foreach (var file in fileList)
+                    {
+                        Groupsfi.Add(new FileInfo(file));
+                    }
+
+                    foreach (var f in Groupsfi.OrderByDescending(x => x.CreationTime).Skip(20))
+                    {
+                        f.Delete();
+                    }
+                }
+            } catch(Exception e)
+            {
+                MessageBox.Show(e.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            }
+        }
+
+
     }
 }

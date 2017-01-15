@@ -63,6 +63,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);
+            this.Scroll += new System.Windows.Forms.ScrollEventHandler(this.MainForm_Scroll);
             this.ResumeLayout(false);
             this.PerformLayout();
 

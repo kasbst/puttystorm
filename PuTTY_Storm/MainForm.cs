@@ -44,6 +44,7 @@ namespace PuTTY_Storm
         {
             InitializeComponent();
             this.Text = GlobalVar.VERSION;
+            this.MouseWheel += new MouseEventHandler(MainForm_MouseWheel);
         }
 
         /// <summary>
@@ -182,6 +183,7 @@ namespace PuTTY_Storm
         List<GroupBox> containers_list;
         MyUserSettings mus;
         GroupBox PuTTY_Config;
+        Panel SettingPanel;
 
         private void MainForm_Load(object sender, EventArgs e)
         {
@@ -198,17 +200,24 @@ namespace PuTTY_Storm
                 }
             }
 
+            SettingPanel = new Panel();
+            SettingPanel.Location = new Point(500, 255);
+            SettingPanel.Size = new Size(250, 150);
+            SettingPanel.BackColor = Color.SlateGray;
+            SettingPanel.Name = "SettingPanel";
+
             Button AddEntry = new Button();
             AddEntry.Font = new Font("Calibri", 10);
-            AddEntry.Location = new Point(500, 255);
+            AddEntry.Location = new Point(5, 10);
             AddEntry.Size = new Size(103, 38);
             AddEntry.Text = "Add New Entry";
+            AddEntry.Name = "Add_New_Entry";
             AddEntry.UseVisualStyleBackColor = true;
             AddEntry.Click += new EventHandler(AddEntry_Click);
 
             Button Connect = new Button();
             Connect.Font = new Font("Calibri", 10);
-            Connect.Location = new Point(630, 250);
+            Connect.Location = new Point(120, 5);
             Connect.Size = new Size(103, 103);
             Connect.Text = "Open";
             Connect.Name = "Connect";
@@ -217,7 +226,7 @@ namespace PuTTY_Storm
 
             Button Save_Close = new Button();
             Save_Close.Font = new Font("Calibri", 10);
-            Save_Close.Location = new Point(630, 280);
+            Save_Close.Location = new Point(120, 33);
             Save_Close.Size = new Size(103, 38);
             Save_Close.Text = "Save and Close";
             Save_Close.Name = "Save_Close";
@@ -227,7 +236,7 @@ namespace PuTTY_Storm
 
             Button Advanced_Options = new Button();
             Advanced_Options.Font = new Font("Calibri", 10);
-            Advanced_Options.Location = new Point(500, 310);
+            Advanced_Options.Location = new Point(5, 62);
             Advanced_Options.Size = new Size(103, 38);
             Advanced_Options.Text = "Advanced";
             Advanced_Options.Name = "Advanced";
@@ -345,11 +354,57 @@ namespace PuTTY_Storm
                 i++;
             }
 
+            SettingPanel.Controls.Add(AddEntry);
+            SettingPanel.Controls.Add(Connect);
+            SettingPanel.Controls.Add(Save_Close);
+            SettingPanel.Controls.Add(Advanced_Options);
             Controls.Add(PuTTY_Config);
-            Controls.Add(AddEntry);
-            Controls.Add(Connect);
-            Controls.Add(Save_Close);
-            Controls.Add(Advanced_Options);
+            Controls.Add(SettingPanel);
+        }
+
+        /// <summary>
+        /// MainForm_Scroll & MainForm_MouseWheel handles user's scrolling up and down via 
+        /// sessions configurations, so setting buttons are placed on the same position.
+        /// </summary>
+        int LastScrollValue = 0;
+
+        private void MainForm_Scroll(object sender, ScrollEventArgs e)
+        {
+            if (e.OldValue > e.NewValue)
+            {
+                if (VerticalScroll.Value < LastScrollValue)
+                {
+                    SettingPanel.Location = new Point(500, 255);
+                }
+            }
+            else
+            {
+                if (VerticalScroll.Value > 0)
+                {
+                    LastScrollValue = VerticalScroll.Value;
+                    SettingPanel.Location = new Point(500, 255);
+                }
+            }
+        }
+
+        private void MainForm_MouseWheel(object sender, MouseEventArgs e)
+        {
+            if (e.Delta > 0)
+            {
+                if (VerticalScroll.Value < LastScrollValue)
+                {
+                    LastScrollValue = VerticalScroll.Value;
+                    SettingPanel.Location = new Point(500, 255);
+                }
+            } else
+            {
+                if (VerticalScroll.Value > 0)
+                {
+                    LastScrollValue = VerticalScroll.Value;
+                    SettingPanel.Location = new Point(500, 255);
+                }
+            }
+
         }
 
         /// <summary>
@@ -1575,6 +1630,7 @@ namespace PuTTY_Storm
         /// Handle the removal of session GroupBoxes contained within the main PuTTY STORM 
         /// configuration form (MainForm).
         /// </summary>
+        int TempScrollValue = 0;
         void ButtonClickOneEvent(object sender, EventArgs e)
         {
             Button button = sender as Button;
@@ -1586,6 +1642,20 @@ namespace PuTTY_Storm
                     int bnt_tag = (int)button.Tag;
                     Controls.Remove(containers_list[(int)button.Tag]);
                     containers_list.RemoveAt((int)button.Tag);
+
+                    Control[] focus_control = this.Controls.Find("SettingPanel", true);
+
+                    focus_control[0].Focus();
+                    TempScrollValue = LastScrollValue - 240;
+                    LastScrollValue = TempScrollValue;
+
+                    if (LastScrollValue >= 0)
+                    {                       
+                        this.VerticalScroll.Value = LastScrollValue;
+                    }
+
+                    focus_control[0].Location = new Point(500, 255);
+                    this.Refresh();
 
                     int y = 0;
                     int z = 1;
@@ -1616,5 +1686,6 @@ namespace PuTTY_Storm
                 }
             }
         }
+
     }
 }
