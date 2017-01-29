@@ -29,6 +29,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.IO;
 using System.Net;
+using System.Text.RegularExpressions;
 
 namespace PuTTY_Storm
 {
@@ -46,7 +47,7 @@ namespace PuTTY_Storm
     class OpenPuTTY
     {
         public ProcessInfo start_putty(Panel panel, int count, Process process, string hostname,
-            string username, string password, string putty_path, SplitContainer SessionsSplitContainer)
+            string username, string password, string putty_path, SplitContainer SessionsSplitContainer, string PrivateKey)
         {
             ProcessInfo myProcessInfo = new ProcessInfo();
 
@@ -70,10 +71,17 @@ namespace PuTTY_Storm
             }
 
             ProcessStartInfo processStartInfo;
-            if (password != "")
+            if (password != null && password != "" && !Regex.IsMatch(password, @"\s+") && PrivateKey == null)
             {
+                Console.WriteLine("Using password for putty connect");
                 processStartInfo = new ProcessStartInfo(putty_path, "-ssh -2 -l " + username + " -pw " + password + " " + hostname);
-            } else
+            }
+            else if (password == null && PrivateKey != null)
+            {
+                Console.WriteLine("Using private key for putty connect");
+                processStartInfo = new ProcessStartInfo(putty_path, "-ssh -2 -l " + username + " -i " + PrivateKey + " " + hostname);
+            }
+            else
             {
                 processStartInfo = new ProcessStartInfo(putty_path, "-ssh -2 -l " + username + " " + hostname);
             }

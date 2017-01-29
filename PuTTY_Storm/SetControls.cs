@@ -143,7 +143,7 @@ namespace PuTTY_Storm
             numericupdown.ValueChanged += new EventHandler(numericupdown_ValueChanged);
         }
 
-        public void initialize_combobox (ComboBox combobox, EventHandler combobox_SelectedIndexChanged)
+        public void initialize_combobox (ComboBox combobox, EventHandler combobox_SelectedIndexChanged, EventHandler combobox_PKGroupChanged)
         {
             if (File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
             "PuTTYStorm", "groups.xml")))
@@ -164,7 +164,8 @@ namespace PuTTY_Storm
             combobox.Name = "combobox";
             combobox.DropDownStyle = ComboBoxStyle.DropDownList;
             combobox.SelectedIndexChanged += new EventHandler(combobox_SelectedIndexChanged);
-            
+            combobox.SelectedIndexChanged += new EventHandler(combobox_PKGroupChanged);
+
         }
 
         public void initialize_removal_button(Button button, EventHandler ButtonClickOneEvent)
@@ -337,7 +338,7 @@ namespace PuTTY_Storm
             label.BackColor = Color.White;
             label.ForeColor = Color.White;
             label.BorderStyle = BorderStyle.FixedSingle;
-            label.Location = new Point(6, 90);
+            label.Location = new Point(6, 85);
             label.Text = "";
             label.Size = new Size(350, 4);
         }
@@ -498,6 +499,110 @@ namespace PuTTY_Storm
         }
 
         /// <summary>
+        /// Initialize controls in ADVANCED OPTIONS PANEL1 (GROUPS). This is the left Panel of 
+        /// splitcontainer1 contained within the Form3 - Controls for Private keys settings.
+        /// </summary>
+        public void initialize_advanced_private_keys_label_header(Label label)
+        {
+            label.Font = new Font("Calibri", 15, FontStyle.Bold);
+            label.BackColor = Color.SlateGray;
+            label.ForeColor = Color.White;
+            label.Text = "Private Keys";
+            label.Location = new Point(3, 260);
+            label.Size = new Size(130, 30);
+        }
+
+        public void initialize_advanced_private_keys_textbox_filedialog(TextBox textbox)
+        {
+            textbox.Font = new Font("Calibri", 10, FontStyle.Bold);
+            //textbox.BackColor = Color.SlateGray;
+            textbox.ForeColor = Color.White;
+            textbox.Text = "";
+            textbox.Name = "private_keys_textbox_filedialog";
+            textbox.Location = new Point(80, 300);
+            textbox.Size = new Size(240, 20);
+            textbox.ReadOnly = true;
+        }
+
+        public void initialize_advanced_private_keys_label_keytype(Label label)
+        {
+            label.Font = new Font("Calibri", 12, FontStyle.Bold);
+            label.BackColor = Color.SlateGray;
+            label.ForeColor = Color.White;
+            label.Text = "Type";
+            label.Location = new Point(5, 340);
+            label.Size = new Size(50, 30);
+        }
+
+        public void initialize_advanced_private_keys_keytype_combobox(ComboBox combobox, EventHandler combobox_SelectedIndexChanged)
+        {
+            combobox.Items.Add("PPK");
+            combobox.Items.Add("OpenSSH");
+            combobox.Font = new Font("Calibri", 11);
+            combobox.Location = new Point(65, 340);
+            combobox.Size = new Size(80, 32);
+            combobox.Name = "private_keys_keytype_combobox";
+            combobox.DropDownStyle = ComboBoxStyle.DropDownList;
+            combobox.SelectedIndexChanged += new EventHandler(combobox_SelectedIndexChanged);
+        }
+
+        public void initialize_advanced_private_keys_label_group(Label label)
+        {
+            label.Font = new Font("Calibri", 12, FontStyle.Bold);
+            label.BackColor = Color.SlateGray;
+            label.ForeColor = Color.White;
+            label.Text = "Group";
+            label.Location = new Point(160, 340);
+            label.Size = new Size(60, 30);
+        }
+
+        public void initialize_advanced_private_keys_group_combobox(ComboBox combobox, EventHandler combobox_SelectedIndexChanged)
+        {
+            if (File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+            "PuTTYStorm", "groups.xml")))
+            {
+                GetSavedSessions saved_groups = new GetSavedSessions();
+                SavedGroupInfo groups = saved_groups.get_Groups();
+
+                combobox.Items.Add("");
+
+                foreach (string name in groups.names)
+                {
+                    combobox.Items.Add(name);
+                }
+            }
+            combobox.Font = new Font("Calibri", 11);
+            combobox.Location = new Point(230, 340);
+            combobox.Size = new Size(90, 32);
+            combobox.Name = "private_keys_group_combobox";
+            combobox.DropDownStyle = ComboBoxStyle.DropDownList;
+            combobox.SelectedIndexChanged += new EventHandler(combobox_SelectedIndexChanged);
+        }
+
+        public void initialize_advanced_private_keys_divider(Label label)
+        {
+            label.BackColor = Color.White;
+            label.ForeColor = Color.White;
+            label.BorderStyle = BorderStyle.FixedSingle;
+            label.Location = new Point(6, 420);
+            label.Text = "";
+            label.Size = new Size(350, 4);
+        }
+
+        public void initialize_advanced_remove_pk_button(Button button, EventHandler ButtonClickPKEvent)
+        {
+            button.Name = "Remove_PK_button";
+            button.Font = new Font("Calibri", 10);
+            button.Location = new Point(270, 30);
+            button.ForeColor = Color.Black;
+            button.Size = new Size(65, 25);
+            button.Text = "Remove";
+            button.UseVisualStyleBackColor = true;
+            button.Click += new EventHandler(ButtonClickPKEvent);
+        }
+
+
+        /// <summary>
         /// Custom methods for handling controls.
         /// </summary>
         public void set_groupbox_location (GroupBox groupbox, int height)
@@ -562,5 +667,30 @@ namespace PuTTY_Storm
                 }
             }
         }
+
+        public void set_pk_combobox_groups(SplitContainer splitcontainer)
+        {
+            if (File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+            "PuTTYStorm", "groups.xml")))
+            {
+                GetSavedSessions saved_groups = new GetSavedSessions();
+                SavedGroupInfo groups = saved_groups.get_Groups();
+
+                foreach (ComboBox combobox in splitcontainer.Panel1.Controls.OfType<ComboBox>())
+                {
+                    if (combobox.Name == "private_keys_group_combobox")
+                    {
+                        combobox.Items.Clear();
+
+                        combobox.Items.Add("");
+                        foreach (string name in groups.names)
+                        {
+                            combobox.Items.Add(name);
+                        }
+                    }
+                }
+            }
+        }
+
     }
 }

@@ -26,6 +26,7 @@ using System;
 using System.Collections.Generic;
 using System.Xml;
 using System.IO;
+using System.Windows.Forms;
 
 namespace PuTTY_Storm
 {
@@ -43,6 +44,13 @@ namespace PuTTY_Storm
         public List<string> names = new List<string>();
     }
 
+    public class SavedPrivatekeysInfo
+    {
+        public List<string> names = new List<string>();
+        public List<string> types = new List<string>();
+        public List<string> groups = new List<string>();
+    }
+
     class GetSavedSessions
     {
         /// <summary>
@@ -56,63 +64,69 @@ namespace PuTTY_Storm
             String filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
             "PuTTYStorm", "sessions.xml");
 
-            using (XmlReader reader = XmlReader.Create(filePath))
+            try
             {
-                while (reader.Read())
+                using (XmlReader reader = XmlReader.Create(filePath))
                 {
-                    if (reader.IsStartElement())
+                    while (reader.Read())
                     {
-                        switch (reader.Name)
+                        if (reader.IsStartElement())
                         {
+                            switch (reader.Name)
+                            {
 
-                            case "hostname":
-                                if (reader.Read())
-                                {
-                                    xml_connection_info.hostnames.Add(reader.Value);
-                                }
-                                break;
-                            case "username":
-                                if (reader.Read())
-                                {
-                                    xml_connection_info.usernames.Add(reader.Value);
-                                }
-                                break;
-                            case "password":
-                                if (reader.Read())
-                                {
-                                    // Handle passwordless login
-                                    if (reader.Value == " ")
+                                case "hostname":
+                                    if (reader.Read())
                                     {
-                                        xml_connection_info.passwords.Add(null);
-                                    } else
-                                    {
-                                        //Console.WriteLine(AESEncryptDecrypt.Decrypt(reader.Value));
-                                        xml_connection_info.passwords.Add(AESEncryptDecrypt.Decrypt(reader.Value));
-                                        //xml_connection_info.passwords.Add(reader.Value);
+                                        xml_connection_info.hostnames.Add(reader.Value);
                                     }
-                                }
-                                break;
-                            case "count":
-                                if (reader.Read())
-                                {
-                                    xml_connection_info.counts.Add(reader.Value);
-                                }
-                                break;
-                            case "group":
-                                if (reader.Read())
-                                {
-                                    if (reader.Value == " ")
+                                    break;
+                                case "username":
+                                    if (reader.Read())
                                     {
-                                        xml_connection_info.groups.Add(null);
-                                    } else
+                                        xml_connection_info.usernames.Add(reader.Value);
+                                    }
+                                    break;
+                                case "password":
+                                    if (reader.Read())
                                     {
-                                        xml_connection_info.groups.Add(reader.Value);
-                                    }                                   
-                                }
-                                break;
+                                        // Handle passwordless login
+                                        if (reader.Value == " ")
+                                        {
+                                            xml_connection_info.passwords.Add(null);
+                                        }
+                                        else
+                                        {
+                                            xml_connection_info.passwords.Add(AESEncryptDecrypt.Decrypt(reader.Value));
+                                        }
+                                    }
+                                    break;
+                                case "count":
+                                    if (reader.Read())
+                                    {
+                                        xml_connection_info.counts.Add(reader.Value);
+                                    }
+                                    break;
+                                case "group":
+                                    if (reader.Read())
+                                    {
+                                        if (reader.Value == " ")
+                                        {
+                                            xml_connection_info.groups.Add(null);
+                                        }
+                                        else
+                                        {
+                                            xml_connection_info.groups.Add(reader.Value);
+                                        }
+                                    }
+                                    break;
+                            }
                         }
                     }
                 }
+            } catch(Exception e)
+            {
+                MessageBox.Show(e.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
             }
             return xml_connection_info;
         }
@@ -128,27 +142,84 @@ namespace PuTTY_Storm
             String filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
             "PuTTYStorm", "groups.xml");
 
-            using (XmlReader reader = XmlReader.Create(filePath))
+            try
             {
-                while (reader.Read())
+                using (XmlReader reader = XmlReader.Create(filePath))
                 {
-                    if (reader.IsStartElement())
+                    while (reader.Read())
                     {
-                        switch (reader.Name)
+                        if (reader.IsStartElement())
                         {
+                            switch (reader.Name)
+                            {
 
-                            case "name":
-                                if (reader.Read())
-                                {
-                                    xml_group_info.names.Add(reader.Value);
-                                }
-                                break;
+                                case "name":
+                                    if (reader.Read())
+                                    {
+                                        xml_group_info.names.Add(reader.Value);
+                                    }
+                                    break;
+                            }
                         }
                     }
                 }
+            } catch(Exception e)
+            {
+                MessageBox.Show(e.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
             }
             return xml_group_info;
         }
+
+        /// <summary>
+        /// Get saved private keys from privatekeys.xml configuration file. 
+        /// </summary>
+        /// <returns>Class with List of private keys</returns>
+        public SavedPrivatekeysInfo get_PrivateKeys()
+        {
+            SavedPrivatekeysInfo xml_privatekeys_info = new SavedPrivatekeysInfo();
+
+            String filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+            "PuTTYStorm", "privatekeys.xml");
+            try
+            {
+                using (XmlReader reader = XmlReader.Create(filePath))
+                {
+                    while (reader.Read())
+                    {
+                        if (reader.IsStartElement())
+                        {
+                            switch (reader.Name)
+                            {
+
+                                case "name":
+                                    if (reader.Read())
+                                    {
+                                        xml_privatekeys_info.names.Add(reader.Value);
+                                    }
+                                    break;
+                                case "type":
+                                    if (reader.Read())
+                                    {
+                                        xml_privatekeys_info.types.Add(reader.Value);
+                                    }
+                                    break;
+                                case "group":
+                                    if (reader.Read())
+                                    {
+                                        xml_privatekeys_info.groups.Add(reader.Value);
+                                    }
+                                    break;
+                            }
+                        }
+                    }
+                }
+            } catch(Exception e)
+            {
+                MessageBox.Show(e.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            }
+            return xml_privatekeys_info;
+        }
+
 
     }
 }

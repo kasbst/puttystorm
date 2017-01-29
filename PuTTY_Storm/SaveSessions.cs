@@ -169,6 +169,106 @@ namespace PuTTY_Storm
         }
 
         /// <summary>
+        /// Save private keys to the privatekeys.xml configuration file.
+        /// </summary>
+        public void Save_PrivateKeys(List<Panel> PrivateKeys)
+        {
+            String filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+            "PuTTYStorm", "privatekeys.xml");
+
+            if (!Directory.Exists(Path.Combine(Environment.GetFolderPath
+                (Environment.SpecialFolder.MyDocuments), "PuTTYStorm")))
+            {
+                Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath
+                    (Environment.SpecialFolder.MyDocuments), "PuTTYStorm"));
+            }
+
+            using (XmlWriter writer = XmlWriter.Create(filePath))
+            {
+                writer.WriteStartDocument();
+                writer.WriteStartElement("PrivateKeys");
+
+                foreach (Panel container in PrivateKeys)
+                {
+                    string pk_name = null;
+                    string pk_type = null;
+                    string pk_group = null;
+
+                    foreach (Control control in container.Controls)
+                    {
+                        if (control.Name == "pk_name_label")
+                        {
+                            pk_name = control.Text;
+                        }
+
+                        if (control.Name == "pk_type_label")
+                        {
+                            pk_type = control.Text.Replace("Type: ", string.Empty);
+                        }
+
+                        if (control.Name == "pk_group_label")
+                        {
+                            pk_group = control.Text.Replace("Group: ", string.Empty);
+                        }
+                    }
+
+                    if (pk_name != "")
+                    {
+                        writer.WriteStartElement("PrivateKey");
+
+                        writer.WriteElementString("name", pk_name);
+                        writer.WriteElementString("type", pk_type);
+                        writer.WriteElementString("group", pk_group);
+
+                        writer.WriteEndElement();
+                    }
+                }
+
+                writer.WriteEndElement();
+                writer.WriteEndDocument();
+            }
+
+            GetSavedSessions saved_data = new GetSavedSessions();
+            SavedPrivatekeysInfo privatekeys = null;
+
+            if (File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+            "PuTTYStorm", "privatekeys.xml")))
+            {
+                privatekeys = saved_data.get_PrivateKeys();
+            }
+
+            if (privatekeys.names.Count != 0)
+            {
+                Backup_PrivateKeys();
+            }
+        }
+
+        /// <summary>
+        /// Make a backup of privatekeys.xml file after each save file operation.
+        /// </summary>
+        private void Backup_PrivateKeys()
+        {
+            try
+            {
+                String FilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                "PuTTYStorm", "privatekeys.xml");
+
+                if (File.Exists(FilePath))
+                {
+                    String NewFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                                        "PuTTYStorm", "privatekeys-" + DateTime.Now.ToString("yyyy-MM-dd-HHmmssfff") + ".xml");
+                    File.Copy(FilePath, NewFilePath);
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            }
+
+            DeleteOldPrivateKeys();
+        }
+
+        /// <summary>
         /// Make a backup of groups.xml file after each save file operation.
         /// </summary>
         private void Backup_Groups()
@@ -288,6 +388,45 @@ namespace PuTTY_Storm
                     }
                 }
             } catch(Exception e)
+            {
+                MessageBox.Show(e.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            }
+        }
+
+        /// <summary>
+        /// Delete old privatekeys-*.xml backup files. Order them youngest first, skips the first 20, and deletes the rest.
+        /// Always keep the 20 most recent files.
+        /// </summary>
+        List<FileInfo> PrivateKeysfi;
+        private void DeleteOldPrivateKeys()
+        {
+            try
+            {
+                if (Directory.Exists(Path.Combine(Environment.GetFolderPath
+                    (Environment.SpecialFolder.MyDocuments), "PuTTYStorm")))
+                {
+                    String FolderPath = Path.Combine(Environment.GetFolderPath
+                    (Environment.SpecialFolder.MyDocuments), "PuTTYStorm");
+
+                    String FilesToDelete = @"privatekeys-*";
+                    var fileList = Directory.GetFiles(FolderPath, FilesToDelete);
+
+                    Console.WriteLine("### Number of privatekeys-* files: " + fileList.Count());
+
+                    PrivateKeysfi = new List<FileInfo>();
+
+                    foreach (var file in fileList)
+                    {
+                        PrivateKeysfi.Add(new FileInfo(file));
+                    }
+
+                    foreach (var f in PrivateKeysfi.OrderByDescending(x => x.CreationTime).Skip(20))
+                    {
+                        f.Delete();
+                    }
+                }
+            }
+            catch (Exception e)
             {
                 MessageBox.Show(e.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
             }

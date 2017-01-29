@@ -30,6 +30,9 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Text.RegularExpressions;
+using System.ComponentModel;
+using System.Collections.Generic;
 
 namespace PuTTY_Storm
 {
@@ -38,13 +41,31 @@ namespace PuTTY_Storm
         String hostname = null;
         String username = null;
         String password = null;
+        String PrivateKey = null;
+        ConnectionInfo con = null;
 
-        public SFTPManager(String _hostname, String _username, String _password)
+        public SFTPManager(String _hostname, String _username, String _password, String _privatekey)
         {
             InitializeComponent();
             this.hostname = _hostname;
             this.username = _username;
             this.password = _password;
+            this.PrivateKey = _privatekey;
+
+            if (password != null && password != "" && !Regex.IsMatch(password, @"\s+") && PrivateKey == null)
+            {
+                Console.WriteLine("## SFTP Manager using password for login");
+
+                con = new ConnectionInfo(this.hostname, 22, this.username, new PasswordAuthenticationMethod(this.username, this.password));
+            }
+            else if (password == null && PrivateKey != null)
+            {
+                Console.WriteLine("## SFTP Manager using private key for login");
+
+                var keyFile = new PrivateKeyFile(this.PrivateKey);
+                var keyFiles = new[] { keyFile };
+                con = new ConnectionInfo(this.hostname, 22, this.username, new PrivateKeyAuthenticationMethod(this.username, keyFiles));
+            }
         }
 
         private void listView1_SelectedIndexChanged(object sender, EventArgs e)
@@ -88,8 +109,6 @@ namespace PuTTY_Storm
 
         private void __DOWNLOAD_THREAD()
         {
-            var port = 22;
-
             Modify_progressBar1(progressBar1, 0);
             Modify_DownloadStatusTextBox(DownloadStatusTextBox, "");
 
@@ -97,7 +116,7 @@ namespace PuTTY_Storm
 
             try
             {
-                using (SftpClient client = new SftpClient(this.hostname, port, this.username, this.password))
+                using (SftpClient client = new SftpClient(con))
                 {
                     client.Connect();
                     Console.WriteLine("Connected to the server!");
@@ -273,15 +292,13 @@ namespace PuTTY_Storm
 
         private void ___UPLOAD_THREAD ()
         {
-            var port = 22;
-
             Modify_progressBar2(progressBar2, 0);
             Modify_UploadStatusTextBox(UploadStatusTextBox, "");
             Modify_UploadStatusTextBox(UploadStatusTextBox, "Initializing..." + System.Environment.NewLine);
 
             try
             {
-                using (SftpClient client = new SftpClient(this.hostname, port, this.username, this.password))
+                using (SftpClient client = new SftpClient(con))
                 {
                     client.Connect();
                     Console.WriteLine("Connected to the server!");
@@ -520,11 +537,9 @@ namespace PuTTY_Storm
         /// </summary>
         private void ListRemoteFiles(ListView RemoteFilesListView)
         {
-            var port = 22;
-
             try
             {
-                using (SftpClient client = new SftpClient(this.hostname, port, this.username, this.password))
+                using (SftpClient client = new SftpClient(con))
                 {
                     client.Connect();
                     var files = client.ListDirectory("");

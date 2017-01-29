@@ -29,6 +29,7 @@ using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Drawing;
+using System.IO;
 
 namespace PuTTY_Storm
 {
@@ -39,6 +40,9 @@ namespace PuTTY_Storm
         TabControl tabcontrol2;
         SplitContainer SessionsSplitContainer;
         List<GroupBox> containers_list;
+
+        private GetSavedSessions saved_data;
+        private PasswordLess IsPasswordLess;
 
         const int MYACTION_HOTKEY_ID1 = 1;
         const int MYACTION_HOTKEY_ID2 = 2;
@@ -58,6 +62,9 @@ namespace PuTTY_Storm
             this.my_ProcessInfo_List_TC_1 = _my_ProcessInfo_List_TC_1;
             this.SessionsSplitContainer = _SessionsSplitContainer;
             this.containers_list = _containers_list;
+
+            saved_data = new GetSavedSessions();
+            IsPasswordLess = new PasswordLess();
 
             // Modifier keys codes: Alt = 1, Ctrl = 2, Shift = 4, Win = 8
             // Compute the addition of each combination of the keys you want to be pressed
@@ -227,7 +234,38 @@ namespace PuTTY_Storm
         /// </summary>
         private void StartSFTPManager (Tuple<string, string, string> _credentials)
         {
-            SFTPManager sftpManagerForm = new SFTPManager(_credentials.Item1, _credentials.Item2, _credentials.Item3);
+            string PrivateKey = null;
+            string hostname = _credentials.Item1;
+            string login = _credentials.Item2;
+            string password = _credentials.Item3;
+
+            if (File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+            "PuTTYStorm", "privatekeys.xml")))
+            {
+                SavedPrivatekeysInfo privatekeys = saved_data.get_PrivateKeys();
+                string group = IsPasswordLess.GetGroupForPwdLessHostname(containers_list, _credentials.Item1);
+
+                if (IsPasswordLess.IsGroupBetweenPrivateKeys(privatekeys, group))
+                {
+                    PrivateKey = IsPasswordLess.GetOpenSSHPrivateKeyForGroup(privatekeys, group);
+
+                    if (!File.Exists(PrivateKey))
+                    {
+                        if (PrivateKey == null || PrivateKey == "")
+                        {
+                            PrivateKey = "of OpenSSH type or its group";
+                        }
+                        MessageBox.Show("You are going to use SFTP Manager passwordless login, " + Environment.NewLine +
+                            "however private key " + PrivateKey + " doesn't exists!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+
+                        return;
+                    }
+
+                    password = null;
+                }
+            }
+
+            SFTPManager sftpManagerForm = new SFTPManager(hostname, login, password, PrivateKey);
             sftpManagerForm.Name = "SFTPManager";
             sftpManagerForm.Text = GlobalVar.VERSION + " - SFTP Manager";
             sftpManagerForm.Show();

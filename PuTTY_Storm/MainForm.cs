@@ -39,12 +39,16 @@ namespace PuTTY_Storm
     public partial class MainForm : Form
     {
         private SetControls custom_controls;
+        private PasswordLess IsPasswordLess;
+        private GetSavedSessions saved_data;
 
         public MainForm()
         {
             InitializeComponent();
             this.Text = GlobalVar.VERSION;
             this.MouseWheel += new MouseEventHandler(MainForm_MouseWheel);
+            IsPasswordLess = new PasswordLess();
+            saved_data = new GetSavedSessions();
         }
 
         /// <summary>
@@ -74,7 +78,7 @@ namespace PuTTY_Storm
             custom_controls.initialize_password_label(label_password);
             custom_controls.initialize_password_textbox(textbox_password);
             custom_controls.initialize_numbericupdown(numericupdown, Numericupdown_ValueChanged);
-            custom_controls.initialize_combobox(groups, Combobox_SelectedIndexChanged);
+            custom_controls.initialize_combobox(groups, Combobox_SelectedIndexChanged, combobox_PKGroupChanged);
 
             container.Controls.Add(label_hostname);
             container.Controls.Add(textbox_hostname);
@@ -360,6 +364,11 @@ namespace PuTTY_Storm
             SettingPanel.Controls.Add(Advanced_Options);
             Controls.Add(PuTTY_Config);
             Controls.Add(SettingPanel);
+
+            // Check which groups in created sessions containers (GroupBoxes) are part
+            // of private keys setup. If group is part of PK setup change properties 
+            // of password textboxes.
+            IsPasswordLess.DetermineIfSessionGroupIsPasswordLess(containers_list);
         }
 
         /// <summary>
@@ -434,12 +443,18 @@ namespace PuTTY_Storm
 
         /// <summary>
         /// Load/Initialize Advanced Form settings (AdvancedForm). Contains possibility to manage groups,
-        /// change saved session passwords per group and manage login secret.
+        /// manage private keys setup, change saved session passwords per group and manage login secret.
         /// </summary>
         FormHelper AdvancedForm;
         SplitContainer splitcontainer1;
         List<Panel> Groups;
         int Rows = 0;
+
+        List<Panel> PrivateKeys;
+        int PK_Rows = 0;
+
+        Panel section_panel;
+        Panel section_panel_private_keys;
 
         private void Advanced_Click(object sender, EventArgs e)
         {
@@ -453,6 +468,7 @@ namespace PuTTY_Storm
             }
 
             Groups = new List<Panel>();
+            PrivateKeys = new List<Panel>();
 
             AdvancedForm = new PuTTY_Storm.FormHelper();
             AdvancedForm.ShowInTaskbar = true;
@@ -469,7 +485,6 @@ namespace PuTTY_Storm
             splitcontainer1.BackColor = Color.White;
             splitcontainer1.BorderStyle = BorderStyle.FixedSingle;
             splitcontainer1.SplitterDistance = 70;
-            splitcontainer1.Panel1.AutoScroll = true;
             splitcontainer1.IsSplitterFixed = true;
             splitcontainer1.Panel1.BackColor = Color.SlateGray;
             splitcontainer1.Panel2.BackColor = Color.SlateGray;
@@ -482,6 +497,22 @@ namespace PuTTY_Storm
             custom_controls.initialize_advanced_add_group_textbox(panel1_add_group_textbox);
             Label horizontal_divider = new Label();
             custom_controls.initialize_advanced_group_divider(horizontal_divider);
+
+            Label panel1_private_keys_label = new Label();
+            custom_controls.initialize_advanced_private_keys_label_header(panel1_private_keys_label);
+            TextBox panel1_private_keys_filedialog_textbox = new TextBox();
+            custom_controls.initialize_advanced_private_keys_textbox_filedialog(panel1_private_keys_filedialog_textbox);
+            Label panel1_private_keys_keytype_label = new Label();
+            custom_controls.initialize_advanced_private_keys_label_keytype(panel1_private_keys_keytype_label);
+            ComboBox panel1_private_keys_keytype_combobox = new ComboBox();
+            custom_controls.initialize_advanced_private_keys_keytype_combobox(panel1_private_keys_keytype_combobox, Combobox_SelectedIndexChanged);
+            Label panel1_private_keys_group_label = new Label();
+            custom_controls.initialize_advanced_private_keys_label_group(panel1_private_keys_group_label);
+            ComboBox panel1_private_keys_group_combobox = new ComboBox();
+            custom_controls.initialize_advanced_private_keys_group_combobox(panel1_private_keys_group_combobox, Combobox_SelectedIndexChanged);
+            Label panel1_private_keys_divider = new Label();
+            custom_controls.initialize_advanced_private_keys_divider(panel1_private_keys_divider);
+
 
             Label panel2_passwords_header = new Label();
             custom_controls.initialize_advanced_passwords_label_header(panel2_passwords_header);
@@ -547,12 +578,64 @@ namespace PuTTY_Storm
             Set_new_secret_button.UseVisualStyleBackColor = true;
             Set_new_secret_button.Click += new EventHandler(Set_New_Secret_Click);
 
+            Button Select_private_key_button = new Button();
+            Select_private_key_button.Font = new Font("Calibri", 9);
+            Select_private_key_button.Location = new Point(5, 300);
+            Select_private_key_button.Size = new Size(60, 25);
+            Select_private_key_button.Text = "Select";
+            Select_private_key_button.Name = "select_private_key";
+            Select_private_key_button.UseVisualStyleBackColor = true;
+            Select_private_key_button.Click += new EventHandler(Select_private_key_Click);
+
+            Button Add_private_key_button = new Button();
+            Add_private_key_button.Font = new Font("Calibri", 10);
+            Add_private_key_button.Location = new Point(190, 380);
+            Add_private_key_button.Size = new Size(60, 25);
+            Add_private_key_button.Text = "Add";
+            Add_private_key_button.Name = "add_private_key";
+            Add_private_key_button.UseVisualStyleBackColor = true;
+            Add_private_key_button.Click += new EventHandler(Add_private_key_Click);
+
+            Button Save_private_key_button = new Button();
+            Save_private_key_button.Font = new Font("Calibri", 10);
+            Save_private_key_button.Location = new Point(260, 380);
+            Save_private_key_button.Size = new Size(60, 25);
+            Save_private_key_button.Text = "Save";
+            Save_private_key_button.Name = "save_private_key";
+            Save_private_key_button.UseVisualStyleBackColor = true;
+            Save_private_key_button.Click += new EventHandler(Save_private_key_Click);
+
+            section_panel = new Panel();
+            section_panel.Size = new Size(355, 140);
+            section_panel.BackColor = Color.SlateGray;
+            section_panel.Location = new Point(3, 100);
+            section_panel.AutoScroll = true;
+
+            section_panel_private_keys = new Panel();
+            section_panel_private_keys.Size = new Size(355, 130);
+            section_panel_private_keys.BackColor = Color.SlateGray;
+            section_panel_private_keys.Location = new Point(3, 430);
+            section_panel_private_keys.AutoScroll = true;
+
             splitcontainer1.Panel1.Controls.Add(panel1_add_groups_header);
             splitcontainer1.Panel1.Controls.Add(panel1_add_group);
             splitcontainer1.Panel1.Controls.Add(panel1_add_group_textbox);
             splitcontainer1.Panel1.Controls.Add(Add_Group_button);
             splitcontainer1.Panel1.Controls.Add(horizontal_divider);
             splitcontainer1.Panel1.Controls.Add(Save_groups_button);
+            splitcontainer1.Panel1.Controls.Add(section_panel);
+
+            splitcontainer1.Panel1.Controls.Add(panel1_private_keys_label);
+            splitcontainer1.Panel1.Controls.Add(panel1_private_keys_filedialog_textbox);
+            splitcontainer1.Panel1.Controls.Add(panel1_private_keys_keytype_label);
+            splitcontainer1.Panel1.Controls.Add(panel1_private_keys_keytype_combobox);
+            splitcontainer1.Panel1.Controls.Add(panel1_private_keys_group_label);
+            splitcontainer1.Panel1.Controls.Add(panel1_private_keys_group_combobox);
+            splitcontainer1.Panel1.Controls.Add(Select_private_key_button);
+            splitcontainer1.Panel1.Controls.Add(Add_private_key_button);
+            splitcontainer1.Panel1.Controls.Add(Save_private_key_button);
+            splitcontainer1.Panel1.Controls.Add(panel1_private_keys_divider);
+            splitcontainer1.Panel1.Controls.Add(section_panel_private_keys);
 
             splitcontainer1.Panel2.Controls.Add(panel2_passwords_header);
             splitcontainer1.Panel2.Controls.Add(panel2_new_password_label);
@@ -578,8 +661,7 @@ namespace PuTTY_Storm
             if (File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
             "PuTTYStorm", "groups.xml")))
             {
-                GetSavedSessions saved_groups = new GetSavedSessions();
-                SavedGroupInfo groups = saved_groups.get_Groups();
+                SavedGroupInfo groups = saved_data.get_Groups();
 
                 if (groups.names.Count != 0)
                 {
@@ -589,6 +671,99 @@ namespace PuTTY_Storm
                     }
                 }
             }
+
+            // Load saved private keys in privatekeys.xml configuration file.
+            if (File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+            "PuTTYStorm", "privatekeys.xml")))
+            {
+                SavedPrivatekeysInfo privatekeys = saved_data.get_PrivateKeys();
+
+                if (privatekeys.names.Count != 0)
+                {
+                    for (int name = 0; name < privatekeys.names.Count; name++)
+                    {
+                        Create_New_PrivateKey_Panel(privatekeys.names[name], privatekeys.types[name], privatekeys.groups[name]);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// FileDialog button for private key selecting.
+        /// </summary>
+        private void Select_private_key_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog1 = new OpenFileDialog();
+            openFileDialog1.ShowDialog();
+            string filePath = openFileDialog1.FileName;
+
+            Control[] panel1_private_keys_textbox_filedialog = splitcontainer1.Panel1.Controls.Find("private_keys_textbox_filedialog", true);
+            panel1_private_keys_textbox_filedialog[0].Text = filePath;
+
+        }
+
+        /// <summary>
+        /// Add selected private key configuration to the list of private keys
+        /// - calls Create_New_PrivateKey_Panel().
+        /// </summary>
+        private void Add_private_key_Click(object sender, EventArgs e)
+        {
+            string private_key;
+            Control[] panel1_private_keys_textbox_filedialog = splitcontainer1.Panel1.Controls.Find("private_keys_textbox_filedialog", true);
+            private_key = panel1_private_keys_textbox_filedialog[0].Text;
+
+            string pk_type;
+            Control[] panel1_private_keys_keytype_combobox = splitcontainer1.Panel1.Controls.Find("private_keys_keytype_combobox", true);
+            pk_type = panel1_private_keys_keytype_combobox[0].Text;
+
+            string pk_group;
+            Control[] panel1_private_keys_group_combobox = splitcontainer1.Panel1.Controls.Find("private_keys_group_combobox", true);
+            pk_group = panel1_private_keys_group_combobox[0].Text;
+
+            if (private_key == "")
+            {
+                MessageBox.Show("Select private key!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                return;
+            }
+
+            if (pk_type == "")
+            {
+                MessageBox.Show("Select private key type!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                return;
+            }
+
+            if (pk_group == "")
+            {
+                MessageBox.Show("Select private key group!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                return;
+            }
+
+            Create_New_PrivateKey_Panel(private_key, pk_type, pk_group);
+            panel1_private_keys_textbox_filedialog[0].Text = null;
+            panel1_private_keys_keytype_combobox[0].Text = null;
+            panel1_private_keys_group_combobox[0].Text = null;
+        }
+
+        /// <summary>
+        /// Save private keys configuration to the privatekeys.xml configuration file.
+        /// </summary>
+        private void Save_private_key_Click(object sender, EventArgs e)
+        {
+            SaveSessions sessions = new SaveSessions();
+            sessions.Save_PrivateKeys(PrivateKeys);
+            MessageBox.Show("PrivateKeys Saved To The Config!", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            IsPasswordLess.DetermineIfSessionGroupIsPasswordLess(containers_list);
+        }
+
+        /// <summary>
+        /// Check which groups in created sessions containers (GroupBoxes) are part
+        /// of private keys setup. If group is part of PK setup change properties 
+        /// of password textboxes.
+        /// </summary>
+        private void combobox_PKGroupChanged(object sender, EventArgs e)
+        {
+            IsPasswordLess.DetermineIfSessionGroupIsPasswordLess(containers_list);
         }
 
         /// <summary>
@@ -622,7 +797,7 @@ namespace PuTTY_Storm
                 sessions.Save_sessions(containers_list);
 
                 MessageBox.Show("Login Secret Changed Successfully! All Changes Saved Successfully!",
-                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 panel2_main_login_old_passwd_textbox[0].Text = null;
                 panel2_main_login_new_passwd_textbox[0].Text = null;
@@ -660,7 +835,7 @@ namespace PuTTY_Storm
                 }
                 sessions.Save_sessions(containers_list);
                 MessageBox.Show("New Password For Group " + new_password_combobox_group[0].Text + " Set And Saved!",
-                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
             } else
             {
                 MessageBox.Show("Enter The New Password With Group First!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -680,6 +855,7 @@ namespace PuTTY_Storm
             MessageBox.Show("Groups Saved To The Config!", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
             custom_controls.set_combobox_groups(containers_list);
             custom_controls.set_passwords_combobox_groups(splitcontainer1);
+            custom_controls.set_pk_combobox_groups(splitcontainer1);
         }
 
         /// <summary>
@@ -712,15 +888,15 @@ namespace PuTTY_Storm
 
             if (Groups.Count == 0)
             {
-                groups_panel.Location = new Point(0, 100);
+                groups_panel.Location = new Point(0, 0);
             }
             else
             {
                 // Get the Y coordinate of last GroupBox container
                 Point locationOnForm = Groups[Rows - 1].FindForm().PointToClient(Groups[Rows - 1].
                     Parent.PointToScreen(Groups[Rows - 1].Location));
-                int new_groups_panel_location = locationOnForm.Y + 40;
-
+                int new_groups_panel_location = locationOnForm.Y - 70;
+               
                 groups_panel.Location = new Point(0, new_groups_panel_location);
             }
 
@@ -740,10 +916,116 @@ namespace PuTTY_Storm
 
             groups_panel.Controls.Add(group_name);
             groups_panel.Controls.Add(Remove_Group_Button);
-            splitcontainer1.Panel1.Controls.Add(groups_panel);
+
+            section_panel.Controls.Add(groups_panel);
+
             Groups.Add(groups_panel);
 
             Rows++;
+        }
+
+        /// <summary>
+        /// Load/Initialize new private keys panel withing the AdvancedForm. When clicking on Add private key button,
+        /// add new private keys name, type and group one by one with Remove button next to each private key setup information.
+        /// </summary>
+        private void Create_New_PrivateKey_Panel(string pk, string type, string group)
+        {
+            Panel pk_panel = new Panel();
+            pk_panel.Size = new Size(335, 100);
+
+            if (PrivateKeys.Count == 0)
+            {
+                pk_panel.Location = new Point(0, 0);
+            } else
+            {
+                // Get the Y coordinate of last GroupBox container
+                Point locationOnForm = PrivateKeys[PK_Rows - 1].FindForm().PointToClient(PrivateKeys[PK_Rows - 1].
+                    Parent.PointToScreen(PrivateKeys[PK_Rows - 1].Location));
+                int new_pks_panel_location = locationOnForm.Y - 350;
+
+                pk_panel.Location = new Point(0, new_pks_panel_location);
+            }
+
+            Button Remove_PK_Button = new Button();
+            custom_controls.initialize_advanced_remove_pk_button(Remove_PK_Button, ButtonClickPKEvent);
+            Remove_PK_Button.Tag = PK_Rows;
+
+            Label pk_name = new Label();
+            pk_name.UseMnemonic = false;
+            pk_name.Text = pk;
+            pk_name.Font = new Font("Calibri", 9);
+            pk_name.Location = new Point(3, 40);
+            pk_name.Size = new Size(250, 80);
+            pk_name.ForeColor = Color.White;
+            pk_name.Name = "pk_name_label";
+
+            Label pk_group = new Label();
+            pk_group.UseMnemonic = false;
+            pk_group.Text = "Group: " + group;
+            pk_group.Font = new Font("Calibri", 9);
+            pk_group.Location = new Point(3, 20);
+            pk_group.Size = new Size(125, 20);
+            pk_group.ForeColor = Color.White;
+            pk_group.Name = "pk_group_label";
+
+            Label pk_type = new Label();
+            pk_type.UseMnemonic = false;
+            pk_type.Text = "Type: " + type;
+            pk_type.Font = new Font("Calibri", 9);
+            pk_type.Location = new Point(128, 20);
+            pk_type.Size = new Size(125, 20);
+            pk_type.ForeColor = Color.White;
+            pk_type.Name = "pk_type_label";
+
+            pk_panel.Controls.Add(pk_group);
+            pk_panel.Controls.Add(pk_type);
+            pk_panel.Controls.Add(pk_name);
+            pk_panel.Controls.Add(Remove_PK_Button);
+
+            section_panel_private_keys.Controls.Add(pk_panel);
+
+            PrivateKeys.Add(pk_panel);
+
+            PK_Rows++;
+        }
+
+        /// <summary>
+        /// Handle removing of private keys (AdvancedForm).
+        /// </summary>
+        private void ButtonClickPKEvent(object sender, EventArgs e)
+        {
+            Button button = sender as Button;
+            int tag = (int)button.Tag;
+
+            if (button != null)
+            {
+                section_panel_private_keys.Controls.Remove(PrivateKeys[tag]);
+                PrivateKeys.RemoveAt(tag);
+
+                int r = 0;
+                foreach (Panel panel in PrivateKeys)
+                {
+                    foreach (Control control in panel.Controls)
+                    {
+                        if (control.Name == "Remove_PK_button")
+                        {
+                            control.Tag = r;
+                            r++;
+                        }
+                    }
+                }
+
+                for (int g = tag; g < PrivateKeys.Count; g++)
+                {
+                    Point locationOnForm = PrivateKeys[g].FindForm().PointToClient(PrivateKeys[g].
+                        Parent.PointToScreen(PrivateKeys[g].Location));
+                    int new_pk_panel_location = locationOnForm.Y - 510;
+
+                    Panel temp = PrivateKeys[g];
+                    temp.Location = new Point(0, new_pk_panel_location);
+                }
+                PK_Rows--;
+            }
         }
 
         /// <summary>
@@ -756,7 +1038,7 @@ namespace PuTTY_Storm
 
             if (button != null)
             {
-                splitcontainer1.Panel1.Controls.Remove(Groups[tag]);
+                section_panel.Controls.Remove(Groups[tag]);
                 Groups.RemoveAt(tag);
 
                 int r = 0;
@@ -776,7 +1058,7 @@ namespace PuTTY_Storm
                 {
                     Point locationOnForm = Groups[g].FindForm().PointToClient(Groups[g].
                         Parent.PointToScreen(Groups[g].Location));
-                    int new_groups_panel_location = locationOnForm.Y - 45;
+                    int new_groups_panel_location = locationOnForm.Y - 131;
 
                     Panel temp = Groups[g];
                     temp.Location = new Point(0, new_groups_panel_location);
@@ -789,9 +1071,16 @@ namespace PuTTY_Storm
         {
             AdvancedForm = null;
             Rows = 0;
+            PK_Rows = 0;
+
             for (int i = 0; i < Groups.Count; i++)
             {
                 Groups.RemoveAt(i);
+            }
+
+            for (int i = 0; i < PrivateKeys.Count; i++)
+            {
+                PrivateKeys.RemoveAt(i);
             }
         }
 
@@ -883,7 +1172,7 @@ namespace PuTTY_Storm
             {
                 MessageBox.Show("Select Path To Putty.exe First!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
                 return;
-            }
+            }           
 
             panelsList = new List<Panel>();
             my_ProcessInfo_List_TC_1 = new List<ProcessInfo>();
@@ -910,6 +1199,8 @@ namespace PuTTY_Storm
                 string hostname = null;
                 string username = null;
                 string password = null;
+                string group = null;
+                string PrivateKey = null;
                 int c_count = 0;
 
                 foreach (Control control in containers_list[c].Controls)
@@ -926,12 +1217,53 @@ namespace PuTTY_Storm
                     {
                         password = control.Text;
                     }
-
+                    if (control.Name == "combobox")
+                    {
+                        group = control.Text;
+                    }
                 }
 
                 foreach (NumericUpDown ctlNumeric in containers_list[c].Controls.OfType<NumericUpDown>())
                 {
                     c_count = (int)ctlNumeric.Value;
+                }
+
+                // In case we are going to use private key to login - check if it exists first!
+                // And also check if group in this session is part of private keys setup.
+                // If yes, then use passwordless login.
+                if (File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    "PuTTYStorm", "privatekeys.xml")))
+                {
+                    SavedPrivatekeysInfo privatekeys = saved_data.get_PrivateKeys();
+                    if (IsPasswordLess.IsGroupBetweenPrivateKeys(privatekeys, group))
+                    {
+                        Console.WriteLine("#### GROUP CHECK IN LOGIN: " + group);
+                        PrivateKey = IsPasswordLess.GetPPKPrivateKeyForGroup(privatekeys, group);
+
+                        if (!File.Exists(PrivateKey))
+                        {
+                            if (PrivateKey == null || PrivateKey == "")
+                            {
+                                PrivateKey = "of type PPK or its group";
+                            }
+                            MessageBox.Show("You are going to use passwordless login, " + Environment.NewLine +
+                                "however private key " + PrivateKey + " doesn't exists!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+
+                            this.Show();
+                            tabcontrol1.Dispose();
+                            tabcontrol2.Dispose();
+                            SessionsForm.Dispose();
+                            panelsList = null;
+                            my_ProcessInfo_List_TC_1 = null;
+                            my_ProcessInfo_List_TC_2 = null;
+                            now = null;
+                            SessionsSplitContainer.Dispose();
+
+                            return;
+                        }
+
+                        password = null;
+                    }
                 }
 
                 Regex pattern = new Regex(@"^.*?(?=\.)");
@@ -949,7 +1281,7 @@ namespace PuTTY_Storm
                     panels.AutoSize = true;
                     panels.Dock = DockStyle.Fill;
                     tabpage.Controls.Add(panels);
-                    my_ProcessInfo_List_TC_1.Add(now.start_putty(panels, i, process, hostname, username, password, mus.putty_path, SessionsSplitContainer));
+                    my_ProcessInfo_List_TC_1.Add(now.start_putty(panels, i, process, hostname, username, password, mus.putty_path, SessionsSplitContainer, PrivateKey));
                     tabcontrol1.TabPages.Add(tabpage);
                 }
             }
@@ -1168,7 +1500,36 @@ namespace PuTTY_Storm
                         }
                         if (control.Name == "new_connect_password_textbox")
                         {
-                            control.Text = password;
+                            TextBox password_txtbox = (TextBox)control;
+
+                            // In case session group is part of private keys setup,
+                            // change new_connect_password_textbox attributes.
+                            if (File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                                "PuTTYStorm", "privatekeys.xml")))
+                            {
+                                SavedPrivatekeysInfo privatekeys = saved_data.get_PrivateKeys();
+                                string hostname_group = IsPasswordLess.GetGroupForPwdLessHostname(containers_list, hostname);
+
+                                if (IsPasswordLess.IsGroupBetweenPrivateKeys(privatekeys, hostname_group))
+                                {
+                                    password_txtbox.Text = "PWDLESS";
+                                    password_txtbox.ReadOnly = true;
+                                    password_txtbox.BackColor = Color.White;
+                                    password_txtbox.ForeColor = Color.SlateGray;
+                                    password_txtbox.UseSystemPasswordChar = false;
+                                }
+                                else
+                                {
+                                    password_txtbox.Text = password;
+                                    password_txtbox.UseSystemPasswordChar = true;
+                                    password_txtbox.ForeColor = Color.Black;
+                                    password_txtbox.ReadOnly = false;
+                                    password_txtbox.BackColor = Color.White;
+                                }
+                            } else
+                            {
+                                password_txtbox.Text = password;
+                            }                                
                         }
                     }
                 }
@@ -1228,6 +1589,8 @@ namespace PuTTY_Storm
             string new_hostname = null;
             string new_username = null;
             string new_password = null;
+            string new_group = null;
+            string PrivateKey = null;
             int new_c_count = 0;
 
             foreach (Control control in new_connect_panel.Controls)
@@ -1249,7 +1612,7 @@ namespace PuTTY_Storm
             foreach (NumericUpDown ctlNumeric in new_connect_panel.Controls.OfType<NumericUpDown>())
             {
                 new_c_count = (int)ctlNumeric.Value;
-            }
+            }           
 
             Regex pattern = new Regex(@"^.*?(?=\.)");
             Match match = pattern.Match(new_hostname);
@@ -1259,6 +1622,32 @@ namespace PuTTY_Storm
             {
                 MessageBox.Show("Host & Username Must Be Defined!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
                 return;
+            }
+
+            // In case we are going to use private key to login - check if it exists first!
+            // And also check if group in this session is part of private keys setup.
+            // If yes, then use passwordless login.
+            if (File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+            "PuTTYStorm", "privatekeys.xml")))
+            {
+                SavedPrivatekeysInfo privatekeys = saved_data.get_PrivateKeys();
+                new_group = IsPasswordLess.GetGroupForPwdLessHostname(containers_list, new_hostname);
+
+                if (IsPasswordLess.IsGroupBetweenPrivateKeys(privatekeys, new_group))
+                {
+                    Console.WriteLine("#### GROUP CHECK IN NEW CONNECT LOGIN: " + new_group);
+                    PrivateKey = IsPasswordLess.GetPPKPrivateKeyForGroup(privatekeys, new_group);
+
+                    if (!File.Exists(PrivateKey))
+                    {
+                        MessageBox.Show("You are going to use passwordless login, " + Environment.NewLine +
+                            "however private key " + PrivateKey + " doesn't exists!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+
+                        return;
+                    }
+
+                    new_password = null;
+                }
             }
 
             for (int i = 0; i < new_c_count; i++)
@@ -1272,7 +1661,7 @@ namespace PuTTY_Storm
                 panels.AutoSize = true;
                 panels.Dock = DockStyle.Fill;
                 tabpage.Controls.Add(panels);
-                my_ProcessInfo_List_TC_1.Add(now.start_putty(panels, i, process, new_hostname, new_username, new_password, mus.putty_path, SessionsSplitContainer));
+                my_ProcessInfo_List_TC_1.Add(now.start_putty(panels, i, process, new_hostname, new_username, new_password, mus.putty_path, SessionsSplitContainer, PrivateKey));
                 tabcontrol1.TabPages.Add(tabpage);
             }
 

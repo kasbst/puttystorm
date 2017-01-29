@@ -110,6 +110,7 @@
     </Compile>
     <Compile Include="NativeMethods.cs" />
     <Compile Include="OpenPuTTY.cs" />
+    <Compile Include="PasswordLess.cs" />
     <Compile Include="SaveSessions.cs" />
     <Compile Include="SessionsForm.cs">
       <SubType>Form</SubType>
