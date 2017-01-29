@@ -10,6 +10,7 @@ Lightweight tabbed window manager for putty sessions
  - Search already saved sessions
  - Vertical split screen (Activate - CTRL + F1 | Deactivate - CTRL + F2)
  - SFTP Manager with fast access (Activate CTRL + F3). It connects to the currently selected tab (session) and uploads/downloads files to/from user's home directory
+ - Passwordless login using PPK and OpenSSH private/public keys (Note: currently SFTP Manager supports only OpenSSH private/public keys, so there is a need to have both PPK - for putty.exe and OpenSSH - for SFTP manager keys added. Will be changed in future).
  
 ### ToDo
  - Global HotKeys Manager
