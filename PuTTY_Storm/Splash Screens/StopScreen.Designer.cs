@@ -91,6 +91,7 @@
             this.MaximumSize = new System.Drawing.Size(576, 360);
             this.MinimumSize = new System.Drawing.Size(576, 360);
             this.Name = "StopScreen";
+            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "StopScreen";
             ((System.ComponentModel.ISupportInitialize)(this.puttystormLogo)).EndInit();
