@@ -204,6 +204,7 @@ namespace PuTTY_Storm
         {
             Thread t = new Thread(new ThreadStart(StartScreen));
             t.Start();
+            Thread.Sleep(2000);
 
             this.Visible = false;
 
@@ -470,10 +471,11 @@ namespace PuTTY_Storm
         /// </summary>
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
+            this.Visible = false;
+
             Thread t = new Thread(new ThreadStart(StopScreen));
             t.Start();
-
-            this.Visible = false;
+            Thread.Sleep(2000);
 
             SaveSessions sessions = new SaveSessions();
             sessions.Save_sessions(containers_list);
