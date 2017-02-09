@@ -84,14 +84,14 @@ namespace PuTTY_Storm
             label.BackColor = Color.SlateGray;
             label.ForeColor = Color.White;
             label.Text = "Hostname or IP Address";
-            label.Location = new Point(61, 24);
+            label.Location = new Point(63, 24);
             label.Size = new Size(278, 33);
         }
 
         public void initialize_hostname_textbox (TextBox textbox)
         {
             textbox.Font = new Font("Calibri", 12);
-            textbox.Location = new Point(67, 60);
+            textbox.Location = new Point(70, 60);
             textbox.Size = new Size(260, 27);
             textbox.Name = "hostname_textbox";
         }

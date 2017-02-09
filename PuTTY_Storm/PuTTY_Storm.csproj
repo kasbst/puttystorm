@@ -130,6 +130,18 @@
     <Compile Include="SFTPManager.Designer.cs">
       <DependentUpon>SFTPManager.cs</DependentUpon>
     </Compile>
+    <Compile Include="Splash Screens\StartScreen.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Splash Screens\StartScreen.Designer.cs">
+      <DependentUpon>StartScreen.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Splash Screens\StopScreen.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Splash Screens\StopScreen.Designer.cs">
+      <DependentUpon>StopScreen.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -150,6 +162,12 @@
     </Compile>
     <EmbeddedResource Include="SFTPManager.resx">
       <DependentUpon>SFTPManager.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Splash Screens\StartScreen.resx">
+      <DependentUpon>StartScreen.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Splash Screens\StopScreen.resx">
+      <DependentUpon>StopScreen.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

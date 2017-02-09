@@ -33,6 +33,7 @@ using Utilities.Windows.Forms;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Security.Cryptography;
+using System.Threading;
 
 namespace PuTTY_Storm
 {
@@ -49,6 +50,16 @@ namespace PuTTY_Storm
             this.MouseWheel += new MouseEventHandler(MainForm_MouseWheel);
             IsPasswordLess = new PasswordLess();
             saved_data = new GetSavedSessions();
+        }
+
+        private void StartScreen ()
+        {
+            Application.Run(new Splash_Screens.StartScreen());
+        }
+
+        private void StopScreen ()
+        {
+            Application.Run(new Splash_Screens.StopScreen());
         }
 
         /// <summary>
@@ -191,6 +202,11 @@ namespace PuTTY_Storm
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+            Thread t = new Thread(new ThreadStart(StartScreen));
+            t.Start();
+
+            this.Visible = false;
+
             containers_list = new List<GroupBox>();
             mus = new MyUserSettings();
 
@@ -300,6 +316,12 @@ namespace PuTTY_Storm
                         // the next one under last one.
                         else
                         {
+                            // For now we allow only 120 sessions
+                            if (i == 120)
+                            {
+                                break;
+                            }
+
                             // Get the Y coordinate of last GroupBox container
                             Point locationOnForm = containers_list[i - 1].FindForm().PointToClient(containers_list[i - 1].
                                 Parent.PointToScreen(containers_list[i - 1].Location));
@@ -369,6 +391,17 @@ namespace PuTTY_Storm
             // of private keys setup. If group is part of PK setup change properties 
             // of password textboxes.
             IsPasswordLess.DetermineIfSessionGroupIsPasswordLess(containers_list);
+
+            this.Visible = true;
+            t.Abort();
+
+            // Throw a warning message if there is more than 120 session in config. I didn't put the checks
+            // to the sessions save/load code as this restriction will be removed!
+            if (i == 120)
+            {
+                MessageBox.Show("Only first 120 sessions allowed! More sessions will not be rendered/loaded! " + 
+                    "Please change your config!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
         /// <summary>
@@ -437,8 +470,15 @@ namespace PuTTY_Storm
         /// </summary>
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
+            Thread t = new Thread(new ThreadStart(StopScreen));
+            t.Start();
+
+            this.Visible = false;
+
             SaveSessions sessions = new SaveSessions();
             sessions.Save_sessions(containers_list);
+
+            t.Abort();
         }
 
         /// <summary>
@@ -1123,6 +1163,12 @@ namespace PuTTY_Storm
         /// </summary>
         private void AddEntry_Click(object sender, EventArgs e)
         {
+            if (i == 120)
+            {
+                MessageBox.Show("Maximum allowed sessions!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                return;
+            }
+
             custom_controls = new SetControls();
 
             // Get the Y coordinate of last GroupBox container
