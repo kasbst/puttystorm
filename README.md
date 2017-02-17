@@ -13,6 +13,8 @@ Lightweight tabbed window manager for putty sessions
  - Passwordless login using PPK and OpenSSH private/public keys (Note: currently SFTP Manager supports only OpenSSH private/public keys, so there is a need to have both PPK - for putty.exe and OpenSSH - for SFTP manager keys added. Will be changed in future).
  
 ### ToDo
+ - Configuration management plugin with ability to execute Bash scripts and Kotarator support
+ - Kotarator - an experimental language with experimental "pseudo-compiler"
  - Global HotKeys Manager
  - Security improvements (encryption) NOTE: This is an early test version - use at your own risk!
  
