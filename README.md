@@ -5,15 +5,16 @@ Lightweight tabbed window manager for putty sessions
  - Open multiple sessions with one click
  - Draggable TabControl
  - Fast session tabs management (right click on session tab for quick close)
- - Group sessions to custom defined groups for easy sessions password management
+ - Group sessions to custom defined groups and sub-groups for easy sessions password management, Kotarak management and servers TreeView management within Sessions Form
  - Secure Login (hashed SHA256) and encrypted sesssions passwords (secured AES string encryption with random IV)
  - Search already saved sessions
  - Vertical split screen (Activate - CTRL + F1 | Deactivate - CTRL + F2)
  - SFTP Manager with fast access (Activate CTRL + F3). It connects to the currently selected tab (session) and uploads/downloads files to/from user's home directory
  - Passwordless login using PPK and OpenSSH private/public keys (Note: currently SFTP Manager supports only OpenSSH private/public keys, so there is a need to have both PPK - for putty.exe and OpenSSH - for SFTP manager keys added. Will be changed in future).
+ - Kotarak configuration management plugin added (activate with CTRL + F4). Currently Bash scripts and Shell commands can be executed. Managing and deploying config files will be added in the next release.
  
 ### ToDo
- - Configuration management plugin with ability to execute Bash scripts and Kotarator support
+ - Managing and deploying config files with Kotarak
  - Kotarator - an experimental language with experimental "pseudo-compiler"
  - Global HotKeys Manager
  - Security improvements (encryption) NOTE: This is an early test version - use at your own risk!
@@ -23,7 +24,7 @@ Licensed under a liberal MIT/X11 License, which allows this program and source c
 
 ### System Requirements
   * A PC running Windows (Windows 7, Windows 8, Windows 10)
-  * The Microsoft .NET Framework 4.0 or newer
+  * The Microsoft .NET Framework 4.5 or newer
   * 32 and 64 bit operating systems are supported
   * The [PuTTY](http://www.chiark.greenend.org.uk/~sgtatham/putty/) SSH Client
   
