@@ -33,3 +33,18 @@ Available for download at https://github.com/kasbst/puttystorm/releases/latest
 
 ### Preview
 
+![Alt text](/img/LoginForm.png?raw=true "Login Form")
+
+![Alt text](/img/MainForm.png?raw=true "Main Form")
+
+![Alt text](/img/AdvancedForm.png?raw=true "Advanced Form")
+
+![Alt text](/img/SessionsForm.png?raw=true "Sessions Form")
+
+![Alt text](/img/SplitScreen.png?raw=true "Split Screen")
+
+![Alt text](/img/ManageSessions.png?raw=true "Manage Sessions")
+
+![Alt text](/img/Kotarak.png?raw=true "Kotarak")
+
+![Alt text](/img/SFTPManager.png?raw=true "SFTP Manager")
