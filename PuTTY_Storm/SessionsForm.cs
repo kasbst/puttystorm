@@ -49,6 +49,7 @@ namespace PuTTY_Storm
         const int MYACTION_HOTKEY_ID3 = 3;
         const int MYACTION_HOTKEY_ID4 = 4;
         const int MYACTION_HOTKEY_ID5 = 5;
+        const int MYACTION_HOTKEY_ID6 = 6;
 
         /// <summary>
         /// Initialize PuTTY STORM sessions form (Form2) and register hotkeys for
@@ -76,6 +77,8 @@ namespace PuTTY_Storm
             NativeMethods.RegisterHotKey(this.Handle, MYACTION_HOTKEY_ID4, 2, (int)Keys.F2);
 
             NativeMethods.RegisterHotKey(this.Handle, MYACTION_HOTKEY_ID5, 2, (int)Keys.F3);
+
+            NativeMethods.RegisterHotKey(this.Handle, MYACTION_HOTKEY_ID6, 2, (int)Keys.F4);
 
             WindowEvents = new GlobalWindowEvents();
             SessionsForm.WindowEvents.SystemSwitch += new EventHandler<GlobalWindowEventArgs>(OnSystemSwitch);
@@ -114,7 +117,7 @@ namespace PuTTY_Storm
         /// </summary>
         /// 
         protected override void WndProc(ref Message m)
-        {          
+        {
             base.WndProc(ref m);
             if (my_ProcessInfo_List_TC_1.Count > 0)
             {
@@ -187,12 +190,14 @@ namespace PuTTY_Storm
                         Console.WriteLine("SFTP Manager started without splitscreen enabled!");
                         var credentials = GetSFTPCredentials(containers_list, tabcontrol1, null);
                         StartSFTPManager(credentials);
-                    } else
+                    }
+                    else
                     {
                         MessageBox.Show("Unable to start SFTP Manager - No active sessions!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
                         return;
                     }
-                } else
+                }
+                else
                 {
                     Console.WriteLine("SFTP Manager started but split screen is enabled, we have to decide which server to use!");
 
@@ -203,12 +208,14 @@ namespace PuTTY_Storm
                             Console.WriteLine("Split screen enabled but tabcontrol2 is empty");
                             var credentials = GetSFTPCredentials(containers_list, tabcontrol1, null);
                             StartSFTPManager(credentials);
-                        } else
+                        }
+                        else
                         {
                             MessageBox.Show("Unable to start SFTP Manager - No active sessions!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
                             return;
                         }
-                    } else
+                    }
+                    else
                     {
                         Console.WriteLine("Split screen enabled and tabcontrol2 contains active sessions");
 
@@ -226,6 +233,12 @@ namespace PuTTY_Storm
                         }
                     }
                 }
+            }
+
+            // Handle Kotarak plugin activation
+            if (m.Msg == 0x0312 && m.WParam.ToInt32() == MYACTION_HOTKEY_ID6)
+            {
+                StartKotarakPlugin();
             }
         }
 
@@ -379,6 +392,17 @@ namespace PuTTY_Storm
             StartSFTPManager(credentials);
 
             SelectConnectionForm.Dispose();
+        }
+
+        /// <summary>
+        /// Start Kotarak configuration management plugin Form
+        /// </summary>
+        private void StartKotarakPlugin ()
+        {
+            KotarakMainForm KotarakPlugin = new KotarakMainForm(containers_list);
+            KotarakPlugin.Name = "kotarak";
+            KotarakPlugin.Text = GlobalVar.VERSION + " - Kotarak - Configuration Management";
+            KotarakPlugin.Show();
         }
 
         #region Global HotKeys

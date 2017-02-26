@@ -75,6 +75,10 @@
       <HintPath>..\packages\SSH.NET.2016.0.0\lib\net40\Renci.SshNet.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="ScintillaNET, Version=3.6.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\jacobslusser.ScintillaNET.3.6.3\lib\net40\ScintillaNET.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -94,6 +98,15 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="GetSavedSessions.cs" />
+    <Compile Include="Kotarak\BashLexer.cs" />
+    <Compile Include="Kotarak\EditorInit.cs" />
+    <Compile Include="Kotarak\KotarakMainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Kotarak\KotarakMainForm.Designer.cs">
+      <DependentUpon>KotarakMainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Kotarak\Run.cs" />
     <Compile Include="LoginForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -142,6 +155,9 @@
     <Compile Include="Splash Screens\StopScreen.Designer.cs">
       <DependentUpon>StopScreen.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Kotarak\KotarakMainForm.resx">
+      <DependentUpon>KotarakMainForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>

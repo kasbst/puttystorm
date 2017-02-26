@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("PuTTYStorm")]
 [assembly: AssemblyProduct("PuTTY_Storm")]
-[assembly: AssemblyCopyright("Copyright © 2016 Karol Sebesta")]
+[assembly: AssemblyCopyright("Copyright © 2017 Karol Sebesta")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

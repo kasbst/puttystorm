@@ -37,6 +37,7 @@ namespace PuTTY_Storm
         public List<string> passwords = new List<string>();
         public List<string> counts = new List<string>();
         public List<string> groups = new List<string>();
+        public List<string> sub_groups = new List<string>();
     }
 
     public class SavedGroupInfo
@@ -117,6 +118,19 @@ namespace PuTTY_Storm
                                         else
                                         {
                                             xml_connection_info.groups.Add(reader.Value);
+                                        }
+                                    }
+                                    break;
+                                case "subgroup":
+                                    if (reader.Read())
+                                    {
+                                        if (reader.Value == " ")
+                                        {
+                                            xml_connection_info.sub_groups.Add(null);
+                                        }
+                                        else
+                                        {
+                                            xml_connection_info.sub_groups.Add(reader.Value);
                                         }
                                     }
                                     break;

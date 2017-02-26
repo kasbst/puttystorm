@@ -157,10 +157,12 @@ namespace PuTTY_Storm
                 {
                     combobox.Items.Add(name);
                 }
+
+                combobox.DropDownWidth = DropDownWidth(combobox);
             }
-            combobox.Font = new Font("Calibri", 11);
-            combobox.Location = new Point(18, 180);
-            combobox.Size = new Size(90, 32);
+            combobox.Font = new Font("Calibri", 10);
+            combobox.Location = new Point(15, 182);
+            combobox.Size = new Size(120, 32);
             combobox.Name = "combobox";
             combobox.DropDownStyle = ComboBoxStyle.DropDownList;
             combobox.SelectedIndexChanged += new EventHandler(combobox_SelectedIndexChanged);
@@ -168,11 +170,37 @@ namespace PuTTY_Storm
 
         }
 
+        public void initialize_sub_groups_combobox(ComboBox combobox, EventHandler combobox_SelectedIndexChanged)
+        {
+            if (File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+            "PuTTYStorm", "groups.xml")))
+            {
+                GetSavedSessions saved_groups = new GetSavedSessions();
+                SavedGroupInfo groups = saved_groups.get_Groups();
+
+                combobox.Items.Add("");
+
+                foreach (string name in groups.names)
+                {
+                    combobox.Items.Add(name);
+                }
+
+                combobox.DropDownWidth = DropDownWidth(combobox);
+            }
+            combobox.Font = new Font("Calibri", 10);
+            combobox.Location = new Point(147, 182);
+            combobox.Size = new Size(120, 32);
+            combobox.Name = "sub_groups_combobox";
+            combobox.DropDownStyle = ComboBoxStyle.DropDownList;
+            combobox.SelectedIndexChanged += new EventHandler(combobox_SelectedIndexChanged);
+            combobox.Text = "LOL?";
+        }
+
         public void initialize_removal_button(Button button, EventHandler ButtonClickOneEvent)
         {
             button.Name = "Remove_button";
             button.Font = new Font("Calibri", 10);
-            button.Location = new Point(270, 180);
+            button.Location = new Point(290, 180);
             button.ForeColor = Color.Black;
             button.Size = new Size(80, 28);
             button.Text = "Remove";
@@ -325,7 +353,7 @@ namespace PuTTY_Storm
         {
             button.Name = "Remove_Group_button";
             button.Font = new Font("Calibri", 10);
-            button.Location = new Point(120, 20);
+            button.Location = new Point(250, 20);
             button.ForeColor = Color.Black;
             button.Size = new Size(65, 25);
             button.Text = "Remove";
@@ -403,10 +431,12 @@ namespace PuTTY_Storm
                 {
                     combobox.Items.Add(name);
                 }
+
+                combobox.DropDownWidth = DropDownWidth(combobox);
             }
             combobox.Font = new Font("Calibri", 11);
             combobox.Location = new Point(130, 86);
-            combobox.Size = new Size(90, 32);
+            combobox.Size = new Size(130, 32);
             combobox.Name = "new_password_combobox";
             combobox.DropDownStyle = ComboBoxStyle.DropDownList;
             combobox.SelectedIndexChanged += new EventHandler(combobox_SelectedIndexChanged);          
@@ -570,6 +600,8 @@ namespace PuTTY_Storm
                 {
                     combobox.Items.Add(name);
                 }
+
+                combobox.DropDownWidth = DropDownWidth(combobox);
             }
             combobox.Font = new Font("Calibri", 11);
             combobox.Location = new Point(230, 340);
@@ -601,6 +633,29 @@ namespace PuTTY_Storm
             button.Click += new EventHandler(ButtonClickPKEvent);
         }
 
+        /// <summary>
+        /// Initialize controls in Kotarak Plugin
+        /// </summary>
+        public void initialize_kotarak_group_subgroup_combobox(ComboBox combobox)
+        {
+            if (File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+            "PuTTYStorm", "groups.xml")))
+            {
+                GetSavedSessions saved_groups = new GetSavedSessions();
+                SavedGroupInfo groups = saved_groups.get_Groups();
+
+                combobox.Items.Add("");
+
+                foreach (string name in groups.names)
+                {
+                    combobox.Items.Add(name);
+                }
+
+                combobox.DropDownWidth = DropDownWidth(combobox);
+            }
+            combobox.Font = new Font("Calibri", 11);
+            combobox.DropDownStyle = ComboBoxStyle.DropDownList;
+        }
 
         /// <summary>
         /// Custom methods for handling controls.
@@ -620,6 +675,9 @@ namespace PuTTY_Storm
             button.Location = new Point(292, height);
         }
 
+        /// <summary>
+        /// Refresh all sessions dropdown menus when adding new groups
+        /// </summary>
         public void set_combobox_groups (List<GroupBox> containers_list)
         {
             if (File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
@@ -642,11 +700,15 @@ namespace PuTTY_Storm
                         }
 
                         combobox.Text = last_value;
+                        combobox.DropDownWidth = DropDownWidth(combobox);
                     }
                 }
             }
         }
 
+        /// <summary>
+        /// Refresh dropdown menus in advanced form Panel2 when adding new groups
+        /// </summary>
         public void set_passwords_combobox_groups(SplitContainer splitcontainer)
         {
             if (File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
@@ -664,10 +726,14 @@ namespace PuTTY_Storm
                     {
                         combobox.Items.Add(name);
                     }
+                    combobox.DropDownWidth = DropDownWidth(combobox);
                 }
             }
         }
 
+        /// <summary>
+        /// Refresh dropdown menus in advanced Panel1 - Private Keys section, when adding new groups
+        /// </summary>
         public void set_pk_combobox_groups(SplitContainer splitcontainer)
         {
             if (File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
@@ -687,9 +753,78 @@ namespace PuTTY_Storm
                         {
                             combobox.Items.Add(name);
                         }
+                        combobox.DropDownWidth = DropDownWidth(combobox);
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Load TreeView Panel with grouped servers placed on the right side of Sessions Form.
+        /// </summary>
+        public void LoadTreeViewPane(TreeView ServerPane, List<GroupBox> containers_list, 
+            TreeNodeMouseClickEventHandler ServerPane_NodeMouseDoubleClick)
+        {
+            ServerPane.Nodes.Clear();
+
+            try
+            {
+                foreach (GroupBox container in containers_list)
+                {
+                    Control[] group = container.Controls.Find("combobox", true);
+                    Control[] sub_group = container.Controls.Find("sub_groups_combobox", true);
+                    Control[] hostname_textbox = container.Controls.Find("hostname_textbox", true);
+
+                    Console.WriteLine(group[0].Text);
+                    Console.WriteLine(hostname_textbox[0].Text);
+
+                    if ((!(group[0].Text == null || group[0].Text == "")))
+                    {
+                        if (!ServerPane.Nodes.ContainsKey(group[0].Text))
+                        { 
+                             ServerPane.Nodes.Add(new TreeNode(group[0].Text) { Name = group[0].Text });
+                             Console.WriteLine("Group " + group[0].Text + " doesnt exists adding");
+                            
+                        }
+
+                        if (!ServerPane.Nodes[group[0].Text].Nodes.ContainsKey(sub_group[0].Text))
+                        {
+                            if (!(sub_group[0].Text == null || sub_group[0].Text == ""))
+                            {
+                                ServerPane.Nodes[group[0].Text].Nodes.Add(new TreeNode(sub_group[0].Text) { Name = sub_group[0].Text });
+                                Console.WriteLine("##### SUBGROUP " + sub_group[0].Text + " doesnt exists adding");
+                            }
+                        }
+
+                        if ((!(group[0].Text == null || group[0].Text == "") && (sub_group[0].Text == null || sub_group[0].Text == "")))
+                            ServerPane.Nodes[group[0].Text].Nodes.Add(new TreeNode(hostname_textbox[0].Text) { Name = hostname_textbox[0].Text });
+
+                        if ((!(group[0].Text == null || group[0].Text == "") && !(sub_group[0].Text == null || sub_group[0].Text == "")))
+                            ServerPane.Nodes[group[0].Text].Nodes[sub_group[0].Text].Nodes.Add(new TreeNode(hostname_textbox[0].Text) { Name = hostname_textbox[0].Text });
+                    }
+                }
+            } catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+
+        public int DropDownWidth(ComboBox myCombo)
+        {
+            int maxWidth = 0, temp = 0;
+            if (myCombo.Items.Count > 0)
+            {
+                foreach (var obj in myCombo.Items)
+                {
+                    temp = TextRenderer.MeasureText(obj.ToString(), myCombo.Font).Width;
+                    if (temp > maxWidth)
+                    {
+                        maxWidth = temp;
+                    }
+                }
+            }
+            return maxWidth;
         }
 
     }

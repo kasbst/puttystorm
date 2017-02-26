@@ -59,6 +59,7 @@ namespace PuTTY_Storm
                     string password = null;
                     string c_count = null;
                     string group = null;
+                    string sub_group = null;
 
                     foreach (Control control in container.Controls)
                     {
@@ -91,6 +92,18 @@ namespace PuTTY_Storm
                                 group = control.Text;
                             }
                         }
+
+                        if (control.Name == "sub_groups_combobox")
+                        {
+                            if (control.Text == "")
+                            {
+                                sub_group = " ";
+                            }
+                            else
+                            {
+                                sub_group = control.Text;
+                            }
+                        }
                     }
 
                     foreach (NumericUpDown ctlNumeric in container.Controls.OfType<NumericUpDown>())
@@ -107,6 +120,7 @@ namespace PuTTY_Storm
                         writer.WriteElementString("password", AESEncryptDecrypt.Encrypt(password));
                         writer.WriteElementString("count", c_count);
                         writer.WriteElementString("group", group);
+                        writer.WriteElementString("subgroup", sub_group);
 
                         writer.WriteEndElement();
                     }

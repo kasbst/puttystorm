@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2016 Karol Sebesta
+ * Copyright (c) 2017 Karol Sebesta
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -80,6 +80,7 @@ namespace PuTTY_Storm
             TextBox textbox_password = new TextBox();
             NumericUpDown numericupdown = new NumericUpDown();
             ComboBox groups = new ComboBox();
+            ComboBox sub_groups = new ComboBox();
 
             custom_controls.initialize_container(container);
             custom_controls.initialize_hostname_label(label_hostname);
@@ -90,6 +91,7 @@ namespace PuTTY_Storm
             custom_controls.initialize_password_textbox(textbox_password);
             custom_controls.initialize_numbericupdown(numericupdown, Numericupdown_ValueChanged);
             custom_controls.initialize_combobox(groups, Combobox_SelectedIndexChanged, combobox_PKGroupChanged);
+            custom_controls.initialize_sub_groups_combobox(sub_groups, Combobox_SelectedIndexChanged);
 
             container.Controls.Add(label_hostname);
             container.Controls.Add(textbox_hostname);
@@ -99,6 +101,7 @@ namespace PuTTY_Storm
             container.Controls.Add(textbox_password);
             container.Controls.Add(numericupdown);
             container.Controls.Add(groups);
+            container.Controls.Add(sub_groups);
             
             return container;
         }
@@ -304,6 +307,10 @@ namespace PuTTY_Storm
                                 {
                                     control.Text = sessions.groups[i];
                                 }
+                                if (control.Name == "sub_groups_combobox")
+                                {
+                                    control.Text = sessions.sub_groups[i];
+                                }
 
                                 foreach (NumericUpDown ctlNumeric in containers_list[i].Controls.OfType<NumericUpDown>())
                                 {
@@ -351,6 +358,10 @@ namespace PuTTY_Storm
                                 if (control.Name == "combobox")
                                 {
                                     control.Text = sessions.groups[i];
+                                }
+                                if (control.Name == "sub_groups_combobox")
+                                {
+                                    control.Text = sessions.sub_groups[i];
                                 }
 
                                 foreach (NumericUpDown ctlNumeric in containers_list[i].Controls.OfType<NumericUpDown>())
@@ -869,6 +880,13 @@ namespace PuTTY_Storm
                 {
                     Control[] password_textbox = container.Controls.Find("password_textbox", true);
                     Control[] combobox_group = container.Controls.Find("combobox", true);
+                    Control[] sub_combobox_group = container.Controls.Find("sub_groups_combobox", true);
+
+                    if (new_password_combobox_group[0].Text == sub_combobox_group[0].Text)
+                    {
+                        MessageBox.Show("Error! You have to supply primary group not a sub-group!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
 
                     if (combobox_group[0].Text == new_password_combobox_group[0].Text)
                     {
@@ -878,6 +896,9 @@ namespace PuTTY_Storm
                 sessions.Save_sessions(containers_list);
                 MessageBox.Show("New Password For Group " + new_password_combobox_group[0].Text + " Set And Saved!",
                     "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                new_password_textbox[0].Text = null;
+
             } else
             {
                 MessageBox.Show("Enter The New Password With Group First!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -915,6 +936,12 @@ namespace PuTTY_Storm
                 return;
             }
 
+            if (group.Length > 12)
+            {
+                MessageBox.Show("Group name is too long! Name can contain only 12 characters", "Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                return;
+            }
+
             Create_New_Groups_Panel(group);
             panel1_add_textbox[0].Text = null;
         }
@@ -926,7 +953,7 @@ namespace PuTTY_Storm
         private void Create_New_Groups_Panel(string group)
         {
             Panel groups_panel = new Panel();
-            groups_panel.Size = new Size(300, 50);
+            groups_panel.Size = new Size(330, 50);
 
             if (Groups.Count == 0)
             {
@@ -951,7 +978,7 @@ namespace PuTTY_Storm
             group_name.Text = group;
             group_name.Font = new Font("Calibri", 14);
             group_name.Location = new Point(3, 20);
-            group_name.Size = new Size(110, 30);
+            group_name.Size = new Size(240, 30);
             group_name.ForeColor = Color.White;
             group_name.Name = "group_name_label";
 
@@ -1213,6 +1240,9 @@ namespace PuTTY_Storm
         Panel new_connect_panel;
         OpenPuTTY now;
         SplitContainer SessionsSplitContainer;
+        TreeView SimpleServerPane;
+        Panel SimpleServerPanePanel;
+        SplitContainer SessionSplitContainerAndServerPanel;
 
         private void Connect_Click(object sender, EventArgs e)
         {
@@ -1225,7 +1255,7 @@ namespace PuTTY_Storm
             panelsList = new List<Panel>();
             my_ProcessInfo_List_TC_1 = new List<ProcessInfo>();
             my_ProcessInfo_List_TC_2 = new List<ProcessInfo>();
-            SessionsSplitContainer = new SplitContainer();
+            SessionsSplitContainer = new SplitContainer();           
 
             tabcontrol1 = new DraggableTabControl(my_ProcessInfo_List_TC_1, my_ProcessInfo_List_TC_2, SessionsSplitContainer);
             tabcontrol2 = new DraggableTabControl(my_ProcessInfo_List_TC_1, my_ProcessInfo_List_TC_2, SessionsSplitContainer);
@@ -1237,6 +1267,7 @@ namespace PuTTY_Storm
 
             SessionsForm = new SessionsForm(my_ProcessInfo_List_TC_1, tabcontrol1, tabcontrol2, SessionsSplitContainer, containers_list);
             SessionsForm.FormClosed += new FormClosedEventHandler(SessionsForm_FormClosed);
+            SessionsForm.StartPosition = FormStartPosition.CenterScreen;
             this.Hide();
 
             int i;
@@ -1357,6 +1388,24 @@ namespace PuTTY_Storm
             new_connect_panel.BorderStyle = BorderStyle.FixedSingle;
             Fill_New_Connect_Panel(new_connect_panel);
 
+            // TreeView docked within the SimpleServerPanePanel
+            SimpleServerPane = new TreeView();
+            SimpleServerPane.Dock = DockStyle.Fill;
+            SimpleServerPane.Font = new Font("courier new", 9);
+            SimpleServerPane.NodeMouseDoubleClick += new TreeNodeMouseClickEventHandler(ServerPane_NodeMouseDoubleClick);
+            custom_controls.LoadTreeViewPane(SimpleServerPane, containers_list, ServerPane_NodeMouseDoubleClick);
+
+            // SimpleServerPanePanel docked within the SessionSplitContainerAndServerPanel.Panel2 (SplitContainer).
+            SimpleServerPanePanel = new Panel();
+            SimpleServerPanePanel.Dock = DockStyle.Fill;
+            SimpleServerPanePanel.Size = new Size(300, 0);
+
+            // This SplitContainer contains above SimpleServerPanePanel in Panel2 and the most important
+            // SessionsSplitContainer in Panel1 (which contains tabcontrols with sessions).
+            SessionSplitContainerAndServerPanel = new SplitContainer();
+            SessionSplitContainerAndServerPanel.Dock = DockStyle.Fill;
+            SessionSplitContainerAndServerPanel.SplitterDistance = 400;
+
             Button new_connect_button = new Button();
             new_connect_button.Font = new Font("Calibri", 9);
             new_connect_button.Location = new Point(630, 3);
@@ -1369,9 +1418,17 @@ namespace PuTTY_Storm
             manage_sessions_button.Font = new Font("Calibri", 9);
             manage_sessions_button.Location = new Point(930, 3);
             manage_sessions_button.Size = new Size(150, 23);
-            manage_sessions_button.Text = "Manage Sessions";
+            manage_sessions_button.Text = "Settings";
             manage_sessions_button.Click += new EventHandler(Manage_Sessions_Click);
             new_connect_panel.Controls.Add(manage_sessions_button);
+
+            Button show_server_pane_button = new Button();
+            show_server_pane_button.Font = new Font("Calibri", 9);
+            show_server_pane_button.Location = new Point(1100, 3);
+            show_server_pane_button.Size = new Size(150, 23);
+            show_server_pane_button.Text = "Hide servers panel";
+            show_server_pane_button.Click += new EventHandler(Show_server_pane_Click);
+            new_connect_panel.Controls.Add(show_server_pane_button);
 
             SessionsForm.ShowInTaskbar = true;
             SessionsForm.KeyPreview = true;
@@ -1400,7 +1457,12 @@ namespace PuTTY_Storm
             SessionsSplitContainer.Panel2.Controls.Add(tabcontrol_panel_2);
             SessionsSplitContainer.Panel2Collapsed = true;
 
-            SessionsForm.Controls.Add(SessionsSplitContainer);
+            SimpleServerPanePanel.Controls.Add(SimpleServerPane);
+
+            SessionSplitContainerAndServerPanel.Panel2.Controls.Add(SimpleServerPanePanel);
+            SessionSplitContainerAndServerPanel.Panel1.Controls.Add(SessionsSplitContainer);
+
+            SessionsForm.Controls.Add(SessionSplitContainerAndServerPanel);
             SessionsForm.Controls.Add(new_connect_panel);
 
             SessionsForm.Show();
@@ -1415,8 +1477,10 @@ namespace PuTTY_Storm
             {
                 Form SFTPManager = Application.OpenForms["SFTPManager"];
                 Form SelectSFTPConnectionForm = Application.OpenForms["SelectSFTPConnectionForm"];
+                Form Kotarak = Application.OpenForms["kotarak"];
 
-                if (!((this.Visible) || (SFTPManager != null && SFTPManager.Visible) || (SelectSFTPConnectionForm != null && SelectSFTPConnectionForm.Visible)))
+                if (!((this.Visible) || (SFTPManager != null && SFTPManager.Visible) || (SelectSFTPConnectionForm != null && SelectSFTPConnectionForm.Visible) 
+                    || (Kotarak != null && Kotarak.Visible)))
                 {
                     if (my_ProcessInfo_List_TC_1.Count > 0) {
                         tabcontrol1.Focus();
@@ -1437,8 +1501,10 @@ namespace PuTTY_Storm
             {
                 Form SFTPManager = Application.OpenForms["SFTPManager"];
                 Form SelectSFTPConnectionForm = Application.OpenForms["SelectSFTPConnectionForm"];
+                Form Kotarak = Application.OpenForms["kotarak"];
 
-                if (!((this.Visible) || (SFTPManager != null && SFTPManager.Visible) || (SelectSFTPConnectionForm != null && SelectSFTPConnectionForm.Visible)))
+                if (!((this.Visible) || (SFTPManager != null && SFTPManager.Visible) || (SelectSFTPConnectionForm != null && SelectSFTPConnectionForm.Visible) 
+                    || (Kotarak != null && Kotarak.Visible)))
                 {
                     if (my_ProcessInfo_List_TC_2.Count > 0)
                     {
@@ -1608,7 +1674,9 @@ namespace PuTTY_Storm
         /// </summary>
         private void Save_Close_Click(object sender, EventArgs e)
         {
-            this.Hide();    
+            this.Hide();
+
+            custom_controls.LoadTreeViewPane(SimpleServerPane, containers_list, ServerPane_NodeMouseDoubleClick);
 
             Control[] Connect = this.Controls.Find("Connect", true);
             Connect[0].Show();
@@ -1688,6 +1756,11 @@ namespace PuTTY_Storm
 
                     if (!File.Exists(PrivateKey))
                     {
+                        if (PrivateKey == null || PrivateKey == "")
+                        {
+                            PrivateKey = "of type PPK or its group";
+                        }
+
                         MessageBox.Show("You are going to use passwordless login, " + Environment.NewLine +
                             "however private key " + PrivateKey + " doesn't exists!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
 
@@ -1734,6 +1807,111 @@ namespace PuTTY_Storm
                 ctlNumeric.Value = 0;
             }
         }
+
+        /// <summary>
+        /// Open new session by clicking on hostname contained within the TreeView (SimpleServerPane).
+        /// It opens new putty.exe process docked within the TabControl's Tabpage.
+        /// </summary>
+        private void ServerPane_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            string _hostname = null;
+            string _username = null;
+            string _password = null;
+            string _group = null;
+            string PrivateKey = null;
+
+            if (SimpleServerPane.SelectedNode != null)
+            {
+                foreach (GroupBox container in containers_list)
+                {
+                    Control[] hostname_textbox = container.Controls.Find("hostname_textbox", true);
+                    Control[] username_texbox = container.Controls.Find("username_textbox", true);
+                    Control[] password_texbox = container.Controls.Find("password_textbox", true);
+                    Control[] group_combobox = container.Controls.Find("combobox", true);
+
+                    if (hostname_textbox[0].Text == SimpleServerPane.SelectedNode.Text)
+                    {
+                        _hostname = hostname_textbox[0].Text;
+                        _username = username_texbox[0].Text;
+                        _password = password_texbox[0].Text;
+                        _group = group_combobox[0].Text;
+                    }
+                }
+
+                if (SimpleServerPane.SelectedNode.Text != _group && SimpleServerPane.SelectedNode.Text == _hostname)
+                {
+                    Console.WriteLine("## All fine we are processing hostname and not a group");
+                    Regex pattern = new Regex(@"^.*?(?=\.)");
+                    Match match = pattern.Match(_hostname);
+                    string shortname = match.Groups[0].Value;
+
+                    // In case we are going to use private key to login - check if it exists first!
+                    // And also check if group in this session is part of private keys setup.
+                    // If yes, then use passwordless login.
+                    if (File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    "PuTTYStorm", "privatekeys.xml")))
+                    {
+                        SavedPrivatekeysInfo privatekeys = saved_data.get_PrivateKeys();
+
+                        if (IsPasswordLess.IsGroupBetweenPrivateKeys(privatekeys, _group))
+                        {
+                            Console.WriteLine("#### GROUP CHECK IN Simple pane (TreeView) LOGIN: " + _group);
+                            PrivateKey = IsPasswordLess.GetPPKPrivateKeyForGroup(privatekeys, _group);
+
+                            if (!File.Exists(PrivateKey))
+                            {
+                                if (PrivateKey == null || PrivateKey == "")
+                                {
+                                    PrivateKey = "of type PPK or its group";
+                                }
+
+                                MessageBox.Show("You are going to use passwordless login, " + Environment.NewLine +
+                                    "however private key " + PrivateKey + " doesn't exists!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+
+                                return;
+                            }
+
+                            _password = null;
+                        }
+                    }
+
+                    Process process = new Process();
+                    process.EnableRaisingEvents = true;
+                    process.Exited += new EventHandler(Process_Exited);
+                    Panel panels = new Panel();
+                    TabPage tabpage = new TabPage(shortname);
+                    tabpage.Font = new Font("Calibri", 10);
+                    panels.AutoSize = true;
+                    panels.Dock = DockStyle.Fill;
+                    tabpage.Controls.Add(panels);
+                    my_ProcessInfo_List_TC_1.Add(now.start_putty(panels, i, process, _hostname, _username, _password, mus.putty_path, SessionsSplitContainer, PrivateKey));
+                    tabcontrol1.TabPages.Add(tabpage);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Show and hide Panel2 of SessionSplitContainerAndServerPanel (SplitControl) 
+        /// which contains SimpleServerPane (TreeView).
+        /// </summary>
+        private void Show_server_pane_Click(object sender, EventArgs e)
+        {
+            Button button = sender as Button;
+            if (button != null)
+            {
+                if (SessionSplitContainerAndServerPanel.Panel2Collapsed)
+                {
+                    button.Text = "Hide servers panel";
+                    SessionSplitContainerAndServerPanel.Panel2Collapsed = false;
+                }
+                else 
+                {
+                    button.Text = "Show servers panel";
+                    SessionSplitContainerAndServerPanel.Panel2Collapsed = true;
+                }
+            }
+        }
+
 
         /// <summary>
         /// Handle the removal of Tabpage and putty.exe processes on process exit!

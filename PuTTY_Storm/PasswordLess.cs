@@ -169,12 +169,20 @@ namespace PuTTY_Storm
                 {
                     if (control.Name == "hostname_textbox")
                     {
-                        hostname = control.Text;
+                        
+                         hostname = KotarakMainForm.ReadValueFromControl(control);                      
                     }
 
                     if (control.Name == "combobox")
                     {
-                        group = control.Text;
+                        if (control.InvokeRequired)
+                        {
+                            return (string)control.Invoke(new Func<String>(() => GetGroupForPwdLessHostname(containers_list, new_hostname)));
+                        }
+                        else
+                        {
+                            group = KotarakMainForm.ReadValueFromControl(control);
+                        }
                     }
                 }
 
@@ -184,8 +192,10 @@ namespace PuTTY_Storm
                     break;
                 }
             }
+            Console.WriteLine("## GROUP RETURNED: " + return_group);
             return return_group;
-        }
+        }        
+
 
     }
 }
