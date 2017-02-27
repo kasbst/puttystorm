@@ -10,7 +10,7 @@ Lightweight tabbed window manager for putty sessions
  - Search already saved sessions
  - Vertical split screen (Activate - CTRL + F1 | Deactivate - CTRL + F2)
  - SFTP Manager with fast access (Activate CTRL + F3). It connects to the currently selected tab (session) and uploads/downloads files to/from user's home directory
- - Passwordless login using PPK and OpenSSH private/public keys (Note: currently SFTP Manager supports only OpenSSH private/public keys, so there is a need to have both PPK - for putty.exe and OpenSSH - for SFTP manager keys added. Will be changed in future).
+ - Passwordless login using PPK and OpenSSH private/public keys (Note: currently SFTP Manager supports only OpenSSH private/public keys, so there is a need to have both PPK - for putty.exe and OpenSSH - for SFTP manager and Kotarak keys added. Will be changed in future). In case you want to use encrypted private keys - openSSH for Kotarak and SFTP Manager is supported, however for PPK you have to use Pageant for now.
  - Kotarak configuration management plugin (activate with CTRL + F4) with ability to execute Bash scripts and Shell commands. Managing and deploying config files will be added in the next release.
  
 ### ToDo
@@ -18,6 +18,7 @@ Lightweight tabbed window manager for putty sessions
  - Kotarator - an experimental language with experimental "pseudo-compiler"
  - Global HotKeys Manager
  - Security improvements (encryption) NOTE: This is an early test version - use at your own risk!
+ - Code optimization and refactoring
  
 ### License
 Licensed under a liberal MIT/X11 License, which allows this program and source code to be used in both commercial and non-commercial applications. Complete text can be found in the License.txt file.
