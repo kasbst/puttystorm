@@ -251,6 +251,7 @@ namespace PuTTY_Storm
             string hostname = _credentials.Item1;
             string login = _credentials.Item2;
             string password = _credentials.Item3;
+            string pk_pwd = null;
 
             if (File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
             "PuTTYStorm", "privatekeys.xml")))
@@ -261,6 +262,7 @@ namespace PuTTY_Storm
                 if (IsPasswordLess.IsGroupBetweenPrivateKeys(privatekeys, group))
                 {
                     PrivateKey = IsPasswordLess.GetOpenSSHPrivateKeyForGroup(privatekeys, group);
+                    pk_pwd = IsPasswordLess.GetOpenSSHPrivateKeyPassPhrase(privatekeys, group);
 
                     if (!File.Exists(PrivateKey))
                     {
@@ -278,7 +280,7 @@ namespace PuTTY_Storm
                 }
             }
 
-            SFTPManager sftpManagerForm = new SFTPManager(hostname, login, password, PrivateKey);
+            SFTPManager sftpManagerForm = new SFTPManager(hostname, login, password, PrivateKey, pk_pwd);
             sftpManagerForm.Name = "SFTPManager";
             sftpManagerForm.Text = GlobalVar.VERSION + " - SFTP Manager";
             sftpManagerForm.Show();

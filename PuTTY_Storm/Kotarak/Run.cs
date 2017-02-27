@@ -26,33 +26,72 @@ using System;
 using System.Windows.Forms;
 using Renci.SshNet;
 using System.Text.RegularExpressions;
+using Renci.SshNet.Common;
 
 namespace PuTTY_Storm
 {
     class Run
     {
+        string password = null;
+
+        /// <summary>
+        /// Event handler for KeyboardInteractiveAuthenticationMethod which passes the password
+        /// </summary>
+        private void HandleKeyEvent(object sender, AuthenticationPromptEventArgs e)
+        {
+            foreach (AuthenticationPrompt prompt in e.Prompts)
+            {
+                if (prompt.Request.IndexOf("Password:", StringComparison.InvariantCultureIgnoreCase) != -1)
+                {
+                    prompt.Response = this.password;
+                }
+            }
+        }
+
         /// <summary>
         /// Handling of Shell command execution.
         /// </summary>
-        public void ExecuteCommand(DataGridView dataGridView1, string text, string hostname, string username, string password, string PrivateKey)
+        public void ExecuteCommand(DataGridView dataGridView1, string text, string _hostname, string _username, 
+            string _password, string _PrivateKey, string _pk_pwd)
         {
-            WriteDataGridViewOutput(dataGridView1, hostname, null, "Running...");
+            WriteDataGridViewOutput(dataGridView1, _hostname, null, "Running...");
 
             ConnectionInfo con = null;
 
-            if (password != null && password != "" && !Regex.IsMatch(password, @"\s+") && PrivateKey == null)
+            // Use KeyboardInteractiveAuthentication or PasswordAuthenticationMethod
+            if (_password != null && _password != "" && !Regex.IsMatch(_password, @"\s+") && _PrivateKey == null)
             {
                 Console.WriteLine("## Kotarak using password for login");
 
-                con = new ConnectionInfo(hostname, 22, username, new PasswordAuthenticationMethod(username, password));
-            }
-            else if (password == null && PrivateKey != null)
-            {
-                Console.WriteLine("## Kotarak using private key for login");
+                this.password = _password;
 
-                var keyFile = new PrivateKeyFile(PrivateKey);
+                KeyboardInteractiveAuthenticationMethod keybAuth = new KeyboardInteractiveAuthenticationMethod(_username);
+                keybAuth.AuthenticationPrompt += new EventHandler<AuthenticationPromptEventArgs>(HandleKeyEvent);
+
+                con = new ConnectionInfo(_hostname, 22, _username, new AuthenticationMethod[]
+                {
+                    new PasswordAuthenticationMethod(_username, _password),
+                    keybAuth
+                });
+            }
+            // Otherwise we have setup PrivateKeyAuthenticationMethod
+            else if (_password == null && _PrivateKey != null)
+            {
+                Console.WriteLine("## Kotarak using OpenSSH private key for login");
+
+                PrivateKeyFile keyFile;
+                if (_pk_pwd == null)
+                {
+                    Console.WriteLine("## OpenSSH private key is not encrypted");
+                    keyFile = new PrivateKeyFile(_PrivateKey);
+                } else
+                {
+                    Console.WriteLine("## OpenSSH private key IS encrypted!");
+                    keyFile = new PrivateKeyFile(_PrivateKey, _pk_pwd);
+                }
+
                 var keyFiles = new[] { keyFile };
-                con = new ConnectionInfo(hostname, 22, username, new PrivateKeyAuthenticationMethod(username, keyFiles));
+                con = new ConnectionInfo(_hostname, 22, _username, new PrivateKeyAuthenticationMethod(_username, keyFiles));
             }
 
             string[] lines = null;
@@ -107,7 +146,7 @@ namespace PuTTY_Storm
                         }
                     }
 
-                    WriteDataGridViewOutput(dataGridView1, hostname, exitCode, output);
+                    WriteDataGridViewOutput(dataGridView1, _hostname, exitCode, output);
 
                     client.Disconnect();
                 }
@@ -120,25 +159,48 @@ namespace PuTTY_Storm
         /// <summary>
         /// Handling of Bash script execution
         /// </summary>
-        public void ExecuteBashScript(DataGridView dataGridView1, string text, string hostname, string username, string password, string PrivateKey)
+        public void ExecuteBashScript(DataGridView dataGridView1, string text, string _hostname, string _username, 
+            string _password, string _PrivateKey, string _pk_pwd)
         {
-            WriteDataGridViewOutput(dataGridView1, hostname, null, "Running...");
+            WriteDataGridViewOutput(dataGridView1, _hostname, null, "Running...");
 
             ConnectionInfo con = null;
 
-            if (password != null && password != "" && !Regex.IsMatch(password, @"\s+") && PrivateKey == null)
+            // Use KeyboardInteractiveAuthentication or PasswordAuthenticationMethod
+            if (_password != null && _password != "" && !Regex.IsMatch(_password, @"\s+") && _PrivateKey == null)
             {
                 Console.WriteLine("## Kotarak using password for login");
 
-                con = new ConnectionInfo(hostname, 22, username, new PasswordAuthenticationMethod(username, password));
+                this.password = _password;
+
+                KeyboardInteractiveAuthenticationMethod keybAuth = new KeyboardInteractiveAuthenticationMethod(_username);
+                keybAuth.AuthenticationPrompt += new EventHandler<AuthenticationPromptEventArgs>(HandleKeyEvent);
+
+                con = new ConnectionInfo(_hostname, 22, _username, new AuthenticationMethod[]
+                {
+                    new PasswordAuthenticationMethod(_username, _password),
+                    keybAuth
+                });
             }
-            else if (password == null && PrivateKey != null)
+            // Otherwise we have setup PrivateKeyAuthenticationMethod
+            else if (_password == null && _PrivateKey != null)
             {
                 Console.WriteLine("## Kotarak using private key for login");
 
-                var keyFile = new PrivateKeyFile(PrivateKey);
+                PrivateKeyFile keyFile;
+                if (_pk_pwd == null)
+                {
+                    Console.WriteLine("## OpenSSH private key is not encrypted");
+                    keyFile = new PrivateKeyFile(_PrivateKey);
+                }
+                else
+                {
+                    Console.WriteLine("## OpenSSH private key IS encrypted!");
+                    keyFile = new PrivateKeyFile(_PrivateKey, _pk_pwd);
+                }
+
                 var keyFiles = new[] { keyFile };
-                con = new ConnectionInfo(hostname, 22, username, new PrivateKeyAuthenticationMethod(username, keyFiles));
+                con = new ConnectionInfo(_hostname, 22, _username, new PrivateKeyAuthenticationMethod(_username, keyFiles));
             }
 
             try
@@ -163,7 +225,7 @@ namespace PuTTY_Storm
                         exitCode = terminal.ExitStatus;
                     }
 
-                    WriteDataGridViewOutput(dataGridView1, hostname, exitCode, output);
+                    WriteDataGridViewOutput(dataGridView1, _hostname, exitCode, output);
 
                     client.Disconnect();
                 }

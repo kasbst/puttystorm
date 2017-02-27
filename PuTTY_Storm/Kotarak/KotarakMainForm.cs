@@ -46,7 +46,10 @@ namespace PuTTY_Storm
         private EditorInit EditorInit = new EditorInit();
 
         List<GroupBox> containers_list;
-        public delegate void ExecuteFunction(DataGridView dataGridView1, string text, string hostname, string login, string password, string PrivateKey);
+        SavedPrivatekeysInfo privatekeys;
+
+        public delegate void ExecuteFunction(DataGridView dataGridView1, string text, string hostname, string login, 
+            string password, string PrivateKey, string pk_pwd);
 
         public KotarakMainForm(List<GroupBox> _containers_list)
         {
@@ -71,7 +74,14 @@ namespace PuTTY_Storm
             
             // Initialize scintillaNet editor with Bash lexer
             EditorInit.BashInit(BashScriptRadioButton, scintilla1);
-        }
+
+            // Encrypted private keys have encrypted passphrases, so get them only once during initialization.
+            if (File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+            "PuTTYStorm", "privatekeys.xml")))
+            {
+                this.privatekeys = saved_data.get_PrivateKeys();
+            }
+         }
 
         private void scintilla_StyleNeeded(object sender, StyleNeededEventArgs e)
         {
@@ -173,16 +183,17 @@ namespace PuTTY_Storm
             string hostname = _credentials.Item1;
             string login = _credentials.Item2;
             string password = _credentials.Item3;
+            string pk_pwd = null;
 
             if (File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
             "PuTTYStorm", "privatekeys.xml")))
             {
-                SavedPrivatekeysInfo privatekeys = saved_data.get_PrivateKeys();
                 string group = IsPasswordLess.GetGroupForPwdLessHostname(containers_list, _credentials.Item1);
 
                 if (IsPasswordLess.IsGroupBetweenPrivateKeys(privatekeys, group))
                 {
                     PrivateKey = IsPasswordLess.GetOpenSSHPrivateKeyForGroup(privatekeys, group);
+                    pk_pwd = IsPasswordLess.GetOpenSSHPrivateKeyPassPhrase(privatekeys, group);
 
                     if (!File.Exists(PrivateKey))
                     {
@@ -217,7 +228,7 @@ namespace PuTTY_Storm
                 PrivateKey = null;
             }
 
-            f(dataGridView1, ReadValueFromControl(scintilla1), hostname, login, password, PrivateKey);
+            f(dataGridView1, ReadValueFromControl(scintilla1), hostname, login, password, PrivateKey, pk_pwd);
         }
 
         /// <summary>

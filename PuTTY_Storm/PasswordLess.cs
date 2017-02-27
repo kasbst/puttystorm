@@ -152,6 +152,26 @@ namespace PuTTY_Storm
         }
 
         /// <summary>
+        /// Get passphrase for encrypted openSSH private key
+        /// </summary>
+        public string GetOpenSSHPrivateKeyPassPhrase(SavedPrivatekeysInfo privatekeys, string session_group)
+        {
+            string PassPhrase = null;
+
+            if (privatekeys.names.Count != 0)
+            {
+                for (int i = 0; i < privatekeys.names.Count; i++)
+                {
+                    if (privatekeys.groups[i] == session_group && privatekeys.types[i] == "OpenSSH")
+                    {
+                        PassPhrase = privatekeys.pwds[i];
+                    }
+                }
+            }
+            return PassPhrase;
+        }
+
+        /// <summary>
         /// Helper function used when creating a new connection from already opened sessions form.
         /// This is needed because we don't have a direct access to the session group from there.
         /// Therefore we need to find a group for particular hostname from the main containers list.

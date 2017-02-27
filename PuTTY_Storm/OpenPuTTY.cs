@@ -78,7 +78,7 @@ namespace PuTTY_Storm
             }
             else if (password == null && PrivateKey != null)
             {
-                Console.WriteLine("Using private key for putty connect");
+                Console.WriteLine("Using PPK private key for putty connect");
                 processStartInfo = new ProcessStartInfo(putty_path, "-ssh -2 -l " + username + " -i " + PrivateKey + " " + hostname);
             }
             else

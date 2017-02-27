@@ -207,6 +207,7 @@ namespace PuTTY_Storm
                     string pk_name = null;
                     string pk_type = null;
                     string pk_group = null;
+                    string pk_pwd = null;
 
                     foreach (Control control in container.Controls)
                     {
@@ -224,6 +225,11 @@ namespace PuTTY_Storm
                         {
                             pk_group = control.Text.Replace("Group: ", string.Empty);
                         }
+
+                        if (control.Name == "private_keys_hidden_passphrase_textbox")
+                        {
+                            pk_pwd = control.Text;
+                        }
                     }
 
                     if (pk_name != "")
@@ -233,6 +239,13 @@ namespace PuTTY_Storm
                         writer.WriteElementString("name", pk_name);
                         writer.WriteElementString("type", pk_type);
                         writer.WriteElementString("group", pk_group);
+                        if (pk_pwd == "" || pk_pwd == null)
+                        {
+                            writer.WriteElementString("pwd", " ");
+                        } else
+                        {
+                            writer.WriteElementString("pwd", AESEncryptDecrypt.Encrypt(pk_pwd));
+                        }
 
                         writer.WriteEndElement();
                     }

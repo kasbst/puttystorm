@@ -33,6 +33,7 @@ using System.Windows.Forms;
 using System.Text.RegularExpressions;
 using System.ComponentModel;
 using System.Collections.Generic;
+using Renci.SshNet.Common;
 
 namespace PuTTY_Storm
 {
@@ -42,29 +43,64 @@ namespace PuTTY_Storm
         String username = null;
         String password = null;
         String PrivateKey = null;
+        String KeyPassphrase = null;
         ConnectionInfo con = null;
 
-        public SFTPManager(String _hostname, String _username, String _password, String _privatekey)
+        public SFTPManager(String _hostname, String _username, String _password, String _privatekey, String _pk_pwd)
         {
             InitializeComponent();
             this.hostname = _hostname;
             this.username = _username;
             this.password = _password;
             this.PrivateKey = _privatekey;
+            this.KeyPassphrase = _pk_pwd;
 
-            if (password != null && password != "" && !Regex.IsMatch(password, @"\s+") && PrivateKey == null)
+            // Use KeyboardInteractiveAuthentication or PasswordAuthenticationMethod
+            if (this.password != null && this.password != "" && !Regex.IsMatch(this.password, @"\s+") && this.PrivateKey == null)
             {
                 Console.WriteLine("## SFTP Manager using password for login");
 
-                con = new ConnectionInfo(this.hostname, 22, this.username, new PasswordAuthenticationMethod(this.username, this.password));
-            }
-            else if (password == null && PrivateKey != null)
-            {
-                Console.WriteLine("## SFTP Manager using private key for login");
+                KeyboardInteractiveAuthenticationMethod keybAuth = new KeyboardInteractiveAuthenticationMethod(this.username);
+                keybAuth.AuthenticationPrompt += new EventHandler<AuthenticationPromptEventArgs>(HandleKeyEvent);
 
-                var keyFile = new PrivateKeyFile(this.PrivateKey);
+                con = new ConnectionInfo(this.hostname, 22, this.username, new AuthenticationMethod[]
+                {
+                    new PasswordAuthenticationMethod(this.username, this.password),
+                    keybAuth
+                });
+            }
+            // Otherwise we have setup PrivateKeyAuthenticationMethod
+            else if (this.password == null && this.PrivateKey != null)
+            {
+                Console.WriteLine("## SFTP Manager using OpenSSH private key for login");
+
+                PrivateKeyFile keyFile;
+                if (this.KeyPassphrase == null)
+                {
+                    Console.WriteLine("## OpenSSH private key is not encrypted");
+                    keyFile = new PrivateKeyFile(this.PrivateKey);
+                } else
+                {
+                    Console.WriteLine("## OpenSSH private key IS encrypted!");
+                    keyFile = new PrivateKeyFile(this.PrivateKey, this.KeyPassphrase);
+                }
+
                 var keyFiles = new[] { keyFile };
                 con = new ConnectionInfo(this.hostname, 22, this.username, new PrivateKeyAuthenticationMethod(this.username, keyFiles));
+            }
+        }
+
+        /// <summary>
+        /// Event handler for KeyboardInteractiveAuthenticationMethod which passes the password
+        /// </summary>
+        private void HandleKeyEvent(object sender, AuthenticationPromptEventArgs e)
+        {
+            foreach (AuthenticationPrompt prompt in e.Prompts)
+            {
+                if (prompt.Request.IndexOf("Password:", StringComparison.InvariantCultureIgnoreCase) != -1)
+                {
+                    prompt.Response = this.password;
+                }
             }
         }
 

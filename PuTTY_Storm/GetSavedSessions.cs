@@ -50,6 +50,7 @@ namespace PuTTY_Storm
         public List<string> names = new List<string>();
         public List<string> types = new List<string>();
         public List<string> groups = new List<string>();
+        public List<string> pwds = new List<string>();
     }
 
     class GetSavedSessions
@@ -221,6 +222,18 @@ namespace PuTTY_Storm
                                     if (reader.Read())
                                     {
                                         xml_privatekeys_info.groups.Add(reader.Value);
+                                    }
+                                    break;
+                                case "pwd":
+                                    if (reader.Read())
+                                    {
+                                        if (reader.Value == " ")
+                                        {
+                                            xml_privatekeys_info.pwds.Add(null);
+                                        } else
+                                        {
+                                            xml_privatekeys_info.pwds.Add(AESEncryptDecrypt.Decrypt(reader.Value));
+                                        }
                                     }
                                     break;
                             }

@@ -529,7 +529,7 @@ namespace PuTTY_Storm
         }
 
         /// <summary>
-        /// Initialize controls in ADVANCED OPTIONS PANEL1 (GROUPS). This is the left Panel of 
+        /// Initialize controls in ADVANCED OPTIONS PANEL1 (Private Keys). This is the left Panel of 
         /// splitcontainer1 contained within the Form3 - Controls for Private keys settings.
         /// </summary>
         public void initialize_advanced_private_keys_label_header(Label label)
@@ -550,7 +550,7 @@ namespace PuTTY_Storm
             textbox.Text = "";
             textbox.Name = "private_keys_textbox_filedialog";
             textbox.Location = new Point(80, 300);
-            textbox.Size = new Size(240, 20);
+            textbox.Size = new Size(270, 20);
             textbox.ReadOnly = true;
         }
 
@@ -605,7 +605,7 @@ namespace PuTTY_Storm
             }
             combobox.Font = new Font("Calibri", 11);
             combobox.Location = new Point(230, 340);
-            combobox.Size = new Size(90, 32);
+            combobox.Size = new Size(120, 32);
             combobox.Name = "private_keys_group_combobox";
             combobox.DropDownStyle = ComboBoxStyle.DropDownList;
             combobox.SelectedIndexChanged += new EventHandler(combobox_SelectedIndexChanged);
@@ -631,6 +631,26 @@ namespace PuTTY_Storm
             button.Text = "Remove";
             button.UseVisualStyleBackColor = true;
             button.Click += new EventHandler(ButtonClickPKEvent);
+        }
+
+        public void initialize_advanced_private_keys_passphrase_label(Label label)
+        {
+            label.Font = new Font("Calibri", 10, FontStyle.Bold);
+            label.BackColor = Color.SlateGray;
+            label.ForeColor = Color.White;
+            label.Text = "PWD";
+            label.Location = new Point(6, 385);
+            label.Size = new Size(40, 30);
+        }
+
+        public void initialize_advanced_private_keys_passphrase_textbox(TextBox textbox)
+        {
+            textbox.Font = new Font("Calibri", 10);
+            //textbox.ForeColor = Color.White;
+            textbox.Name = "private_keys_passphrase_textbox";
+            textbox.Location = new Point(50, 380);
+            textbox.Size = new Size(150, 20);
+            textbox.UseSystemPasswordChar = true;
         }
 
         /// <summary>
