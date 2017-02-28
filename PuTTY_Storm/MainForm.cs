@@ -42,6 +42,8 @@ namespace PuTTY_Storm
         private SetControls custom_controls;
         private PasswordLess IsPasswordLess;
         private GetSavedSessions saved_data;
+        private SaveSessions sessions;
+        private CryptoHelper crypto;
 
         public MainForm()
         {
@@ -50,6 +52,9 @@ namespace PuTTY_Storm
             this.MouseWheel += new MouseEventHandler(MainForm_MouseWheel);
             IsPasswordLess = new PasswordLess();
             saved_data = new GetSavedSessions();
+            custom_controls = new SetControls();
+            sessions = new SaveSessions();
+            crypto = new CryptoHelper();
         }
 
         private void StartScreen ()
@@ -69,8 +74,6 @@ namespace PuTTY_Storm
         /// <returns>GrouBox container.</returns>
         private GroupBox Add_Main_Component()
         {
-            custom_controls = new SetControls();
-
             GroupBox container = new GroupBox();
             Label label_hostname = new Label();
             TextBox textbox_hostname = new TextBox();
@@ -113,8 +116,6 @@ namespace PuTTY_Storm
         /// </summary>
         private void Fill_New_Connect_Panel(Panel new_connect)
         {
-            custom_controls = new SetControls();
-
             Label host_label = new Label();
             TextBox host_textbox = new TextBox();
             Label username_label = new Label();
@@ -160,8 +161,6 @@ namespace PuTTY_Storm
         /// <returns>GroupBox container.</returns>
         private GroupBox Add_PuTTY_Config_Container()
         {
-            custom_controls = new SetControls();
-
             GroupBox putty_config_container = new GroupBox();
             Label putty_path_label = new Label();
             Button set_path_button = new Button();
@@ -279,8 +278,7 @@ namespace PuTTY_Storm
             if (File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
             "PuTTYStorm", "sessions.xml")))
             {
-                GetSavedSessions saved_sessions = new GetSavedSessions();
-                SavedConnectionInfo sessions = saved_sessions.get_Sessions();
+                SavedConnectionInfo sessions = saved_data.get_Sessions();
 
                 // If config doesn't contain any saved sessions load just first empty GroupBox container.
                 if (sessions.hostnames.Count == 0)
@@ -497,7 +495,6 @@ namespace PuTTY_Storm
             t.Start();
             Thread.Sleep(2000);
 
-            SaveSessions sessions = new SaveSessions();
             sessions.Save_sessions(containers_list);
 
             t.Abort();
@@ -820,7 +817,6 @@ namespace PuTTY_Storm
         /// </summary>
         private void Save_private_key_Click(object sender, EventArgs e)
         {
-            SaveSessions sessions = new SaveSessions();
             sessions.Save_PrivateKeys(PrivateKeys);
             MessageBox.Show("PrivateKeys Saved To The Config!", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
@@ -846,9 +842,6 @@ namespace PuTTY_Storm
         /// </summary>
         private void Set_New_Secret_Click(object sender, EventArgs e)
         {
-            CryptoHelper crypto = new CryptoHelper();
-            SaveSessions sessions = new SaveSessions();
-
             Control[] panel2_main_login_old_passwd_textbox = splitcontainer1.Panel2.Controls.Find("panel2_advanced_login_old_passwd_textbox", true);
             string old_saved_secret = mus.password_secret;
             string old_compare_hash = crypto.ComputeHash(panel2_main_login_old_passwd_textbox[0].Text, new SHA256CryptoServiceProvider());
@@ -891,7 +884,6 @@ namespace PuTTY_Storm
         /// </summary>
         private void Set_Passwords_Click(object sender, EventArgs e)
         {
-            SaveSessions sessions = new SaveSessions();
             Control[] new_password_textbox = splitcontainer1.Panel2.Controls.Find("advanced_new_password_textbox", true);
             Control[] new_password_combobox_group = splitcontainer1.Panel2.Controls.Find("new_password_combobox", true);
 
@@ -934,12 +926,13 @@ namespace PuTTY_Storm
         /// </summary>
         private void Save_Groups_Click(object sender, EventArgs e)
         {
-            SaveSessions sessions = new SaveSessions();
             sessions.Save_groups(Groups);
+            //MessageBox.Show("Groups Saved To The Config!", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            SavedGroupInfo groups = saved_data.get_Groups();
+            custom_controls.set_combobox_groups(containers_list, groups);
+            custom_controls.set_passwords_combobox_groups(splitcontainer1, groups);
+            custom_controls.set_pk_combobox_groups(splitcontainer1, groups);
             MessageBox.Show("Groups Saved To The Config!", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            custom_controls.set_combobox_groups(containers_list);
-            custom_controls.set_passwords_combobox_groups(splitcontainer1);
-            custom_controls.set_pk_combobox_groups(splitcontainer1);
         }
 
         /// <summary>
@@ -1727,7 +1720,6 @@ namespace PuTTY_Storm
             Save_Close[0].Hide();
             this.ControlBox = true;
 
-            SaveSessions sessions = new SaveSessions();
             sessions.Save_sessions(containers_list);
 
             Form check_forms = Application.OpenForms["Sessions"];

@@ -33,6 +33,8 @@ namespace PuTTY_Storm
 {
     class SetControls
     {
+        GetSavedSessions saved_groups = new GetSavedSessions();
+
         /// <summary>
         /// Initialize controls in Form1 (PuTTY STORM main configuration form).
         /// </summary>
@@ -148,7 +150,6 @@ namespace PuTTY_Storm
             if (File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
             "PuTTYStorm", "groups.xml")))
             {
-                GetSavedSessions saved_groups = new GetSavedSessions();
                 SavedGroupInfo groups = saved_groups.get_Groups();
 
                 combobox.Items.Add("");
@@ -175,7 +176,6 @@ namespace PuTTY_Storm
             if (File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
             "PuTTYStorm", "groups.xml")))
             {
-                GetSavedSessions saved_groups = new GetSavedSessions();
                 SavedGroupInfo groups = saved_groups.get_Groups();
 
                 combobox.Items.Add("");
@@ -422,7 +422,6 @@ namespace PuTTY_Storm
             if (File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
             "PuTTYStorm", "groups.xml")))
             {
-                GetSavedSessions saved_groups = new GetSavedSessions();
                 SavedGroupInfo groups = saved_groups.get_Groups();
 
                 combobox.Items.Add("");
@@ -591,7 +590,6 @@ namespace PuTTY_Storm
             if (File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
             "PuTTYStorm", "groups.xml")))
             {
-                GetSavedSessions saved_groups = new GetSavedSessions();
                 SavedGroupInfo groups = saved_groups.get_Groups();
 
                 combobox.Items.Add("");
@@ -661,7 +659,6 @@ namespace PuTTY_Storm
             if (File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
             "PuTTYStorm", "groups.xml")))
             {
-                GetSavedSessions saved_groups = new GetSavedSessions();
                 SavedGroupInfo groups = saved_groups.get_Groups();
 
                 combobox.Items.Add("");
@@ -698,14 +695,11 @@ namespace PuTTY_Storm
         /// <summary>
         /// Refresh all sessions dropdown menus when adding new groups
         /// </summary>
-        public void set_combobox_groups (List<GroupBox> containers_list)
+        public void set_combobox_groups (List<GroupBox> containers_list, SavedGroupInfo groups)
         {
             if (File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
             "PuTTYStorm", "groups.xml")))
             {
-                GetSavedSessions saved_groups = new GetSavedSessions();
-                SavedGroupInfo groups = saved_groups.get_Groups();
-
                 foreach (GroupBox groupbox in containers_list)
                 {
                     foreach (ComboBox combobox in groupbox.Controls.OfType<ComboBox>())
@@ -729,14 +723,11 @@ namespace PuTTY_Storm
         /// <summary>
         /// Refresh dropdown menus in advanced form Panel2 when adding new groups
         /// </summary>
-        public void set_passwords_combobox_groups(SplitContainer splitcontainer)
+        public void set_passwords_combobox_groups(SplitContainer splitcontainer, SavedGroupInfo groups)
         {
             if (File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
             "PuTTYStorm", "groups.xml")))
             {
-                GetSavedSessions saved_groups = new GetSavedSessions();
-                SavedGroupInfo groups = saved_groups.get_Groups();
-
                 foreach (ComboBox combobox in splitcontainer.Panel2.Controls.OfType<ComboBox>())
                 {
                     combobox.Items.Clear();
@@ -754,14 +745,11 @@ namespace PuTTY_Storm
         /// <summary>
         /// Refresh dropdown menus in advanced Panel1 - Private Keys section, when adding new groups
         /// </summary>
-        public void set_pk_combobox_groups(SplitContainer splitcontainer)
+        public void set_pk_combobox_groups(SplitContainer splitcontainer, SavedGroupInfo groups)
         {
             if (File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
             "PuTTYStorm", "groups.xml")))
             {
-                GetSavedSessions saved_groups = new GetSavedSessions();
-                SavedGroupInfo groups = saved_groups.get_Groups();
-
                 foreach (ComboBox combobox in splitcontainer.Panel1.Controls.OfType<ComboBox>())
                 {
                     if (combobox.Name == "private_keys_group_combobox")
