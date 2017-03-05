@@ -139,8 +139,10 @@ namespace PuTTY_Storm
 
             new Thread(delegate ()
             {
-                __DOWNLOAD_THREAD();
+                  __DOWNLOAD_THREAD();
             }).Start();
+
+            downloadBtn.Enabled = false;
         }
 
         private void __DOWNLOAD_THREAD()
@@ -163,14 +165,22 @@ namespace PuTTY_Storm
                         DOWNLOAD(client, remoteFileName);
                     }
 
-                    Modify_progressBar1(progressBar1, 0);
-
-                    if (sftpAsyncr.IsDownloadCanceled == true)
+                    if (sftpAsyncr.IsDownloadCanceled)
                     {
-                        Modify_DownloadLabel(DownloadLabel, "Status: Canceled");
+                        if (CancelViaCancelDownloadButton)
+                        {
+                            Modify_progressBar1(progressBar1, 0);
+                            Modify_DownloadLabel(DownloadLabel, "Status: Canceled");
+                            Modify_downloadBtnStatus(downloadBtn);
+                            CancelViaCancelDownloadButton = false;
+                        }                       
+                        sftpAsyncr = null;
                     } else
                     {
+                        Modify_progressBar1(progressBar1, 0);
                         Modify_DownloadLabel(DownloadLabel, "Status: Completed");
+                        Modify_downloadBtnStatus(downloadBtn);
+                        sftpAsyncr = null;
                     }
 
                     client.Disconnect();
@@ -227,6 +237,16 @@ namespace PuTTY_Storm
             DownloadBytesLabel.Text = "Bytes: " + value;
         }
 
+        private void Modify_downloadBtnStatus(Button downloadBtn)
+        {
+            if (downloadBtn.InvokeRequired)
+            {
+                downloadBtn.Invoke(new Action<Button>(Modify_downloadBtnStatus), downloadBtn);
+                return;
+            }
+            downloadBtn.Enabled = true;
+        }
+
         /// <summary>
         /// Download method using SSH.NET SFTP implementation for async files downloading.
         /// </summary>
@@ -259,7 +279,7 @@ namespace PuTTY_Storm
                     sftpAsyncr = (SftpDownloadAsyncResult)asyncr;
 
 
-                    while (!sftpAsyncr.IsCompleted)
+                    while (!sftpAsyncr.IsCompleted && !sftpAsyncr.IsDownloadCanceled)
                     {
                         int pct = Convert.ToInt32(((double)sftpAsyncr.DownloadedBytes / (double)fileSize) * 100);
 
@@ -280,7 +300,10 @@ namespace PuTTY_Storm
                 if (sftpAsyncr.IsDownloadCanceled)
                 {
                     Console.WriteLine("File Download has been canceled!");
-                    Modify_DownloadStatusTextBox(DownloadStatusTextBox, "File Download has been canceled!" + System.Environment.NewLine);
+                    if (CancelViaCancelDownloadButton)
+                    {
+                        Modify_DownloadStatusTextBox(DownloadStatusTextBox, "File Download has been canceled!" + System.Environment.NewLine);
+                    }
                 }
                 else
                 {
@@ -297,11 +320,13 @@ namespace PuTTY_Storm
         /// <summary>
         /// Cancel Download Button - Handles cancellation of async download operation.
         /// </summary>
+        private bool CancelViaCancelDownloadButton = false;
         private void CancelDownloadBtn_Click(object sender, EventArgs e)
         {
             if (sftpAsyncr != null)
             {
                 sftpAsyncr.IsDownloadCanceled = true;
+                CancelViaCancelDownloadButton = true;
             }
         }
 
@@ -324,6 +349,8 @@ namespace PuTTY_Storm
             {
                 ___UPLOAD_THREAD();
             }).Start();
+
+            UploadBtn.Enabled = false;
         }
 
         private void ___UPLOAD_THREAD ()
@@ -345,14 +372,22 @@ namespace PuTTY_Storm
                         UPLOAD(client, localFileName);                       
                     }
 
-                    Modify_progressBar2(progressBar2, 0);
-
-                    if (sftpAsyncrUpload.IsUploadCanceled == true)
+                    if (sftpAsyncrUpload.IsUploadCanceled)
                     {
-                        Modify_UploadLabel(UploadLabel, "Status: Canceled");
+                        if (CancelViaCancelUploadButton)
+                        {
+                            Modify_progressBar2(progressBar2, 0);
+                            Modify_UploadLabel(UploadLabel, "Status: Canceled");
+                            Modify_UploadBtnStatus(UploadBtn);
+                            CancelViaCancelUploadButton = false;
+                        }
+                        sftpAsyncrUpload = null;
                     } else
                     {
+                        Modify_progressBar2(progressBar2, 0);
                         Modify_UploadLabel(UploadLabel, "Status: Completed");
+                        Modify_UploadBtnStatus(UploadBtn);
+                        sftpAsyncrUpload = null;
                     }
                     
                     client.Disconnect();
@@ -409,6 +444,16 @@ namespace PuTTY_Storm
             UploadBytesLabel.Text = "Bytes: " + value;
         }
 
+        private void Modify_UploadBtnStatus(Button UploadBtn)
+        {
+            if (UploadBtn.InvokeRequired)
+            {
+                UploadBtn.Invoke(new Action<Button>(Modify_UploadBtnStatus), UploadBtn);
+                return;
+            }
+            UploadBtn.Enabled = true;
+        }
+
         /// <summary>
         /// Upload method using SSH.NET SFTP implementation for async files uploading.
         /// </summary>
@@ -438,7 +483,7 @@ namespace PuTTY_Storm
                     IAsyncResult asyncr = client.BeginUploadFile(file, remoteFileName);
                     sftpAsyncrUpload = (SftpUploadAsyncResult)asyncr;
 
-                    while (!sftpAsyncrUpload.IsCompleted)
+                    while (!sftpAsyncrUpload.IsCompleted && !sftpAsyncrUpload.IsUploadCanceled)
                     {
                         int pct = Convert.ToInt32(((double)sftpAsyncrUpload.UploadedBytes / (double)localFileSize) * 100);
 
@@ -459,7 +504,10 @@ namespace PuTTY_Storm
                 if (sftpAsyncrUpload.IsUploadCanceled)
                 {
                     Console.WriteLine("File Upload has been canceled!");
-                    Modify_UploadStatusTextBox(UploadStatusTextBox, "File Upload has been canceled!" + System.Environment.NewLine);
+                    if (CancelViaCancelUploadButton)
+                    {
+                        Modify_UploadStatusTextBox(UploadStatusTextBox, "File Upload has been canceled!" + System.Environment.NewLine);
+                    }
                 }
                 else
                 {
@@ -476,11 +524,13 @@ namespace PuTTY_Storm
         /// <summary>
         /// Cancel Upload Button - Handles cancellation of async upload operation.
         /// </summary>
+        private bool CancelViaCancelUploadButton = false;
         private void CancelUploadBtn_Click(object sender, EventArgs e)
         {
             if (sftpAsyncrUpload != null)
             {
                 sftpAsyncrUpload.IsUploadCanceled = true;
+                CancelViaCancelUploadButton = true;
             }
         }
 
@@ -626,6 +676,59 @@ namespace PuTTY_Storm
             RemoteFileTextbox.Text = RemoteFileTextbox.Text.TrimEnd('\r', '\n');
             RemoteFilesForm.Dispose();
         }
+
+        private void STFPManagerFormCLosing(object sender, FormClosingEventArgs e)
+        {
+            // When closing SFTP Manager form cancel the download and upload if running in parallel!!!
+            if (sftpAsyncr != null && sftpAsyncrUpload != null)
+            {
+                DialogResult dialogResult = MessageBox.Show("Are you sure you want to cancel upload and download operation?", "Exit",
+                   MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    sftpAsyncr.IsDownloadCanceled = true;
+                    sftpAsyncrUpload.IsUploadCanceled = true;
+                }
+                else if (dialogResult == DialogResult.No)
+                {
+                    e.Cancel = true;
+                }
+                return;
+            }
+
+            // When closing SFTP Manager form cancel the download if running!!!
+            if (sftpAsyncr != null)
+            {
+                DialogResult dialogResult = MessageBox.Show("Are you sure you want to cancel the download?", "Download running", 
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    sftpAsyncr.IsDownloadCanceled = true;
+                }
+                else if (dialogResult == DialogResult.No)
+                {
+                    e.Cancel = true;
+                }
+                return;                
+            }
+
+            // When closing SFTP Manager form cancel the upload if running!!!
+            if (sftpAsyncrUpload != null)
+            {
+                DialogResult dialogResult = MessageBox.Show("Are you sure you want to cancel the upload?", "Upload running",
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    sftpAsyncrUpload.IsUploadCanceled = true;
+                }
+                else if (dialogResult == DialogResult.No)
+                {
+                    e.Cancel = true;
+                }
+                return;
+            }
+        }
+
 
     }
 }

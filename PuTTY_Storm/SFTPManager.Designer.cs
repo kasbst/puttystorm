@@ -204,7 +204,7 @@
             this.splitContainer1.Panel2.Controls.Add(this.progressBar1);
             this.splitContainer1.Panel2.Controls.Add(this.CancelDownloadBtn);
             this.splitContainer1.Panel2.Controls.Add(this.DownloadLabel);
-            this.splitContainer1.Size = new System.Drawing.Size(1084, 650);
+            this.splitContainer1.Size = new System.Drawing.Size(1084, 649);
             this.splitContainer1.SplitterDistance = 525;
             this.splitContainer1.TabIndex = 13;
             // 
@@ -363,7 +363,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1084, 650);
+            this.ClientSize = new System.Drawing.Size(1084, 649);
             this.Controls.Add(this.splitContainer1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
@@ -372,6 +372,7 @@
             this.Name = "SFTPManager";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Putty Strom - SFTP Manager";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.STFPManagerFormCLosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel1.PerformLayout();

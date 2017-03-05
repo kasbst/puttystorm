@@ -444,7 +444,11 @@ namespace PuTTY_Storm
             }
         }
 
-
-
+        private void Kotarak_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (MessageBox.Show("Are you sure you want to exit Kotarak?", "Kotarak Exit", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) ==
+                System.Windows.Forms.DialogResult.No)
+                e.Cancel = true;
+        }
     }
 }
