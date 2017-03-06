@@ -1918,6 +1918,7 @@ namespace PuTTY_Storm
                     my_ProcessInfo_List_TC_1.Add(now.start_putty(panels, i, process, _hostname, _username, _password, mus.putty_path, SessionsSplitContainer, PrivateKey));
                     tabcontrol1.TabPages.Add(tabpage);
                 }
+                SimpleServerPane.SelectedNode = null;
             }
         }
 

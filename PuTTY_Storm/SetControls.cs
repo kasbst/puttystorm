@@ -28,6 +28,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Drawing;
 using System.IO;
+using System.Collections;
 
 namespace PuTTY_Storm
 {
@@ -773,12 +774,15 @@ namespace PuTTY_Storm
         public void LoadTreeViewPane(TreeView ServerPane, List<GroupBox> containers_list, 
             TreeNodeMouseClickEventHandler ServerPane_NodeMouseDoubleClick)
         {
-            ServerPane.Nodes.Clear();
+            //ServerPane.Nodes.Clear();
 
             try
             {
+                // Disable redrawing of ServerPane to prevent flickering while changes are made.
+                ServerPane.BeginUpdate();
+
                 foreach (GroupBox container in containers_list)
-                {
+                {                    
                     Control[] group = container.Controls.Find("combobox", true);
                     Control[] sub_group = container.Controls.Find("sub_groups_combobox", true);
                     Control[] hostname_textbox = container.Controls.Find("hostname_textbox", true);
@@ -788,6 +792,7 @@ namespace PuTTY_Storm
 
                     if ((!(group[0].Text == null || group[0].Text == "")))
                     {
+                        // If group doesn't exists - add it
                         if (!ServerPane.Nodes.ContainsKey(group[0].Text))
                         { 
                              ServerPane.Nodes.Add(new TreeNode(group[0].Text) { Name = group[0].Text });
@@ -795,6 +800,7 @@ namespace PuTTY_Storm
                             
                         }
 
+                        // If sub-group doesn't exists - add it
                         if (!ServerPane.Nodes[group[0].Text].Nodes.ContainsKey(sub_group[0].Text))
                         {
                             if (!(sub_group[0].Text == null || sub_group[0].Text == ""))
@@ -804,19 +810,108 @@ namespace PuTTY_Storm
                             }
                         }
 
+                        // If server has a group only defined - add it under that group
                         if ((!(group[0].Text == null || group[0].Text == "") && (sub_group[0].Text == null || sub_group[0].Text == "")))
-                            ServerPane.Nodes[group[0].Text].Nodes.Add(new TreeNode(hostname_textbox[0].Text) { Name = hostname_textbox[0].Text });
+                        {
+                            // If server doesn't exists in current group first check if it's part of another group.
+                            // If that's the case remove it from that group! Server can be part only of one group!
+                            // And then add it to the current group.
+                            if (!ServerPane.Nodes[group[0].Text].Nodes.ContainsKey(hostname_textbox[0].Text))
+                            {
+                                TreeNode[] node = ServerPane.Nodes.Find(hostname_textbox[0].Text, true);
+                                if (node.Length > 0)
+                                {
+                                    ServerPane.Nodes.Remove(node[0]);
+                                }
+                                ServerPane.Nodes[group[0].Text].Nodes.Add(new TreeNode(hostname_textbox[0].Text) { Name = hostname_textbox[0].Text });
+                            }
+                        }
 
+                        // If server has group and also sub-group defined - add it under that group -> sub-group
                         if ((!(group[0].Text == null || group[0].Text == "") && !(sub_group[0].Text == null || sub_group[0].Text == "")))
-                            ServerPane.Nodes[group[0].Text].Nodes[sub_group[0].Text].Nodes.Add(new TreeNode(hostname_textbox[0].Text) { Name = hostname_textbox[0].Text });
-                    }
+                        {
+                            // If server doesn't exists in current sub-group first check if it's part of another sub-group.
+                            // If that's the case remove it from that sub-group! Server can be part only of one sub-group!
+                            // And then add it to the current sub-group.
+                            if (!ServerPane.Nodes[group[0].Text].Nodes[sub_group[0].Text].Nodes.ContainsKey(hostname_textbox[0].Text))
+                            {
+                                TreeNode[] node = ServerPane.Nodes.Find(hostname_textbox[0].Text, true);
+                                if (node.Length > 0)
+                                {
+                                    ServerPane.Nodes.Remove(node[0]);
+                                }
+                                ServerPane.Nodes[group[0].Text].Nodes[sub_group[0].Text].Nodes.Add(new TreeNode(hostname_textbox[0].Text) { Name = hostname_textbox[0].Text });
+                            }
+                        }
+                    }                  
+
                 }
+
+                // Remove empty group and sub-group nodes
+                SavedGroupInfo groups = null;
+
+                if (File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    "PuTTYStorm", "groups.xml")))
+                {
+                    groups = saved_groups.get_Groups();
+                }
+                // Check both layers in case we are removing group which have also empty sub-group
+                // inside. Can be done also using recursion.              
+                for (int i = 0; i < 2; i++)
+                {
+                    if (groups != null)
+                        RemoveEmptryTreeViewGroups(ServerPane, groups);
+                }
+
+                // Sort Nodes in TreeView
+                ServerPane.TreeViewNodeSorter = new NodeSorter();
+                // Enable redrawing of ServerPane.
+                ServerPane.EndUpdate();
             } catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
+        /// <summary>
+        /// Remove empty group and sub-group nodes
+        /// </summary>
+        private void RemoveEmptryTreeViewGroups (TreeView ServerPane, SavedGroupInfo groups)
+        {
+            foreach (string name in groups.names)
+            {
+                TreeNode[] remove_empty_group_nodes = ServerPane.Nodes.Find(name, true);
+
+                if (remove_empty_group_nodes.Length > 0)
+                {
+                    foreach (TreeNode remove_group in remove_empty_group_nodes)
+                    {
+                        if (remove_group.Nodes.Count == 0)
+                        {
+                            ServerPane.Nodes.Remove(remove_group);
+                        }
+                    }
+                }
+            }
+        }
+
+        public class NodeSorter : IComparer
+        {
+            // Compare the length of the strings, or the strings
+            // themselves, if they are the same length.
+            public int Compare(object x, object y)
+            {
+                TreeNode tx = x as TreeNode;
+                TreeNode ty = y as TreeNode;
+
+                // Compare the length of the strings, returning the difference.
+                if (tx.Text.Length != ty.Text.Length)
+                    return tx.Text.Length - ty.Text.Length;
+
+                // If they are the same length, call Compare.
+                return string.Compare(tx.Text, ty.Text);
+            }
+        }
 
         public int DropDownWidth(ComboBox myCombo)
         {
