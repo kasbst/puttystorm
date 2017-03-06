@@ -774,8 +774,6 @@ namespace PuTTY_Storm
         public void LoadTreeViewPane(TreeView ServerPane, List<GroupBox> containers_list, 
             TreeNodeMouseClickEventHandler ServerPane_NodeMouseDoubleClick)
         {
-            //ServerPane.Nodes.Clear();
-
             try
             {
                 // Disable redrawing of ServerPane to prevent flickering while changes are made.
