@@ -524,7 +524,7 @@ namespace PuTTY_Storm
                         return;
                     }
 
-                    Regex regex = new Regex(@txb.Text);
+                    Regex regex = new Regex(Regex.Escape(txb.Text));
 
                     foreach (GroupBox container in containers_list)
                     {
@@ -1754,7 +1754,7 @@ namespace PuTTY_Storm
                     string username = null;
                     string password = null;
 
-                    Regex regex = new Regex(@txb.Text);
+                    Regex regex = new Regex(Regex.Escape(txb.Text));
 
                     foreach (GroupBox container in containers_list)
                     {
