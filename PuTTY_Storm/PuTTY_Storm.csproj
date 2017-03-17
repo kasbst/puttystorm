@@ -93,6 +93,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CryptoHelper.cs" />
+    <Compile Include="GlobalHotKeysManager\GlobalHotKeysManager.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GlobalHotKeysManager\GlobalHotKeysManager.Designer.cs">
+      <DependentUpon>GlobalHotKeysManager.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GlobalHotKeysManager\GlobalHotKeysSettings.cs" />
+    <Compile Include="GlobalHotKeysManager\GlobalHotKeysWorker.cs" />
     <Compile Include="GlobalWindowEvents.cs" />
     <Compile Include="DraggableTabControl.cs">
       <SubType>Component</SubType>
@@ -155,6 +163,9 @@
     <Compile Include="Splash Screens\StopScreen.Designer.cs">
       <DependentUpon>StopScreen.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="GlobalHotKeysManager\GlobalHotKeysManager.resx">
+      <DependentUpon>GlobalHotKeysManager.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Kotarak\KotarakMainForm.resx">
       <DependentUpon>KotarakMainForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -216,6 +227,7 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

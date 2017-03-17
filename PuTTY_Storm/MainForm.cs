@@ -193,6 +193,8 @@ namespace PuTTY_Storm
         /// 5) Load/initialize "Connect" button - This button opens a new Form (SessionsForm) - (Putty Sessions Form) which contains
         /// a TabControl with TabPages where putty sessions are started.
         /// 
+        /// 6) Load/initialize "SearchSessionConfigTextBox" textbox - Allows easy and fast search based on hostname
+        /// 
         /// NOTE: MainForm contains auto-save functionality. When the main Form (MainForm) is closed all sessions are saved to 
         /// the sessions.xml configuration file.
         /// </summary>
@@ -202,6 +204,8 @@ namespace PuTTY_Storm
         GroupBox PuTTY_Config;
         Panel SettingPanel;
         SavedPrivatekeysInfo privatekeys;
+
+        TextBox SearchSessionConfigTextBox;
 
         private void MainForm_Load(object sender, EventArgs e)
         {
@@ -234,9 +238,20 @@ namespace PuTTY_Storm
 
             SettingPanel = new Panel();
             SettingPanel.Location = new Point(500, 255);
-            SettingPanel.Size = new Size(250, 150);
+            SettingPanel.Size = new Size(250, 120);
             SettingPanel.BackColor = Color.SlateGray;
             SettingPanel.Name = "SettingPanel";
+
+            SearchSessionConfigTextBox = new TextBox();
+            SearchSessionConfigTextBox.Location = new Point(507, 380);
+            SearchSessionConfigTextBox.Size = new Size(215, 60);
+            SearchSessionConfigTextBox.Name = "SearchSessionConfigTextBox";
+            SearchSessionConfigTextBox.Text = "<search hostname>";
+            SearchSessionConfigTextBox.Font = new Font("Courier new", 10);
+            SearchSessionConfigTextBox.ForeColor = SystemColors.GrayText;
+            SearchSessionConfigTextBox.KeyDown += new KeyEventHandler(SearchSessionConfigTextBox_KeyDown);
+            SearchSessionConfigTextBox.Leave += new EventHandler(SearchSessionConfigTextBox_Leave);
+            SearchSessionConfigTextBox.Enter += new EventHandler(SearchSessionConfigTextBox_Enter);
 
             Button AddEntry = new Button();
             AddEntry.Font = new Font("Calibri", 10);
@@ -268,7 +283,7 @@ namespace PuTTY_Storm
 
             Button Advanced_Options = new Button();
             Advanced_Options.Font = new Font("Calibri", 10);
-            Advanced_Options.Location = new Point(5, 62);
+            Advanced_Options.Location = new Point(5, 64);
             Advanced_Options.Size = new Size(103, 38);
             Advanced_Options.Text = "Advanced";
             Advanced_Options.Name = "Advanced";
@@ -405,6 +420,7 @@ namespace PuTTY_Storm
             SettingPanel.Controls.Add(Advanced_Options);
             Controls.Add(PuTTY_Config);
             Controls.Add(SettingPanel);
+            Controls.Add(SearchSessionConfigTextBox);
 
             // Check which groups in created sessions containers (GroupBoxes) are part
             // of private keys setup. If group is part of PK setup change properties 
@@ -413,6 +429,10 @@ namespace PuTTY_Storm
 
             this.Visible = true;
             t.Abort();
+
+            // Set focus to SettingPanel, so we prevent pogo and scroll issues when scolling
+            // with mousewheel or touchpad on laptops when application starts.
+            SettingPanel.Focus();
 
             // Throw a warning message if there is more than 120 session in config. I didn't put the checks
             // to the sessions save/load code as this restriction will be removed!
@@ -431,11 +451,14 @@ namespace PuTTY_Storm
 
         private void MainForm_Scroll(object sender, ScrollEventArgs e)
         {
+            SettingPanel.Focus();
+
             if (e.OldValue > e.NewValue)
             {
                 if (VerticalScroll.Value < LastScrollValue)
                 {
                     SettingPanel.Location = new Point(500, 255);
+                    SearchSessionConfigTextBox.Location = new Point(507, 215);
                 }
             }
             else
@@ -444,18 +467,28 @@ namespace PuTTY_Storm
                 {
                     LastScrollValue = VerticalScroll.Value;
                     SettingPanel.Location = new Point(500, 255);
+                    SearchSessionConfigTextBox.Location = new Point(507, 215);
                 }
+            }
+
+            // Move SearchSessionConfigTextBox to its original location when scrolle to top
+            if (VerticalScroll.Value == 0)
+            {
+                SearchSessionConfigTextBox.Location = new Point(507, 380);
             }
         }
 
         private void MainForm_MouseWheel(object sender, MouseEventArgs e)
         {
+            SettingPanel.Focus();
+
             if (e.Delta > 0)
             {
                 if (VerticalScroll.Value < LastScrollValue)
                 {
                     LastScrollValue = VerticalScroll.Value;
                     SettingPanel.Location = new Point(500, 255);
+                    SearchSessionConfigTextBox.Location = new Point(507, 215);
                 }
             } else
             {
@@ -463,9 +496,79 @@ namespace PuTTY_Storm
                 {
                     LastScrollValue = VerticalScroll.Value;
                     SettingPanel.Location = new Point(500, 255);
+                    SearchSessionConfigTextBox.Location = new Point(507, 215);
                 }
             }
 
+            // Move SearchSessionConfigTextBox to its original location when scrolle to top
+            if (VerticalScroll.Value == 0)
+            {
+                SearchSessionConfigTextBox.Location = new Point(507, 380);
+            }
+
+        }
+
+        /// <summary>
+        /// Search hostname for fast configuration searching within the main form
+        /// </summary>
+        private void SearchSessionConfigTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                if (sender is TextBox)
+                {
+                    TextBox txb = (TextBox)sender;
+
+                    if (txb.Text == "")
+                    {
+                        return;
+                    }
+
+                    Regex regex = new Regex(@txb.Text);
+
+                    foreach (GroupBox container in containers_list)
+                    {
+                        Control[] hostname_textbox = container.Controls.Find("hostname_textbox", true);
+
+                        Match match = regex.Match(hostname_textbox[0].Text);
+                        if (match.Success)
+                        {
+                            container.Focus();
+                            SettingPanel.Location = new Point(500, 255);
+                            SearchSessionConfigTextBox.Location = new Point(507, 215);
+                            txb.Text = "<search hostname>";
+                            txb.ForeColor = SystemColors.GrayText;
+                            break;
+                        }
+                    }
+                }
+                // Disable beep when enter is pressed
+                e.SuppressKeyPress = true;
+            }
+        }
+
+        /// <summary>
+        /// Remove "watermark" text from textbox when user enters it
+        /// </summary>
+        private void SearchSessionConfigTextBox_Enter(object sender, EventArgs e)
+        {
+            if (SearchSessionConfigTextBox.Text == "<search hostname>")
+            {
+                SearchSessionConfigTextBox.Text = "";
+                SearchSessionConfigTextBox.ForeColor = SystemColors.WindowText;
+            }
+        }
+
+        /// <summary>
+        /// Add "watermark" text to the textbox when user leaves it
+        /// </summary>
+        private void SearchSessionConfigTextBox_Leave(object sender, EventArgs e)
+        {
+            if (SearchSessionConfigTextBox.Text.Length == 0)
+            {
+                SearchSessionConfigTextBox.Text = "<search hostname>";
+                SearchSessionConfigTextBox.ForeColor = SystemColors.GrayText;
+            }
         }
 
         /// <summary>
@@ -1261,12 +1364,16 @@ namespace PuTTY_Storm
 
         /// <summary>
         /// Opens a new PuTTY STORM sessions Form (SessionsForm).
-        /// This Form contains two parts:
+        /// This Form contains several parts:
+        /// 
         /// 1) TOP - This is the panel contained within the top of PuTTY STORM sessions Form (SessionsForm). 
-        /// It contains controls to open new putty session, search for saved sessions and Manage already saved
-        /// sessions.
+        /// It contains controls to open new putty session, search for saved sessions, manage already saved
+        /// sessions and various settings, manager GlobalHotKeys configuration and Show/Hide side panel with
+        /// servers.
         /// 
         /// 2) TabControls with split screen implemeneted where putty sessions are opened inside of TabPages.
+        /// 
+        /// 3) TreeView on right side with server names divided to groups and sub-groups.
         /// </summary>
         DraggableTabControl tabcontrol1;
         DraggableTabControl tabcontrol2;
@@ -1281,6 +1388,13 @@ namespace PuTTY_Storm
         Panel SimpleServerPanePanel;
         SplitContainer SessionSplitContainerAndServerPanel;
 
+        // GlobalHotKeys handling (registration/unregistration).
+        GlobalHotKeysWorker TabPagesForwardGlobalHotKeyWorker;
+        GlobalHotKeysWorker TabPagesBackwardGlobalHotKeyWorker;
+        GlobalHotKeysWorker SplitScreenGlobalHotKeyWorker;
+        GlobalHotKeysWorker SFTPManagerGlobalHotKeyWorker;
+        GlobalHotKeysWorker KotarakGlobalHotKeyWorker;
+
         private void Connect_Click(object sender, EventArgs e)
         {
             if (!File.Exists(mus.putty_path))
@@ -1288,6 +1402,12 @@ namespace PuTTY_Storm
                 MessageBox.Show("Select Path To Putty.exe First!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
                 return;
             }
+
+            TabPagesForwardGlobalHotKeyWorker = new GlobalHotKeysWorker("TabPagesForward");
+            TabPagesBackwardGlobalHotKeyWorker = new GlobalHotKeysWorker("TabPagesBackward");
+            SplitScreenGlobalHotKeyWorker = new GlobalHotKeysWorker("SplitScreen");
+            SFTPManagerGlobalHotKeyWorker = new GlobalHotKeysWorker("SFTPManager");
+            KotarakGlobalHotKeyWorker = new GlobalHotKeysWorker("Kotarak");
 
             panelsList = new List<Panel>();
             my_ProcessInfo_List_TC_1 = new List<ProcessInfo>();
@@ -1302,7 +1422,9 @@ namespace PuTTY_Storm
             SessionsSplitContainer.SplitterDistance = 75;
             SessionsSplitContainer.Panel1.AutoScroll = true;
 
-            SessionsForm = new SessionsForm(my_ProcessInfo_List_TC_1, tabcontrol1, tabcontrol2, SessionsSplitContainer, containers_list);
+            SessionsForm = new SessionsForm(my_ProcessInfo_List_TC_1, tabcontrol1, tabcontrol2, SessionsSplitContainer, containers_list,
+                TabPagesForwardGlobalHotKeyWorker, TabPagesBackwardGlobalHotKeyWorker, SplitScreenGlobalHotKeyWorker, SFTPManagerGlobalHotKeyWorker,
+                KotarakGlobalHotKeyWorker);
             SessionsForm.FormClosed += new FormClosedEventHandler(SessionsForm_FormClosed);
             SessionsForm.StartPosition = FormStartPosition.CenterScreen;
             this.Hide();
@@ -1373,6 +1495,11 @@ namespace PuTTY_Storm
                             my_ProcessInfo_List_TC_2 = null;
                             now = null;
                             SessionsSplitContainer.Dispose();
+                            TabPagesForwardGlobalHotKeyWorker = null;
+                            TabPagesBackwardGlobalHotKeyWorker = null;
+                            SplitScreenGlobalHotKeyWorker = null;
+                            SFTPManagerGlobalHotKeyWorker = null;
+                            KotarakGlobalHotKeyWorker = null;
 
                             return;
                         }
@@ -1453,19 +1580,27 @@ namespace PuTTY_Storm
             Button manage_sessions_button = new Button();
             manage_sessions_button.Font = new Font("Calibri", 9);
             manage_sessions_button.Location = new Point(930, 3);
-            manage_sessions_button.Size = new Size(150, 23);
+            manage_sessions_button.Size = new Size(80, 23);
             manage_sessions_button.Text = "Settings";
             manage_sessions_button.Click += new EventHandler(Manage_Sessions_Click);
             new_connect_panel.Controls.Add(manage_sessions_button);
 
+            Button global_hot_keys_button = new Button();
+            global_hot_keys_button.Font = new Font("Calibri", 9);
+            global_hot_keys_button.Location = new Point(1020, 3);
+            global_hot_keys_button.Size = new Size(110, 23);
+            global_hot_keys_button.Text = "GlobalHotKeys";
+            global_hot_keys_button.Click += new EventHandler(Global_Hot_Keys_Click);
+            new_connect_panel.Controls.Add(global_hot_keys_button);
+
             Button show_server_pane_button = new Button();
             show_server_pane_button.Font = new Font("Calibri", 9);
-            show_server_pane_button.Location = new Point(1100, 3);
-            show_server_pane_button.Size = new Size(150, 23);
-            show_server_pane_button.Text = "Hide servers panel";
+            show_server_pane_button.Location = new Point(1150, 3);
+            show_server_pane_button.Size = new Size(130, 23);
+            show_server_pane_button.Text = "HideServersPanel";
             show_server_pane_button.Click += new EventHandler(Show_server_pane_Click);
             new_connect_panel.Controls.Add(show_server_pane_button);
-
+           
             SessionsForm.ShowInTaskbar = true;
             SessionsForm.KeyPreview = true;
             SessionsForm.Size = new Size(1200, 800);
@@ -1514,9 +1649,10 @@ namespace PuTTY_Storm
                 Form SFTPManager = Application.OpenForms["SFTPManager"];
                 Form SelectSFTPConnectionForm = Application.OpenForms["SelectSFTPConnectionForm"];
                 Form Kotarak = Application.OpenForms["kotarak"];
+                Form GlobalHotKeysManager = Application.OpenForms["GlobalHotKeysManager"];
 
                 if (!((this.Visible) || (SFTPManager != null && SFTPManager.Visible) || (SelectSFTPConnectionForm != null && SelectSFTPConnectionForm.Visible) 
-                    || (Kotarak != null && Kotarak.Visible)))
+                    || (Kotarak != null && Kotarak.Visible) || (GlobalHotKeysManager != null && GlobalHotKeysManager.Visible)))
                 {
                     if (my_ProcessInfo_List_TC_1.Count > 0) {
                         tabcontrol1.Focus();
@@ -1538,9 +1674,10 @@ namespace PuTTY_Storm
                 Form SFTPManager = Application.OpenForms["SFTPManager"];
                 Form SelectSFTPConnectionForm = Application.OpenForms["SelectSFTPConnectionForm"];
                 Form Kotarak = Application.OpenForms["kotarak"];
+                Form GlobalHotKeysManager = Application.OpenForms["GlobalHotKeysManager"];
 
                 if (!((this.Visible) || (SFTPManager != null && SFTPManager.Visible) || (SelectSFTPConnectionForm != null && SelectSFTPConnectionForm.Visible) 
-                    || (Kotarak != null && Kotarak.Visible)))
+                    || (Kotarak != null && Kotarak.Visible) || (GlobalHotKeysManager != null && GlobalHotKeysManager.Visible)))
                 {
                     if (my_ProcessInfo_List_TC_2.Count > 0)
                     {
@@ -1682,6 +1819,8 @@ namespace PuTTY_Storm
                         }
                     }
                 }
+                // Disable beep when enter is pressed
+                e.SuppressKeyPress = true;
             }
         }
 
@@ -1711,7 +1850,12 @@ namespace PuTTY_Storm
         {
             this.Hide();
 
-            custom_controls.LoadTreeViewPane(SimpleServerPane, containers_list, ServerPane_NodeMouseDoubleClick);
+            Form check_forms = Application.OpenForms["Sessions"];
+
+            if (check_forms != null)
+            {
+                custom_controls.LoadTreeViewPane(SimpleServerPane, containers_list, ServerPane_NodeMouseDoubleClick);
+            }
 
             Control[] Connect = this.Controls.Find("Connect", true);
             Connect[0].Show();
@@ -1722,7 +1866,7 @@ namespace PuTTY_Storm
 
             sessions.Save_sessions(containers_list);
 
-            Form check_forms = Application.OpenForms["Sessions"];
+            //Form check_forms = Application.OpenForms["Sessions"];
 
             if (check_forms == null)
             {
@@ -1933,15 +2077,29 @@ namespace PuTTY_Storm
             {
                 if (SessionSplitContainerAndServerPanel.Panel2Collapsed)
                 {
-                    button.Text = "Hide servers panel";
+                    button.Text = "HideServersPanel";
                     SessionSplitContainerAndServerPanel.Panel2Collapsed = false;
                 }
                 else 
                 {
-                    button.Text = "Show servers panel";
+                    button.Text = "ShowServersPanel";
                     SessionSplitContainerAndServerPanel.Panel2Collapsed = true;
                 }
             }
+        }
+
+        /// <summary>
+        /// Start GlobalHotKeysManager Form
+        /// </summary>
+        private void Global_Hot_Keys_Click(object sender, EventArgs e)
+        {
+            GlobalHotKeysManager globalHotKeysManager = new GlobalHotKeysManager(TabPagesForwardGlobalHotKeyWorker, 
+                TabPagesBackwardGlobalHotKeyWorker, SplitScreenGlobalHotKeyWorker, SFTPManagerGlobalHotKeyWorker,
+                KotarakGlobalHotKeyWorker);
+
+            globalHotKeysManager.Name = "GlobalHotKeysManager";
+            globalHotKeysManager.Text = GlobalVar.VERSION + " - GlobalHotKeysManager";
+            globalHotKeysManager.Show();
         }
 
 
@@ -2142,6 +2300,12 @@ namespace PuTTY_Storm
         /// </summary>
         void SessionsForm_FormClosed(object sender, FormClosedEventArgs e)
         {
+            TabPagesForwardGlobalHotKeyWorker.UnregisterGlobalHotKey();
+            TabPagesBackwardGlobalHotKeyWorker.UnregisterGlobalHotKey();
+            SplitScreenGlobalHotKeyWorker.UnregisterGlobalHotKey();
+            SFTPManagerGlobalHotKeyWorker.UnregisterGlobalHotKey();
+            KotarakGlobalHotKeyWorker.UnregisterGlobalHotKey();
+
             SessionsForm = null;
             this.Show();
             this.Refresh();           

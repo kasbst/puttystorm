@@ -41,22 +41,31 @@ namespace PuTTY_Storm
         SplitContainer SessionsSplitContainer;
         List<GroupBox> containers_list;
 
+        // GlobalHotKeys Configuration settings
+        private TabPagesForwardGlobalHotKeySettings tabPagesForwardGlobalHotKeySettings;
+        private TabPagesBackwardGlobalHotKeySettings tabPagesbackwardGlobalHotKeySettings;
+        private SplitScreenGlobalHotKeySettings splitScreenGlobalHotKeySettings;
+        private SFTPManagerGlobalHotKeySettings sftpManagerGlobalHotKeySettings;
+        private KotarakGlobalHotKeySettings kotarakGlobalHotKeySettings;
+
+        // GlobalHotKeys registration
+        private GlobalHotKeysWorker TabPagesForwardGlobalHotKeyWorker;
+        private GlobalHotKeysWorker TabPagesBackwardGlobalHotKeyWorker;
+        private GlobalHotKeysWorker SplitScreenGlobalHotKeyWorker;
+        private GlobalHotKeysWorker SFTPManagerGlobalHotKeyWorker;
+        private GlobalHotKeysWorker KotarakGlobalHotKeyWorker;
+
         private GetSavedSessions saved_data;
         private PasswordLess IsPasswordLess;
-
-        const int MYACTION_HOTKEY_ID1 = 1;
-        const int MYACTION_HOTKEY_ID2 = 2;
-        const int MYACTION_HOTKEY_ID3 = 3;
-        const int MYACTION_HOTKEY_ID4 = 4;
-        const int MYACTION_HOTKEY_ID5 = 5;
-        const int MYACTION_HOTKEY_ID6 = 6;
 
         /// <summary>
         /// Initialize PuTTY STORM sessions form (Form2) and register hotkeys for
         /// easy and fast swithing between TabPages.
         /// </summary>
         public SessionsForm(List<ProcessInfo> _my_ProcessInfo_List_TC_1, TabControl _tabcontrol1, TabControl _tabcontrol2, 
-            SplitContainer _SessionsSplitContainer, List<GroupBox> _containers_list)
+            SplitContainer _SessionsSplitContainer, List<GroupBox> _containers_list, GlobalHotKeysWorker _TabPagesForwardGlobalHotKeyWorker,
+            GlobalHotKeysWorker _TabPagesBackwardGlobalHotKeyWorker, GlobalHotKeysWorker _SplitScreenGlobalHotKeyWorker,
+            GlobalHotKeysWorker _SFTPManagerGlobalHotKeyWorker, GlobalHotKeysWorker _KotarakGlobalHotKeyWorker)
         {
             this.tabcontrol1 = _tabcontrol1;
             this.tabcontrol2 = _tabcontrol2;
@@ -64,21 +73,47 @@ namespace PuTTY_Storm
             this.SessionsSplitContainer = _SessionsSplitContainer;
             this.containers_list = _containers_list;
 
+            // GlobalHotKeys Configuration settings
+            tabPagesForwardGlobalHotKeySettings = new TabPagesForwardGlobalHotKeySettings();
+            tabPagesbackwardGlobalHotKeySettings = new TabPagesBackwardGlobalHotKeySettings();
+            splitScreenGlobalHotKeySettings = new SplitScreenGlobalHotKeySettings();
+            sftpManagerGlobalHotKeySettings = new SFTPManagerGlobalHotKeySettings();
+            kotarakGlobalHotKeySettings = new KotarakGlobalHotKeySettings();
+
+            // GlobalHotKeys registration
+            this.TabPagesForwardGlobalHotKeyWorker = _TabPagesForwardGlobalHotKeyWorker;
+            this.TabPagesBackwardGlobalHotKeyWorker = _TabPagesBackwardGlobalHotKeyWorker;
+            this.SplitScreenGlobalHotKeyWorker = _SplitScreenGlobalHotKeyWorker;
+            this.SFTPManagerGlobalHotKeyWorker = _SFTPManagerGlobalHotKeyWorker;
+            this.KotarakGlobalHotKeyWorker = _KotarakGlobalHotKeyWorker;
+
             saved_data = new GetSavedSessions();
             IsPasswordLess = new PasswordLess();
 
-            // Modifier keys codes: Alt = 1, Ctrl = 2, Shift = 4, Win = 8
-            // Compute the addition of each combination of the keys you want to be pressed
-            // ALT+CTRL = 1 + 2 = 3 , CTRL+SHIFT = 2 + 4 = 6...
-            NativeMethods.RegisterHotKey(this.Handle, MYACTION_HOTKEY_ID1, 2, (int)Keys.Tab);
-            NativeMethods.RegisterHotKey(this.Handle, MYACTION_HOTKEY_ID2, 6, (int)Keys.Tab);
+            // Initialize GlobalHotKeys to the default values if config is empty (application first run)!
+            GlobalHotKeysFirstStart();
 
-            NativeMethods.RegisterHotKey(this.Handle, MYACTION_HOTKEY_ID3, 2, (int)Keys.F1);
-            NativeMethods.RegisterHotKey(this.Handle, MYACTION_HOTKEY_ID4, 2, (int)Keys.F2);
+            // Register GlobalHotKeys
+            this.TabPagesForwardGlobalHotKeyWorker.Handle = this.Handle;
+            this.TabPagesForwardGlobalHotKeyWorker.RegisterGlobalHotKey((int)GlobalHotKeysManager.ConvertFromStringToKey(tabPagesForwardGlobalHotKeySettings.key), 
+                tabPagesForwardGlobalHotKeySettings.modifier);
 
-            NativeMethods.RegisterHotKey(this.Handle, MYACTION_HOTKEY_ID5, 2, (int)Keys.F3);
+            this.TabPagesBackwardGlobalHotKeyWorker.Handle = this.Handle;
+            this.TabPagesBackwardGlobalHotKeyWorker.RegisterGlobalHotKey((int)GlobalHotKeysManager.ConvertFromStringToKey(tabPagesbackwardGlobalHotKeySettings.key), 
+                tabPagesbackwardGlobalHotKeySettings.modifier);
 
-            NativeMethods.RegisterHotKey(this.Handle, MYACTION_HOTKEY_ID6, 2, (int)Keys.F4);
+            this.SplitScreenGlobalHotKeyWorker.Handle = this.Handle;
+            this.SplitScreenGlobalHotKeyWorker.RegisterGlobalHotKey((int)GlobalHotKeysManager.ConvertFromStringToKey(splitScreenGlobalHotKeySettings.key), 
+                splitScreenGlobalHotKeySettings.modifier);
+
+            this.SFTPManagerGlobalHotKeyWorker.Handle = this.Handle;
+            this.SFTPManagerGlobalHotKeyWorker.RegisterGlobalHotKey((int)GlobalHotKeysManager.ConvertFromStringToKey(sftpManagerGlobalHotKeySettings.key), 
+                sftpManagerGlobalHotKeySettings.modifier);
+
+            this.KotarakGlobalHotKeyWorker.Handle = this.Handle;
+            this.KotarakGlobalHotKeyWorker.RegisterGlobalHotKey((int)GlobalHotKeysManager.ConvertFromStringToKey(kotarakGlobalHotKeySettings.key), 
+                kotarakGlobalHotKeySettings.modifier);
+        
 
             WindowEvents = new GlobalWindowEvents();
             SessionsForm.WindowEvents.SystemSwitch += new EventHandler<GlobalWindowEventArgs>(OnSystemSwitch);
@@ -114,6 +149,7 @@ namespace PuTTY_Storm
         /// - We can handle switching between tabs - forward/backward
         /// - We can handle split screen activation/deactivation
         /// - We can handle SFTP manager activation
+        /// - We can handle Kotarak plugin activation
         /// </summary>
         /// 
         protected override void WndProc(ref Message m)
@@ -134,7 +170,7 @@ namespace PuTTY_Storm
                 }
 
                 // Handle switching between tabs CRTL+TAB => forward
-                if (m.Msg == 0x0312 && m.WParam.ToInt32() == MYACTION_HOTKEY_ID1)
+                if (m.Msg == 0x0312 && (short)m.WParam == this.TabPagesForwardGlobalHotKeyWorker.HOTKEYID)
                 {
                     Console.WriteLine("HOTKEY ctrl+tab pressed");
 
@@ -150,7 +186,7 @@ namespace PuTTY_Storm
                 }
 
                 // Handle switching between tabs CTRL+SHIFT+TAB => backward
-                if (m.Msg == 0x0312 && m.WParam.ToInt32() == MYACTION_HOTKEY_ID2)
+                if (m.Msg == 0x0312 && (short)m.WParam == this.TabPagesBackwardGlobalHotKeyWorker.HOTKEYID)
                 {
                     Console.WriteLine("HOTKEY ctrl+shift+tab pressed");
 
@@ -167,21 +203,21 @@ namespace PuTTY_Storm
             }
 
             // Handle split screen activation CRTL+F1
-            if (m.Msg == 0x0312 && m.WParam.ToInt32() == MYACTION_HOTKEY_ID3)
+            if (m.Msg == 0x0312 && (short)m.WParam == this.SplitScreenGlobalHotKeyWorker.HOTKEYID)
             {
-                Console.WriteLine("Split Screen Enabled");
-                SessionsSplitContainer.Panel2Collapsed = false;
-            }
-
-            // Handle split screen deactivation CTRL+F2
-            if (m.Msg == 0x0312 && m.WParam.ToInt32() == MYACTION_HOTKEY_ID4)
-            {
-                Console.WriteLine("Split Screen Disabled");
-                SessionsSplitContainer.Panel2Collapsed = true;
+                if (SessionsSplitContainer.Panel2Collapsed)
+                {
+                    Console.WriteLine("Split Screen Enabled");
+                    SessionsSplitContainer.Panel2Collapsed = false;
+                } else
+                {
+                    Console.WriteLine("Split Screen Disabled");
+                    SessionsSplitContainer.Panel2Collapsed = true;
+                }
             }
 
             // Handle SFTP manager activation
-            if (m.Msg == 0x0312 && m.WParam.ToInt32() == MYACTION_HOTKEY_ID5)
+            if (m.Msg == 0x0312 && (short)m.WParam == this.SFTPManagerGlobalHotKeyWorker.HOTKEYID)
             {
                 if (SessionsSplitContainer.Panel2Collapsed == true)
                 {
@@ -236,7 +272,7 @@ namespace PuTTY_Storm
             }
 
             // Handle Kotarak plugin activation
-            if (m.Msg == 0x0312 && m.WParam.ToInt32() == MYACTION_HOTKEY_ID6)
+            if (m.Msg == 0x0312 && (short)m.WParam == this.KotarakGlobalHotKeyWorker.HOTKEYID)
             {
                 StartKotarakPlugin();
             }
@@ -407,36 +443,46 @@ namespace PuTTY_Storm
             KotarakPlugin.Show();
         }
 
-        #region Global HotKeys
-        public class KeyHandler
+        /// <summary>
+        /// This method performs a first initialization of default settings for 
+        /// GlobalHotKeysManager configuration. Called only once during first 
+        /// application startup (Sessions Form opening).
+        /// </summary>
+        private void GlobalHotKeysFirstStart()
         {
-            private int key;
-            private IntPtr hWnd;
-            private int id;
-
-            public KeyHandler(Keys key, Form form)
+            // Application first run - set the default GlobalHotKeys (this must be placed to to application startup!!!)
+            if (tabPagesForwardGlobalHotKeySettings.key == null && tabPagesbackwardGlobalHotKeySettings.key == null &&
+                splitScreenGlobalHotKeySettings.key == null && sftpManagerGlobalHotKeySettings.key == null && kotarakGlobalHotKeySettings.key == null)
             {
-                this.key = (int)key;
-                this.hWnd = form.Handle;
-                id = this.GetHashCode();
-            }
+                // CTRL + TAB for tabPagesForwardGlobalHotKey
+                tabPagesForwardGlobalHotKeySettings.modifier = 2;
+                tabPagesForwardGlobalHotKeySettings.key = "Tab";
 
-            public override int GetHashCode()
-            {
-                return key ^ hWnd.ToInt32();
-            }
+                // CTRL + Shift + Tab for tabPagesbackwardGlobalHotKey
+                tabPagesbackwardGlobalHotKeySettings.modifier = 6;
+                tabPagesbackwardGlobalHotKeySettings.key = "Tab";
 
-            public bool Register()
-            {
-                return NativeMethods.RegisterHotKey(hWnd, id, 0, key);
-            }
+                // CTRL + F1 for splitScreenGlobalHotKey
+                splitScreenGlobalHotKeySettings.modifier = 2;
+                splitScreenGlobalHotKeySettings.key = "F1";
 
-            public bool Unregiser()
-            {
-                return NativeMethods.UnregisterHotKey(hWnd, id);
+                // CTRL + F2 for sftpManagerGlobalHotKey
+                sftpManagerGlobalHotKeySettings.modifier = 2;
+                sftpManagerGlobalHotKeySettings.key = "F2";
+
+                // CTRL + F3 for kotarakGlobalHotKey
+                kotarakGlobalHotKeySettings.modifier = 2;
+                kotarakGlobalHotKeySettings.key = "F3";
+
+                // Save it!
+                tabPagesForwardGlobalHotKeySettings.Save();
+                tabPagesbackwardGlobalHotKeySettings.Save();
+                splitScreenGlobalHotKeySettings.Save();
+                sftpManagerGlobalHotKeySettings.Save();
+                kotarakGlobalHotKeySettings.Save();
+
             }
         }
-        #endregion
 
         #region Properties
         public static GlobalWindowEvents WindowEvents { get; private set; }

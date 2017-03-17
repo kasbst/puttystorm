@@ -1091,11 +1091,18 @@ namespace PuTTY_Storm
 
         #region Pinvoke/Win32 Methods
 
-        [DllImport("user32.dll")]
-        public static extern bool RegisterHotKey(IntPtr hWnd, int id, int fsModifiers, int vk);
+        [DllImport("user32", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
 
-        [DllImport("user32.dll")]
+        [DllImport("user32", SetLastError = true)]
         public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+
+        [DllImport("kernel32", SetLastError = true)]
+        public static extern short GlobalAddAtom(string lpString);
+
+        [DllImport("kernel32", SetLastError = true)]
+        public static extern short GlobalDeleteAtom(short nAtom);
 
         [DllImport("user32.dll", SetLastError = true)]
         public static extern long SetParent(IntPtr hWndChild, IntPtr hWndParent);
