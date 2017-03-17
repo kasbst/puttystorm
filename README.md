@@ -25,7 +25,7 @@ Lightweight tabbed window manager for putty sessions
  - SplitScreen - CTRL + F1
  - SFTP Manager - CTRL + F2
  - Kotarak - CTRL + F3
- (Use GlobalHotKeys Manager to change it if needed)
+ - (Use GlobalHotKeys Manager to change it if needed)
  
 ### License
 Licensed under a liberal MIT/X11 License, which allows this program and source code to be used in both commercial and non-commercial applications. Complete text can be found in the License.txt file.
