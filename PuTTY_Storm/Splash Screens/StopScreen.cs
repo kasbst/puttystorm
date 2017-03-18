@@ -22,6 +22,8 @@
  * SuperPutty and various http://stackoverflow.com/ user ideas.
  */
 
+using System;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace PuTTY_Storm.Splash_Screens
@@ -32,5 +34,67 @@ namespace PuTTY_Storm.Splash_Screens
         {
             InitializeComponent();
         }
+
+        //Delegate for cross thread call to close StopScreen
+        private delegate void CloseStopScreenDelegate();
+
+        private static StopScreen stopScreen;
+        private static Task task;
+
+        /// <summary>
+        /// Call this method on place where StopScreen should be displayed!
+        /// </summary>
+        static public void ShowStopScreen()
+        {
+            try
+            {
+                if (stopScreen != null)
+                    return;
+                task = Task.Factory.StartNew(() =>
+                {
+                    Console.WriteLine("## New StopScreen Task started!");
+                    StopScreen.ShowStopScreenForm();
+                });
+            } catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        static private void ShowStopScreenForm()
+        {
+            stopScreen = new StopScreen();
+            Application.Run(stopScreen);
+        }
+
+        /// <summary>
+        /// Call this method on place where StopScreen should be stopped!
+        /// </summary>
+        static public void CloseStopScreen()
+        {
+            try
+            {
+                stopScreen.Invoke(new CloseStopScreenDelegate(StopScreen.CloseStopScreenFormInternal));
+                while (true)
+                {
+                    Console.WriteLine("## StopScreen Task is still running");
+                    if (task.IsCompleted)
+                    {
+                        Console.WriteLine("## StopScreen Closed and Task completed!");
+                        break;
+                    }
+                }
+            } catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+        }
+
+        static private void CloseStopScreenFormInternal()
+        {
+            stopScreen.Close();
+        }
+
     }
 }

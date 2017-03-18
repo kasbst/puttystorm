@@ -88,6 +88,7 @@
             this.Controls.Add(this.PuttyStormStopHeader);
             this.Controls.Add(this.puttystormLogo);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximumSize = new System.Drawing.Size(576, 360);
             this.MinimumSize = new System.Drawing.Size(576, 360);
             this.Name = "StopScreen";

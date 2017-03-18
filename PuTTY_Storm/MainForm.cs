@@ -34,6 +34,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Security.Cryptography;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace PuTTY_Storm
 {
@@ -208,9 +209,9 @@ namespace PuTTY_Storm
         TextBox SearchSessionConfigTextBox;
 
         private void MainForm_Load(object sender, EventArgs e)
-        {
-            Thread t = new Thread(new ThreadStart(StartScreen));
-            t.Start();
+        {   
+            // Start Initialization splash screen       
+            Splash_Screens.StartScreen.ShowStartScreen();
             Thread.Sleep(2000);
 
             this.Visible = false;
@@ -248,6 +249,7 @@ namespace PuTTY_Storm
             SearchSessionConfigTextBox.Name = "SearchSessionConfigTextBox";
             SearchSessionConfigTextBox.Text = "<search hostname>";
             SearchSessionConfigTextBox.Font = new Font("Courier new", 10);
+            SearchSessionConfigTextBox.TextAlign = HorizontalAlignment.Center;
             SearchSessionConfigTextBox.ForeColor = SystemColors.GrayText;
             SearchSessionConfigTextBox.KeyDown += new KeyEventHandler(SearchSessionConfigTextBox_KeyDown);
             SearchSessionConfigTextBox.Leave += new EventHandler(SearchSessionConfigTextBox_Leave);
@@ -428,7 +430,9 @@ namespace PuTTY_Storm
             IsPasswordLess.DetermineIfSessionGroupIsPasswordLess(containers_list);
 
             this.Visible = true;
-            t.Abort();
+            
+            // Stop initialization splash screen
+            Splash_Screens.StartScreen.CloseStartScreen();
 
             // Set focus to SettingPanel, so we prevent pogo and scroll issues when scolling
             // with mousewheel or touchpad on laptops when application starts.
@@ -594,13 +598,16 @@ namespace PuTTY_Storm
         {
             this.Visible = false;
 
-            Thread t = new Thread(new ThreadStart(StopScreen));
-            t.Start();
+            // Start ending splash screen 
+            Splash_Screens.StopScreen.ShowStopScreen();
             Thread.Sleep(2000);
 
+            // Save sessions
             sessions.Save_sessions(containers_list);
 
-            t.Abort();
+            // Stop ending splash screen
+            Splash_Screens.StopScreen.CloseStopScreen();
+            Thread.Sleep(2000);
         }
 
         /// <summary>
@@ -625,7 +632,7 @@ namespace PuTTY_Storm
 
             if (check_forms != null)
             {
-                MessageBox.Show("Advanced Settings Panel Is Already Opened!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Advanced Settings Panel is already opened!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -921,7 +928,7 @@ namespace PuTTY_Storm
         private void Save_private_key_Click(object sender, EventArgs e)
         {
             sessions.Save_PrivateKeys(PrivateKeys);
-            MessageBox.Show("PrivateKeys Saved To The Config!", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("PrivateKeys saved to the config!", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             IsPasswordLess.DetermineIfSessionGroupIsPasswordLess(containers_list);
 
@@ -975,7 +982,7 @@ namespace PuTTY_Storm
             }
             else
             {
-                MessageBox.Show("New Password Secret Is Not The Same!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("New Password Secret is not the same!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 panel2_main_login_new_passwd_textbox[0].Text = null;
                 panel2_main_login_confirm_new_passwd_textbox[0].Text = null;
                 return;

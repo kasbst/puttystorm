@@ -23,6 +23,7 @@
  */
 
 using System;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace PuTTY_Storm.Splash_Screens
@@ -32,6 +33,67 @@ namespace PuTTY_Storm.Splash_Screens
         public StartScreen()
         {
             InitializeComponent();
+        }
+
+        //Delegate for cross thread call to close StartScreen
+        private delegate void CloseStartScreenDelegate();
+
+        private static StartScreen startScreen;
+        private static Task task;
+
+        /// <summary>
+        /// Call this method on place where StartScreen should be displayed!
+        /// </summary>
+        static public void ShowStartScreen()
+        {
+            try
+            {
+                if (startScreen != null)
+                    return;
+                task = Task.Factory.StartNew(() =>
+                 {
+                     Console.WriteLine("## New StartScreen Task started!");
+                     StartScreen.ShowStartScreenForm();
+                 });
+            } catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        static private void ShowStartScreenForm()
+        {
+            startScreen = new StartScreen();
+            Application.Run(startScreen);
+        }
+
+        /// <summary>
+        /// Call this method on place where StartScreen should be stopped!
+        /// </summary>
+        static public void CloseStartScreen()
+        {
+            try
+            {
+                startScreen.Invoke(new CloseStartScreenDelegate(StartScreen.CloseStartScreenFormInternal));
+                while (true)
+                {
+                    Console.WriteLine("## StartScreen Task is still running");
+                    if (task.IsCompleted)
+                    {
+                        Console.WriteLine("## StartScreen Closed and Task completed!");
+                        break;
+                    }
+                }
+            } catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+          
+        }
+
+        static private void CloseStartScreenFormInternal()
+        {
+            startScreen.Close();
         }
 
         private void StartScreen_Load(object sender, EventArgs e)
