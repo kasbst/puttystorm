@@ -55,6 +55,7 @@ namespace PuTTY_Storm
             foreach (GroupBox container in containers_list)
             {
                 string group = null;
+                string sub_group = null;
                 TextBox password_textbox = null;
 
                 foreach (Control control in container.Controls)
@@ -67,9 +68,14 @@ namespace PuTTY_Storm
                     if (control.Name == "combobox")
                     {
                         group = control.Text;
+                    }
+                    
+                    if (control.Name == "sub_groups_combobox")
+                    {
+                        sub_group = control.Text;
                     }                  
                 }
-                if (IsGroupBetweenPrivateKeys(privatekeys, group))
+                if ((IsGroupBetweenPrivateKeys(privatekeys, group)) || (IsGroupBetweenPrivateKeys(privatekeys, sub_group)))
                 {
                     password_textbox.ReadOnly = true;
                     password_textbox.BackColor = System.Drawing.Color.White;
@@ -176,13 +182,14 @@ namespace PuTTY_Storm
         /// This is needed because we don't have a direct access to the session group from there.
         /// Therefore we need to find a group for particular hostname from the main containers list.
         /// </summary>
-        public string GetGroupForPwdLessHostname(List<GroupBox> containers_list, string new_hostname)
+        public string[] GetGroupsForPwdLessHostname(List<GroupBox> containers_list, string new_hostname)
         {
-            string return_group = null;
+            string[] return_group = new string[2];
 
             foreach (GroupBox container in containers_list)
             {
                 string group = null;
+                string sub_group = null;
                 string hostname = null;
 
                 foreach (Control control in container.Controls)
@@ -197,22 +204,35 @@ namespace PuTTY_Storm
                     {
                         if (control.InvokeRequired)
                         {
-                            return (string)control.Invoke(new Func<String>(() => GetGroupForPwdLessHostname(containers_list, new_hostname)));
+                            return (string[])control.Invoke(new Func<string[]>(() => GetGroupsForPwdLessHostname(containers_list, new_hostname)));
                         }
                         else
                         {
                             group = KotarakMainForm.ReadValueFromControl(control);
                         }
                     }
+
+                    if (control.Name == "sub_groups_combobox")
+                    {
+                        if (control.InvokeRequired)
+                        {
+                            return (string[])control.Invoke(new Func<string[]>(() => GetGroupsForPwdLessHostname(containers_list, new_hostname)));
+                        }
+                        else
+                        {
+                            sub_group = KotarakMainForm.ReadValueFromControl(control);
+                        }
+                    }
                 }
 
                 if (new_hostname == hostname)
                 {
-                    return_group = group;
+                    return_group[0] = group;
+                    return_group[1] = sub_group;
                     break;
                 }
             }
-            Console.WriteLine("## GROUP RETURNED: " + return_group);
+            Console.WriteLine("## GROUPS RETURNED: " + return_group[0] + " and " + return_group[1]);
             return return_group;
         }        
 

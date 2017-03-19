@@ -146,7 +146,8 @@ namespace PuTTY_Storm
             numericupdown.ValueChanged += new EventHandler(numericupdown_ValueChanged);
         }
 
-        public void initialize_combobox (ComboBox combobox, EventHandler combobox_SelectedIndexChanged, EventHandler combobox_PKGroupChanged)
+        public void initialize_combobox (ComboBox combobox, EventHandler combobox_SelectedIndexChanged, 
+            EventHandler combobox_PKGroupChanged)
         {
             if (File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
             "PuTTYStorm", "groups.xml")))
@@ -172,7 +173,8 @@ namespace PuTTY_Storm
 
         }
 
-        public void initialize_sub_groups_combobox(ComboBox combobox, EventHandler combobox_SelectedIndexChanged)
+        public void initialize_sub_groups_combobox(ComboBox combobox, EventHandler combobox_SelectedIndexChanged,
+            EventHandler sub_groups_combobox_PKGroupChanged)
         {
             if (File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
             "PuTTYStorm", "groups.xml")))
@@ -194,6 +196,7 @@ namespace PuTTY_Storm
             combobox.Name = "sub_groups_combobox";
             combobox.DropDownStyle = ComboBoxStyle.DropDownList;
             combobox.SelectedIndexChanged += new EventHandler(combobox_SelectedIndexChanged);
+            combobox.SelectedIndexChanged += new EventHandler(sub_groups_combobox_PKGroupChanged);
             combobox.Text = "LOL?";
         }
 
@@ -776,6 +779,12 @@ namespace PuTTY_Storm
         {
             try
             {
+                // Image list for ServerPane TreeView
+                ImageList ServerPaneImageList = new ImageList();
+                ServerPaneImageList.Images.Add(PuTTY_Storm.Properties.Resources.F12_Folder_28x);
+                ServerPaneImageList.Images.Add(PuTTY_Storm.Properties.Resources.LocalServer_32x);
+                ServerPane.ImageList = ServerPaneImageList;
+
                 // Disable redrawing of ServerPane to prevent flickering while changes are made.
                 ServerPane.BeginUpdate();
 
@@ -793,7 +802,8 @@ namespace PuTTY_Storm
                         // If group doesn't exists - add it
                         if (!ServerPane.Nodes.ContainsKey(group[0].Text))
                         { 
-                             ServerPane.Nodes.Add(new TreeNode(group[0].Text) { Name = group[0].Text });
+                             ServerPane.Nodes.Add(new TreeNode(group[0].Text) { Name = group[0].Text,
+                                 ImageIndex = 0, SelectedImageIndex = 0 });
                              Console.WriteLine("Group " + group[0].Text + " doesnt exists adding");
                             
                         }
@@ -803,7 +813,8 @@ namespace PuTTY_Storm
                         {
                             if (!(sub_group[0].Text == null || sub_group[0].Text == ""))
                             {
-                                ServerPane.Nodes[group[0].Text].Nodes.Add(new TreeNode(sub_group[0].Text) { Name = sub_group[0].Text });
+                                ServerPane.Nodes[group[0].Text].Nodes.Add(new TreeNode(sub_group[0].Text) { Name = sub_group[0].Text,
+                                    ImageIndex = 0, SelectedImageIndex = 0 });
                                 Console.WriteLine("##### SUBGROUP " + sub_group[0].Text + " doesnt exists adding");
                             }
                         }
@@ -821,7 +832,8 @@ namespace PuTTY_Storm
                                 {
                                     ServerPane.Nodes.Remove(node[0]);
                                 }
-                                ServerPane.Nodes[group[0].Text].Nodes.Add(new TreeNode(hostname_textbox[0].Text) { Name = hostname_textbox[0].Text });
+                                ServerPane.Nodes[group[0].Text].Nodes.Add(new TreeNode(hostname_textbox[0].Text)
+                                    { Name = hostname_textbox[0].Text, ImageIndex = 1, SelectedImageIndex = 1 });
                             }
                         }
 
@@ -838,7 +850,8 @@ namespace PuTTY_Storm
                                 {
                                     ServerPane.Nodes.Remove(node[0]);
                                 }
-                                ServerPane.Nodes[group[0].Text].Nodes[sub_group[0].Text].Nodes.Add(new TreeNode(hostname_textbox[0].Text) { Name = hostname_textbox[0].Text });
+                                ServerPane.Nodes[group[0].Text].Nodes[sub_group[0].Text].Nodes.Add(new TreeNode(hostname_textbox[0].Text)
+                                    { Name = hostname_textbox[0].Text, ImageIndex = 1, SelectedImageIndex = 1 });
                             }
                         }
                     }                  

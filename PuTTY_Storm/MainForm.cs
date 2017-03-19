@@ -95,7 +95,7 @@ namespace PuTTY_Storm
             custom_controls.initialize_password_textbox(textbox_password);
             custom_controls.initialize_numbericupdown(numericupdown, Numericupdown_ValueChanged);
             custom_controls.initialize_combobox(groups, Combobox_SelectedIndexChanged, combobox_PKGroupChanged);
-            custom_controls.initialize_sub_groups_combobox(sub_groups, Combobox_SelectedIndexChanged);
+            custom_controls.initialize_sub_groups_combobox(sub_groups, Combobox_SelectedIndexChanged, sub_groups_combobox_PKGroupChanged);
 
             container.Controls.Add(label_hostname);
             container.Controls.Add(textbox_hostname);
@@ -915,6 +915,46 @@ namespace PuTTY_Storm
                 return;
             }
 
+            // Check several states, stop processing and return if:
+            // 1) PK Name && PK group && pk type already exists in Private Keys Panel
+            // 2) Group is already used in PPK or openSSH PK (one private key [PPK and openSSH] to one group only!)
+            foreach (Panel privatekeys_panel in PrivateKeys)
+            {
+                Control[] pkpanel_name_label = privatekeys_panel.Controls.Find("pk_name_label", true);
+                Control[] pkpanel_group_label = privatekeys_panel.Controls.Find("pk_group_label", true);
+                Control[] pkpanel_type_label = privatekeys_panel.Controls.Find("pk_type_label", true);
+
+                string pkpanel_name = pkpanel_name_label[0].Text;
+                string pkpanel_group = pkpanel_group_label[0].Text.Replace("Group: ", string.Empty);
+                string pkpanel_type = pkpanel_type_label[0].Text.Replace("Type: ", string.Empty);
+
+                // Check if PK Name && PK group && pk type already exists in Private Keys Panel
+                if ((pkpanel_name == private_key) && (pkpanel_group == pk_group) &&
+                    (pkpanel_type == pk_type))
+                {
+                    MessageBox.Show("Private key " + private_key + " of type " + pk_type +
+                        " for group " + pk_group + " already exists!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                    panel1_private_keys_textbox_filedialog[0].Text = null;
+                    panel1_private_keys_keytype_combobox[0].Text = null;
+                    panel1_private_keys_group_combobox[0].Text = null;
+                    panel1_private_keys_passphrase_textbox[0].Text = null;
+                    return;
+                }
+
+                // Check if group is already used in PPK or openSSH PK (one private key [PPK and openSSH] to one group only!)
+                if ((pkpanel_group == pk_group) && (pkpanel_type == pk_type))
+                {
+                    MessageBox.Show("Group " + pk_group + " is already used!" +
+                        " Select different group for this private key!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                    panel1_private_keys_textbox_filedialog[0].Text = null;
+                    panel1_private_keys_keytype_combobox[0].Text = null;
+                    panel1_private_keys_group_combobox[0].Text = null;
+                    panel1_private_keys_passphrase_textbox[0].Text = null;
+                    return;
+                }
+
+            }
+
             Create_New_PrivateKey_Panel(private_key, pk_type, pk_group, pk_passphrase);
             panel1_private_keys_textbox_filedialog[0].Text = null;
             panel1_private_keys_keytype_combobox[0].Text = null;
@@ -942,6 +982,16 @@ namespace PuTTY_Storm
         /// of password textboxes.
         /// </summary>
         private void combobox_PKGroupChanged(object sender, EventArgs e)
+        {
+            IsPasswordLess.DetermineIfSessionGroupIsPasswordLess(containers_list);
+        }
+
+        /// <summary>
+        /// Check which sub-groups in created sessions containers (GroupBoxes) are part
+        /// of private keys setup. If sub-group is part of PK setup change properties 
+        /// of password textboxes.
+        /// </summary>
+        private void sub_groups_combobox_PKGroupChanged(object sender, EventArgs e)
         {
             IsPasswordLess.DetermineIfSessionGroupIsPasswordLess(containers_list);
         }
@@ -990,7 +1040,7 @@ namespace PuTTY_Storm
         }
 
         /// <summary>
-        /// Set the new password per group and save it back to the sessions.xml configruration file (AdvancedForm).
+        /// Set the new password per group or sub-group and save it back to the sessions.xml configruration file (AdvancedForm).
         /// </summary>
         private void Set_Passwords_Click(object sender, EventArgs e)
         {
@@ -999,26 +1049,38 @@ namespace PuTTY_Storm
 
             if (new_password_textbox[0].Text != "" && new_password_combobox_group[0].Text != "")
             {
+                bool pwd_changed = false;
+
                 foreach (GroupBox container in containers_list)
                 {
                     Control[] password_textbox = container.Controls.Find("password_textbox", true);
                     Control[] combobox_group = container.Controls.Find("combobox", true);
                     Control[] sub_combobox_group = container.Controls.Find("sub_groups_combobox", true);
 
-                    if (new_password_combobox_group[0].Text == sub_combobox_group[0].Text)
-                    {
-                        MessageBox.Show("Error! You have to supply primary group not a sub-group!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
-
+                    // Change password if primary group is supplied
                     if (combobox_group[0].Text == new_password_combobox_group[0].Text)
                     {
                         password_textbox[0].Text = new_password_textbox[0].Text;
+                        pwd_changed = true;
                     }
+
+                    // Change password if sub-group is supplied
+                    if (sub_combobox_group[0].Text == new_password_combobox_group[0].Text)
+                    {
+                        password_textbox[0].Text = new_password_textbox[0].Text;
+                        pwd_changed = true;
+                    }                 
                 }
-                sessions.Save_sessions(containers_list);
-                MessageBox.Show("New Password For Group " + new_password_combobox_group[0].Text + " Set And Saved!",
-                    "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                if (pwd_changed)
+                {
+                    sessions.Save_sessions(containers_list);
+                    MessageBox.Show("New Password For Group " + new_password_combobox_group[0].Text + " Set And Saved!",
+                        "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                } else
+                {
+                    MessageBox.Show("Group " + new_password_combobox_group[0].Text +
+                            " is not a part of saved sessions!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
 
                 new_password_textbox[0].Text = null;
 
@@ -1066,6 +1128,19 @@ namespace PuTTY_Storm
                 return;
             }
 
+            // Check if the group already exists. If exists stop processing and return!
+            foreach (Panel groups_panel in Groups)
+            {
+                Control[] group_name_label = groups_panel.Controls.Find("group_name_label", true);
+                if (group_name_label[0].Text == group)
+                {
+                    MessageBox.Show("Group " + group + " already exists!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                    panel1_add_textbox[0].Text = null;
+                    return;
+                }
+            }
+
+            // Create a new groups panel if group doesn't exists
             Create_New_Groups_Panel(group);
             panel1_add_textbox[0].Text = null;
         }
@@ -1445,6 +1520,7 @@ namespace PuTTY_Storm
                 string username = null;
                 string password = null;
                 string group = null;
+                string sub_group = null;
                 string PrivateKey = null;
                 int c_count = 0;
 
@@ -1466,6 +1542,10 @@ namespace PuTTY_Storm
                     {
                         group = control.Text;
                     }
+                    if (control.Name == "sub_groups_combobox")
+                    {
+                        sub_group = control.Text;
+                    }
                 }
 
                 foreach (NumericUpDown ctlNumeric in containers_list[c].Controls.OfType<NumericUpDown>())
@@ -1474,16 +1554,28 @@ namespace PuTTY_Storm
                 }
 
                 // In case we are going to use private key to login - check if it exists first!
-                // And also check if group in this session is part of private keys setup.
+                // And also check if group and sub-group in this session is part of private keys setup.
                 // If yes, then use passwordless login.
                 if (File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                     "PuTTYStorm", "privatekeys.xml")))
                 {
-                    if (IsPasswordLess.IsGroupBetweenPrivateKeys(privatekeys, group))
+                    // Check if group or su-group is part of private keys configuration setup
+                    if ((IsPasswordLess.IsGroupBetweenPrivateKeys(privatekeys, group)) ||
+                        (IsPasswordLess.IsGroupBetweenPrivateKeys(privatekeys, sub_group)))
                     {
-                        Console.WriteLine("#### GROUP CHECK IN LOGIN: " + group);
+                        Console.WriteLine("#### GROUP CHECK IN LOGIN: " + group + " and " + sub_group);
+
+                        // Fetch private key for group 
                         PrivateKey = IsPasswordLess.GetPPKPrivateKeyForGroup(privatekeys, group);
 
+                        // If private key is still null, then sub-group is part of its setup - fetch it!
+                        if (PrivateKey == null)
+                        {
+                            Console.WriteLine("## Sub-group is part of pwdess login!");
+                            PrivateKey = IsPasswordLess.GetPPKPrivateKeyForGroup(privatekeys, sub_group);
+                        }
+
+                        // If private key doesn't exists or is still null then something is wrong! Stop processing and return!
                         if (!File.Exists(PrivateKey))
                         {
                             if (PrivateKey == null || PrivateKey == "")
@@ -1796,14 +1888,15 @@ namespace PuTTY_Storm
                         {
                             TextBox password_txtbox = (TextBox)control;
 
-                            // In case session group is part of private keys setup,
+                            // In case session group or sub-group is part of private keys setup,
                             // change new_connect_password_textbox attributes.
                             if (File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                                 "PuTTYStorm", "privatekeys.xml")))
                             {
-                                string hostname_group = IsPasswordLess.GetGroupForPwdLessHostname(containers_list, hostname);
+                                string[] hostname_groups = IsPasswordLess.GetGroupsForPwdLessHostname(containers_list, hostname);
 
-                                if (IsPasswordLess.IsGroupBetweenPrivateKeys(privatekeys, hostname_group))
+                                if ((IsPasswordLess.IsGroupBetweenPrivateKeys(privatekeys, hostname_groups[0])) ||
+                                    (IsPasswordLess.IsGroupBetweenPrivateKeys(privatekeys, hostname_groups[1])))
                                 {
                                     password_txtbox.Text = "PWDLESS";
                                     password_txtbox.ReadOnly = true;
@@ -1890,7 +1983,7 @@ namespace PuTTY_Storm
             string new_hostname = null;
             string new_username = null;
             string new_password = null;
-            string new_group = null;
+            string[] new_hostname_groups = null;
             string PrivateKey = null;
             int new_c_count = 0;
 
@@ -1913,7 +2006,7 @@ namespace PuTTY_Storm
             foreach (NumericUpDown ctlNumeric in new_connect_panel.Controls.OfType<NumericUpDown>())
             {
                 new_c_count = (int)ctlNumeric.Value;
-            }           
+            }
 
             Regex pattern = new Regex(@"^.*?(?=\.)");
             Match match = pattern.Match(new_hostname);
@@ -1926,18 +2019,30 @@ namespace PuTTY_Storm
             }
 
             // In case we are going to use private key to login - check if it exists first!
-            // And also check if group in this session is part of private keys setup.
+            // And also check if group or sub-group in this session is part of private keys setup.
             // If yes, then use passwordless login.
             if (File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
             "PuTTYStorm", "privatekeys.xml")))
             {
-                new_group = IsPasswordLess.GetGroupForPwdLessHostname(containers_list, new_hostname);
+                new_hostname_groups = IsPasswordLess.GetGroupsForPwdLessHostname(containers_list, new_hostname);
 
-                if (IsPasswordLess.IsGroupBetweenPrivateKeys(privatekeys, new_group))
+                // Check if group or su-group is part of private keys configuration setup
+                if ((IsPasswordLess.IsGroupBetweenPrivateKeys(privatekeys, new_hostname_groups[0])) ||
+                    (IsPasswordLess.IsGroupBetweenPrivateKeys(privatekeys, new_hostname_groups[1])))
                 {
-                    Console.WriteLine("#### GROUP CHECK IN NEW CONNECT LOGIN: " + new_group);
-                    PrivateKey = IsPasswordLess.GetPPKPrivateKeyForGroup(privatekeys, new_group);
+                    Console.WriteLine("#### GROUP CHECK IN NEW CONNECT LOGIN: " + new_hostname_groups[0] + " and " + new_hostname_groups[1]);
 
+                    // Fetch private key for group 
+                    PrivateKey = IsPasswordLess.GetPPKPrivateKeyForGroup(privatekeys, new_hostname_groups[0]);
+
+                    // If private key is still null, then sub-group is part of its setup - fetch it!
+                    if (PrivateKey == null)
+                    {
+                        Console.WriteLine("## Sub-group is part of pwdess login!");
+                        PrivateKey = IsPasswordLess.GetPPKPrivateKeyForGroup(privatekeys, new_hostname_groups[1]);
+                    }
+
+                    // If private key doesn't exists or is still null then something is wrong! Stop processing and return!
                     if (!File.Exists(PrivateKey))
                     {
                         if (PrivateKey == null || PrivateKey == "")
@@ -2002,6 +2107,7 @@ namespace PuTTY_Storm
             string _username = null;
             string _password = null;
             string _group = null;
+            string _sub_group = null;
             string PrivateKey = null;
 
             if (SimpleServerPane.SelectedNode != null)
@@ -2012,6 +2118,7 @@ namespace PuTTY_Storm
                     Control[] username_texbox = container.Controls.Find("username_textbox", true);
                     Control[] password_texbox = container.Controls.Find("password_textbox", true);
                     Control[] group_combobox = container.Controls.Find("combobox", true);
+                    Control[] sub_group_combobox = container.Controls.Find("sub_groups_combobox", true);
 
                     if (hostname_textbox[0].Text == SimpleServerPane.SelectedNode.Text)
                     {
@@ -2019,27 +2126,40 @@ namespace PuTTY_Storm
                         _username = username_texbox[0].Text;
                         _password = password_texbox[0].Text;
                         _group = group_combobox[0].Text;
+                        _sub_group = sub_group_combobox[0].Text;
                     }
                 }
 
                 if (SimpleServerPane.SelectedNode.Text != _group && SimpleServerPane.SelectedNode.Text == _hostname)
                 {
-                    Console.WriteLine("## All fine we are processing hostname and not a group");
+                    Console.WriteLine("## All fine we are processing hostname and not a group or sub-group");
                     Regex pattern = new Regex(@"^.*?(?=\.)");
                     Match match = pattern.Match(_hostname);
                     string shortname = match.Groups[0].Value;
 
                     // In case we are going to use private key to login - check if it exists first!
-                    // And also check if group in this session is part of private keys setup.
+                    // And also check if group or sub-group in this session is part of private keys setup.
                     // If yes, then use passwordless login.
                     if (File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                     "PuTTYStorm", "privatekeys.xml")))
                     {
-                        if (IsPasswordLess.IsGroupBetweenPrivateKeys(privatekeys, _group))
+                        // Check if group or su-group is part of private keys configuration setup
+                        if ((IsPasswordLess.IsGroupBetweenPrivateKeys(privatekeys, _group)) ||
+                            (IsPasswordLess.IsGroupBetweenPrivateKeys(privatekeys, _sub_group)))
                         {
-                            Console.WriteLine("#### GROUP CHECK IN Simple pane (TreeView) LOGIN: " + _group);
+                            Console.WriteLine("#### GROUP CHECK IN Simple pane (TreeView) LOGIN: " + _group + " and " + _sub_group);
+
+                            // Fetch private key for group
                             PrivateKey = IsPasswordLess.GetPPKPrivateKeyForGroup(privatekeys, _group);
 
+                            // If private key is still null, then sub-group is part of its setup - fetch it!
+                            if (PrivateKey == null)
+                            {
+                                Console.WriteLine("## Sub-group is part of pwdess login!");
+                                PrivateKey = IsPasswordLess.GetPPKPrivateKeyForGroup(privatekeys, _sub_group);
+                            }
+
+                            // If private key doesn't exists or is still null then something is wrong! Stop processing and return!
                             if (!File.Exists(PrivateKey))
                             {
                                 if (PrivateKey == null || PrivateKey == "")
@@ -2048,7 +2168,8 @@ namespace PuTTY_Storm
                                 }
 
                                 MessageBox.Show("You are going to use passwordless login, " + Environment.NewLine +
-                                    "however private key " + PrivateKey + " doesn't exists!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                                    "however private key " + PrivateKey + " doesn't exists!", "Error", MessageBoxButtons.OK, 
+                                    MessageBoxIcon.Stop);
 
                                 return;
                             }
@@ -2066,7 +2187,8 @@ namespace PuTTY_Storm
                     panels.AutoSize = true;
                     panels.Dock = DockStyle.Fill;
                     tabpage.Controls.Add(panels);
-                    my_ProcessInfo_List_TC_1.Add(now.start_putty(panels, i, process, _hostname, _username, _password, mus.putty_path, SessionsSplitContainer, PrivateKey));
+                    my_ProcessInfo_List_TC_1.Add(now.start_putty(panels, i, process, _hostname, _username, _password, 
+                        mus.putty_path, SessionsSplitContainer, PrivateKey));
                     tabcontrol1.TabPages.Add(tabpage);
                 }
                 SimpleServerPane.SelectedNode = null;

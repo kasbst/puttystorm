@@ -34,7 +34,7 @@ namespace PuTTY_Storm
     public static class GlobalVar
     {
         public static string SECRET = null;
-        public static string VERSION = "PuTTY Storm v0.1-beta.8";
+        public static string VERSION = "PuTTY Storm v0.1-beta.9";
     }
 
     static class Program

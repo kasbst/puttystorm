@@ -281,7 +281,7 @@ namespace PuTTY_Storm
         /// <summary>
         /// Start SFTP Manager
         /// </summary>
-        private void StartSFTPManager (Tuple<string, string, string> _credentials)
+        private void StartSFTPManager(Tuple<string, string, string> _credentials)
         {
             string PrivateKey = null;
             string hostname = _credentials.Item1;
@@ -293,13 +293,25 @@ namespace PuTTY_Storm
             "PuTTYStorm", "privatekeys.xml")))
             {
                 SavedPrivatekeysInfo privatekeys = saved_data.get_PrivateKeys();
-                string group = IsPasswordLess.GetGroupForPwdLessHostname(containers_list, _credentials.Item1);
+                string[] groups = IsPasswordLess.GetGroupsForPwdLessHostname(containers_list, _credentials.Item1);
 
-                if (IsPasswordLess.IsGroupBetweenPrivateKeys(privatekeys, group))
+                // Check if group or su-group is part of private keys configuration setup
+                if ((IsPasswordLess.IsGroupBetweenPrivateKeys(privatekeys, groups[0])) ||
+                    (IsPasswordLess.IsGroupBetweenPrivateKeys(privatekeys, groups[1])))
                 {
-                    PrivateKey = IsPasswordLess.GetOpenSSHPrivateKeyForGroup(privatekeys, group);
-                    pk_pwd = IsPasswordLess.GetOpenSSHPrivateKeyPassPhrase(privatekeys, group);
+                    // Fetch private key and password for group 
+                    PrivateKey = IsPasswordLess.GetOpenSSHPrivateKeyForGroup(privatekeys, groups[0]);
+                    pk_pwd = IsPasswordLess.GetOpenSSHPrivateKeyPassPhrase(privatekeys, groups[0]);
 
+                    // If private key and password is still null, then sub-group is part of its setup - fetch it!
+                    if (PrivateKey == null && pk_pwd == null)
+                    {
+                        Console.WriteLine("## Sub-group is part of pwdess login!");
+                        PrivateKey = IsPasswordLess.GetOpenSSHPrivateKeyForGroup(privatekeys, groups[1]);
+                        pk_pwd = IsPasswordLess.GetOpenSSHPrivateKeyPassPhrase(privatekeys, groups[1]);
+                    }
+
+                    // If private key doesn't exists or is still null then something is wrong! Stop processing and return!
                     if (!File.Exists(PrivateKey))
                     {
                         if (PrivateKey == null || PrivateKey == "")

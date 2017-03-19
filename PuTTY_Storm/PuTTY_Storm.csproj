@@ -132,6 +132,11 @@
     <Compile Include="NativeMethods.cs" />
     <Compile Include="OpenPuTTY.cs" />
     <Compile Include="PasswordLess.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="SaveSessions.cs" />
     <Compile Include="SessionsForm.cs">
       <SubType>Form</SubType>
@@ -180,13 +185,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <EmbeddedResource Include="SFTPManager.resx">
       <DependentUpon>SFTPManager.cs</DependentUpon>
     </EmbeddedResource>
@@ -214,6 +215,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="puttystorm.ico" />
+    <None Include="Resources\LocalServer_32x.png" />
+    <None Include="Resources\F12_Folder_28x.png" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
