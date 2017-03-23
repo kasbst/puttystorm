@@ -63,9 +63,9 @@ namespace PuTTY_Storm.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap F12_Folder_28x {
+        internal static System.Drawing.Bitmap ComputerSystem_32x {
             get {
-                object obj = ResourceManager.GetObject("F12_Folder_28x", resourceCulture);
+                object obj = ResourceManager.GetObject("ComputerSystem_32x", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -73,9 +73,9 @@ namespace PuTTY_Storm.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap LocalServer_32x {
+        internal static System.Drawing.Bitmap VSO_Folder_hoverblue_32x {
             get {
-                object obj = ResourceManager.GetObject("LocalServer_32x", resourceCulture);
+                object obj = ResourceManager.GetObject("VSO_Folder_hoverblue_32x", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

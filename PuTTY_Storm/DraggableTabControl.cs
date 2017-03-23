@@ -197,7 +197,8 @@ namespace Utilities.Windows.Forms
         {
             if (my_ProcessInfo.mainhandle != IntPtr.Zero)
             {
-                NativeMethods.MoveWindow(my_ProcessInfo.mainhandle, -8, -30, panel.Width + 5, panel.Height + 5, true);
+                NativeMethods.MoveWindow(my_ProcessInfo.mainhandle, DPIAwareScaling.MoveWindowX, DPIAwareScaling.MoveWindowY, 
+                    panel.Width + DPIAwareScaling.MoveWindowNWidth, panel.Height + DPIAwareScaling.MoveWindowNHeight, true);
             }           
         }
 

@@ -385,9 +385,9 @@ namespace PuTTY_Storm
         private void SelectSFTPConnection (String _selectedTab1, String _selectedTab2)
         {
             SelectConnectionForm = new FormHelper();
-            SelectConnectionForm.Size = new Size(400, 200);
-            SelectConnectionForm.MinimumSize = new Size(400, 200);
-            SelectConnectionForm.MaximumSize = new Size(400, 200);
+            SelectConnectionForm.Size = DPIAwareScaling.ScaleSize(400, 200);
+            SelectConnectionForm.MinimumSize = DPIAwareScaling.ScaleSize(400, 200);
+            SelectConnectionForm.MaximumSize = DPIAwareScaling.ScaleSize(400, 200);
             SelectConnectionForm.MaximizeBox = false;
             SelectConnectionForm.Text = GlobalVar.VERSION;
             SelectConnectionForm.StartPosition = FormStartPosition.CenterScreen;
@@ -396,22 +396,22 @@ namespace PuTTY_Storm
 
             Label SelectConnectionLabel = new Label();
             SelectConnectionLabel.Text = "Select SFTP connection";
-            SelectConnectionLabel.Size = new Size(300, 30);
-            SelectConnectionLabel.Location = new Point(60, 15);
+            SelectConnectionLabel.Size = DPIAwareScaling.ScaleSize(300, 30);
+            SelectConnectionLabel.Location = DPIAwareScaling.ScalePoint(60, 15);
             SelectConnectionLabel.Font = new Font("Calibri", 20);
             SelectConnectionLabel.ForeColor = Color.White;
 
             Button connection1Button = new Button();
-            connection1Button.Size = new Size(250, 30);
-            connection1Button.Location = new Point(65, 70);
+            connection1Button.Size = DPIAwareScaling.ScaleSize(250, 30);
+            connection1Button.Location = DPIAwareScaling.ScalePoint(65, 70);
             connection1Button.Font = new Font("Calibri", 10);
             connection1Button.Text = _selectedTab1;
             connection1Button.UseVisualStyleBackColor = true;
             connection1Button.Click += new EventHandler(connection1Button_Click);
 
             Button connection2Button = new Button();
-            connection2Button.Size = new Size(250, 30);
-            connection2Button.Location = new Point(65, 110);
+            connection2Button.Size = DPIAwareScaling.ScaleSize(250, 30);
+            connection2Button.Location = DPIAwareScaling.ScalePoint(65, 110);
             connection2Button.Font = new Font("Calibri", 10);
             connection2Button.Text = _selectedTab2;
             connection2Button.UseVisualStyleBackColor = true;

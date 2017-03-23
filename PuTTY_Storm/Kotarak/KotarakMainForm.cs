@@ -75,6 +75,13 @@ namespace PuTTY_Storm
             // Initialize scintillaNet editor with Bash lexer
             EditorInit.BashInit(BashScriptRadioButton, scintilla1);
 
+            // Explicit DPI scaling for splitContainer3 (datagridView and Settings)
+            splitContainer3.SplitterDistance = DPIAwareScaling.KotarakSplitterDistance;
+            // explicit DPI scaling for splitContainer2 (scintillaNet and Settings)
+            splitContainer2.SplitterDistance = DPIAwareScaling.KotarakSplitterDistance;
+
+            //dataGridView1.Columns[0].Width = DPIAwareScaling._ScaleX(98);
+
             // Encrypted private keys have encrypted passphrases, so get them only once during initialization.
             if (File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
             "PuTTYStorm", "privatekeys.xml")))
@@ -347,8 +354,9 @@ namespace PuTTY_Storm
         private void InitializeDataGridView ()
         {
             this.dataGridView1.DefaultCellStyle.Font = new Font("Courier new", 10);
-            this.dataGridView1.Size = new Size(1200, 500);
-            this.dataGridView1.AutoScrollOffset = new Point(200, 300);
+            this.dataGridView1.Size = DPIAwareScaling.ScaleSize(1200, 500);
+            this.dataGridView1.AutoScrollOffset = DPIAwareScaling.ScalePoint(200, 300);
+            this.dataGridView1.Columns[0].Width = 98;
 
             for (int i = 0; i < containers_list.Count; i++)
             {
@@ -458,7 +466,7 @@ namespace PuTTY_Storm
 
         private void Kotarak_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (MessageBox.Show("Are you sure you want to exit Kotarak?", "Kotarak Exit", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) ==
+            if (MessageBox.Show("Are you sure you want to exit the Kotarak?", "Kotarak Exit", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) ==
                 System.Windows.Forms.DialogResult.No)
                 e.Cancel = true;
         }

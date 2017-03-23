@@ -49,6 +49,7 @@ namespace PuTTY_Storm
         public MainForm()
         {
             InitializeComponent();
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.Text = GlobalVar.VERSION;
             this.MouseWheel += new MouseEventHandler(MainForm_MouseWheel);
             IsPasswordLess = new PasswordLess();
@@ -56,6 +57,9 @@ namespace PuTTY_Storm
             custom_controls = new SetControls();
             sessions = new SaveSessions();
             crypto = new CryptoHelper();
+
+            // Set some controls scaling based on display DPI
+            DPIAwareScaling.SetControlsExtendedDPISettings();
         }
 
         private void StartScreen ()
@@ -238,17 +242,17 @@ namespace PuTTY_Storm
             }
 
             SettingPanel = new Panel();
-            SettingPanel.Location = new Point(500, 255);
-            SettingPanel.Size = new Size(250, 120);
+            SettingPanel.Location = DPIAwareScaling.ScalePoint(500, 255);
+            SettingPanel.Size = DPIAwareScaling.ScaleSize(250, 120);
             SettingPanel.BackColor = Color.SlateGray;
             SettingPanel.Name = "SettingPanel";
 
             SearchSessionConfigTextBox = new TextBox();
-            SearchSessionConfigTextBox.Location = new Point(507, 380);
-            SearchSessionConfigTextBox.Size = new Size(215, 60);
+            SearchSessionConfigTextBox.Location = DPIAwareScaling.ScalePoint(507, 380);
+            SearchSessionConfigTextBox.Size = DPIAwareScaling.ScaleSize(215, 60);
             SearchSessionConfigTextBox.Name = "SearchSessionConfigTextBox";
             SearchSessionConfigTextBox.Text = "<search hostname>";
-            SearchSessionConfigTextBox.Font = new Font("Courier new", 10);
+            SearchSessionConfigTextBox.Font = new Font("Courier new", DPIAwareScaling.SearchSessionConfigTextBoxFont);
             SearchSessionConfigTextBox.TextAlign = HorizontalAlignment.Center;
             SearchSessionConfigTextBox.ForeColor = SystemColors.GrayText;
             SearchSessionConfigTextBox.KeyDown += new KeyEventHandler(SearchSessionConfigTextBox_KeyDown);
@@ -257,8 +261,8 @@ namespace PuTTY_Storm
 
             Button AddEntry = new Button();
             AddEntry.Font = new Font("Calibri", 10);
-            AddEntry.Location = new Point(5, 10);
-            AddEntry.Size = new Size(103, 38);
+            AddEntry.Location = DPIAwareScaling.ScalePoint(5, 10);
+            AddEntry.Size = DPIAwareScaling.ScaleSize(103, 38);
             AddEntry.Text = "Add New Entry";
             AddEntry.Name = "Add_New_Entry";
             AddEntry.UseVisualStyleBackColor = true;
@@ -266,8 +270,8 @@ namespace PuTTY_Storm
 
             Button Connect = new Button();
             Connect.Font = new Font("Calibri", 10);
-            Connect.Location = new Point(120, 5);
-            Connect.Size = new Size(103, 103);
+            Connect.Location = DPIAwareScaling.ScalePoint(120, 5);
+            Connect.Size = DPIAwareScaling.ScaleSize(103, 103);
             Connect.Text = "Open";
             Connect.Name = "Connect";
             Connect.UseVisualStyleBackColor = true;
@@ -275,8 +279,8 @@ namespace PuTTY_Storm
 
             Button Save_Close = new Button();
             Save_Close.Font = new Font("Calibri", 10);
-            Save_Close.Location = new Point(120, 33);
-            Save_Close.Size = new Size(103, 38);
+            Save_Close.Location = DPIAwareScaling.ScalePoint(120, 33);
+            Save_Close.Size = DPIAwareScaling.ScaleSize(103, 38);
             Save_Close.Text = "Save and Close";
             Save_Close.Name = "Save_Close";
             Save_Close.UseVisualStyleBackColor = true;
@@ -285,8 +289,8 @@ namespace PuTTY_Storm
 
             Button Advanced_Options = new Button();
             Advanced_Options.Font = new Font("Calibri", 10);
-            Advanced_Options.Location = new Point(5, 64);
-            Advanced_Options.Size = new Size(103, 38);
+            Advanced_Options.Location = DPIAwareScaling.ScalePoint(5, 64);
+            Advanced_Options.Size = DPIAwareScaling.ScaleSize(103, 38);
             Advanced_Options.Text = "Advanced";
             Advanced_Options.Name = "Advanced";
             Advanced_Options.UseVisualStyleBackColor = true;
@@ -357,7 +361,7 @@ namespace PuTTY_Storm
                             // Get the Y coordinate of last GroupBox container
                             Point locationOnForm = containers_list[i - 1].FindForm().PointToClient(containers_list[i - 1].
                                 Parent.PointToScreen(containers_list[i - 1].Location));
-                            int new_groupbox_location = locationOnForm.Y + 240;
+                            int new_groupbox_location = locationOnForm.Y + DPIAwareScaling._ScaleY(240);
 
                             // Add new GroupBox, set new Y location coordinate, increment its counter
                             containers_list.Add(Add_Main_Component());
@@ -461,8 +465,8 @@ namespace PuTTY_Storm
             {
                 if (VerticalScroll.Value < LastScrollValue)
                 {
-                    SettingPanel.Location = new Point(500, 255);
-                    SearchSessionConfigTextBox.Location = new Point(507, 215);
+                    SettingPanel.Location = DPIAwareScaling.ScalePoint(500, 255);
+                    SearchSessionConfigTextBox.Location = DPIAwareScaling.ScalePoint(507, 215);
                 }
             }
             else
@@ -470,15 +474,15 @@ namespace PuTTY_Storm
                 if (VerticalScroll.Value > 0)
                 {
                     LastScrollValue = VerticalScroll.Value;
-                    SettingPanel.Location = new Point(500, 255);
-                    SearchSessionConfigTextBox.Location = new Point(507, 215);
+                    SettingPanel.Location = DPIAwareScaling.ScalePoint(500, 255);
+                    SearchSessionConfigTextBox.Location = DPIAwareScaling.ScalePoint(507, 215);
                 }
             }
 
             // Move SearchSessionConfigTextBox to its original location when scrolle to top
             if (VerticalScroll.Value == 0)
             {
-                SearchSessionConfigTextBox.Location = new Point(507, 380);
+                SearchSessionConfigTextBox.Location = DPIAwareScaling.ScalePoint(507, 380);
             }
         }
 
@@ -491,23 +495,23 @@ namespace PuTTY_Storm
                 if (VerticalScroll.Value < LastScrollValue)
                 {
                     LastScrollValue = VerticalScroll.Value;
-                    SettingPanel.Location = new Point(500, 255);
-                    SearchSessionConfigTextBox.Location = new Point(507, 215);
+                    SettingPanel.Location = DPIAwareScaling.ScalePoint(500, 255);
+                    SearchSessionConfigTextBox.Location = DPIAwareScaling.ScalePoint(507, 215);
                 }
             } else
             {
                 if (VerticalScroll.Value > 0)
                 {
                     LastScrollValue = VerticalScroll.Value;
-                    SettingPanel.Location = new Point(500, 255);
-                    SearchSessionConfigTextBox.Location = new Point(507, 215);
+                    SettingPanel.Location = DPIAwareScaling.ScalePoint(500, 255);
+                    SearchSessionConfigTextBox.Location = DPIAwareScaling.ScalePoint(507, 215);
                 }
             }
 
             // Move SearchSessionConfigTextBox to its original location when scrolle to top
             if (VerticalScroll.Value == 0)
             {
-                SearchSessionConfigTextBox.Location = new Point(507, 380);
+                SearchSessionConfigTextBox.Location = DPIAwareScaling.ScalePoint(507, 380);
             }
 
         }
@@ -538,8 +542,8 @@ namespace PuTTY_Storm
                         if (match.Success)
                         {
                             container.Focus();
-                            SettingPanel.Location = new Point(500, 255);
-                            SearchSessionConfigTextBox.Location = new Point(507, 215);
+                            SettingPanel.Location = DPIAwareScaling.ScalePoint(500, 255);
+                            SearchSessionConfigTextBox.Location = DPIAwareScaling.ScalePoint(507, 215);
                             txb.Text = "<search hostname>";
                             txb.ForeColor = SystemColors.GrayText;
                             break;
@@ -641,7 +645,7 @@ namespace PuTTY_Storm
 
             AdvancedForm = new PuTTY_Storm.FormHelper();
             AdvancedForm.ShowInTaskbar = true;
-            AdvancedForm.Size = new Size(800, 600);
+            AdvancedForm.Size = DPIAwareScaling.ScaleSize(800, 600);
             AdvancedForm.StartPosition = FormStartPosition.CenterScreen;
             AdvancedForm.FormBorderStyle = FormBorderStyle.FixedToolWindow;
             AdvancedForm.Text = GlobalVar.VERSION + " - Advanced Settings";
@@ -717,8 +721,8 @@ namespace PuTTY_Storm
 
             Button Save_groups_button = new Button();
             Save_groups_button.Font = new Font("Calibri", 10);
-            Save_groups_button.Location = new Point(280, 45);
-            Save_groups_button.Size = new Size(70, 25);
+            Save_groups_button.Location = DPIAwareScaling.ScalePoint(280, 45);
+            Save_groups_button.Size = DPIAwareScaling.ScaleSize(70, 25);
             Save_groups_button.Text = "Save";
             Save_groups_button.Name = "save_groups";
             Save_groups_button.UseVisualStyleBackColor = true;
@@ -726,8 +730,8 @@ namespace PuTTY_Storm
 
             Button Add_Group_button = new Button();
             Add_Group_button.Font = new Font("Calibri", 10);
-            Add_Group_button.Location = new Point(220, 45);
-            Add_Group_button.Size = new Size(50, 25);
+            Add_Group_button.Location = DPIAwareScaling.ScalePoint(220, 45);
+            Add_Group_button.Size = DPIAwareScaling.ScaleSize(50, 25);
             Add_Group_button.Text = "Add";
             Add_Group_button.Name = "add_group";
             Add_Group_button.UseVisualStyleBackColor = true;
@@ -735,8 +739,8 @@ namespace PuTTY_Storm
 
             Button Set_passwords_button = new Button();
             Set_passwords_button.Font = new Font("Calibri", 10);
-            Set_passwords_button.Location = new Point(260, 150);
-            Set_passwords_button.Size = new Size(100, 35);
+            Set_passwords_button.Location = DPIAwareScaling.ScalePoint(260, 150);
+            Set_passwords_button.Size = DPIAwareScaling.ScaleSize(100, 35);
             Set_passwords_button.Text = "Set password";
             Set_passwords_button.Name = "set_password";
             Set_passwords_button.UseVisualStyleBackColor = true;
@@ -744,8 +748,8 @@ namespace PuTTY_Storm
 
             Button Set_new_secret_button = new Button();
             Set_new_secret_button.Font = new Font("Calibri", 10);
-            Set_new_secret_button.Location = new Point(260, 450);
-            Set_new_secret_button.Size = new Size(100, 35);
+            Set_new_secret_button.Location = DPIAwareScaling.ScalePoint(260, 450);
+            Set_new_secret_button.Size = DPIAwareScaling.ScaleSize(100, 35);
             Set_new_secret_button.Text = "Set new secret";
             Set_new_secret_button.Name = "set_new_secret";
             Set_new_secret_button.UseVisualStyleBackColor = true;
@@ -753,8 +757,8 @@ namespace PuTTY_Storm
 
             Button Select_private_key_button = new Button();
             Select_private_key_button.Font = new Font("Calibri", 9);
-            Select_private_key_button.Location = new Point(5, 300);
-            Select_private_key_button.Size = new Size(60, 25);
+            Select_private_key_button.Location = DPIAwareScaling.ScalePoint(5, 300);
+            Select_private_key_button.Size = DPIAwareScaling.ScaleSize(60, 25);
             Select_private_key_button.Text = "Select";
             Select_private_key_button.Name = "select_private_key";
             Select_private_key_button.UseVisualStyleBackColor = true;
@@ -762,8 +766,8 @@ namespace PuTTY_Storm
 
             Button Add_private_key_button = new Button();
             Add_private_key_button.Font = new Font("Calibri", 10);
-            Add_private_key_button.Location = new Point(220, 380);
-            Add_private_key_button.Size = new Size(60, 25);
+            Add_private_key_button.Location = DPIAwareScaling.ScalePoint(220, 380);
+            Add_private_key_button.Size = DPIAwareScaling.ScaleSize(60, 25);
             Add_private_key_button.Text = "Add";
             Add_private_key_button.Name = "add_private_key";
             Add_private_key_button.UseVisualStyleBackColor = true;
@@ -771,23 +775,23 @@ namespace PuTTY_Storm
 
             Button Save_private_key_button = new Button();
             Save_private_key_button.Font = new Font("Calibri", 10);
-            Save_private_key_button.Location = new Point(290, 380);
-            Save_private_key_button.Size = new Size(60, 25);
+            Save_private_key_button.Location = DPIAwareScaling.ScalePoint(290, 380);
+            Save_private_key_button.Size = DPIAwareScaling.ScaleSize(60, 25);
             Save_private_key_button.Text = "Save";
             Save_private_key_button.Name = "save_private_key";
             Save_private_key_button.UseVisualStyleBackColor = true;
             Save_private_key_button.Click += new EventHandler(Save_private_key_Click);
 
             section_panel = new Panel();
-            section_panel.Size = new Size(355, 140);
+            section_panel.Size = DPIAwareScaling.ScaleSize(355, 140);
             section_panel.BackColor = Color.SlateGray;
-            section_panel.Location = new Point(3, 100);
+            section_panel.Location = DPIAwareScaling.ScalePoint(3, 100);
             section_panel.AutoScroll = true;
 
             section_panel_private_keys = new Panel();
-            section_panel_private_keys.Size = new Size(355, 130);
+            section_panel_private_keys.Size = DPIAwareScaling.ScaleSize(355, 130);
             section_panel_private_keys.BackColor = Color.SlateGray;
-            section_panel_private_keys.Location = new Point(3, 430);
+            section_panel_private_keys.Location = DPIAwareScaling.ScalePoint(3, 430);
             section_panel_private_keys.AutoScroll = true;
 
             splitcontainer1.Panel1.Controls.Add(panel1_add_groups_header);
@@ -1152,18 +1156,18 @@ namespace PuTTY_Storm
         private void Create_New_Groups_Panel(string group)
         {
             Panel groups_panel = new Panel();
-            groups_panel.Size = new Size(330, 50);
+            groups_panel.Size = DPIAwareScaling.ScaleSize(330, 50);
 
             if (Groups.Count == 0)
             {
-                groups_panel.Location = new Point(0, 0);
+                groups_panel.Location = DPIAwareScaling.ScalePoint(0, 0);
             }
             else
             {
                 // Get the Y coordinate of last GroupBox container
                 Point locationOnForm = Groups[Rows - 1].FindForm().PointToClient(Groups[Rows - 1].
                     Parent.PointToScreen(Groups[Rows - 1].Location));
-                int new_groups_panel_location = locationOnForm.Y - 70;
+                int new_groups_panel_location = locationOnForm.Y - DPIAwareScaling._ScaleY(70);
                
                 groups_panel.Location = new Point(0, new_groups_panel_location);
             }
@@ -1176,8 +1180,8 @@ namespace PuTTY_Storm
             group_name.UseMnemonic = false;
             group_name.Text = group;
             group_name.Font = new Font("Calibri", 14);
-            group_name.Location = new Point(3, 20);
-            group_name.Size = new Size(240, 30);
+            group_name.Location = DPIAwareScaling.ScalePoint(3, 20);
+            group_name.Size = DPIAwareScaling.ScaleSize(240, 30);
             group_name.ForeColor = Color.White;
             group_name.Name = "group_name_label";
 
@@ -1199,19 +1203,19 @@ namespace PuTTY_Storm
         private void Create_New_PrivateKey_Panel(string pk, string type, string group, string pk_passphrase)
         {
             Panel pk_panel = new Panel();
-            pk_panel.Size = new Size(335, 120);
+            pk_panel.Size = DPIAwareScaling.ScaleSize(335, 120);
 
             if (PrivateKeys.Count == 0)
             {
-                pk_panel.Location = new Point(0, 0);
+                pk_panel.Location = DPIAwareScaling.ScalePoint(0, 0);
             } else
             {
                 // Get the Y coordinate of last GroupBox container
                 Point locationOnForm = PrivateKeys[PK_Rows - 1].FindForm().PointToClient(PrivateKeys[PK_Rows - 1].
                     Parent.PointToScreen(PrivateKeys[PK_Rows - 1].Location));
-                int new_pks_panel_location = locationOnForm.Y - 330;
+                int new_pks_panel_location = locationOnForm.Y - DPIAwareScaling._ScaleY(330);
 
-                pk_panel.Location = new Point(0, new_pks_panel_location);
+                pk_panel.Location = new Point (0, new_pks_panel_location);
             }
 
             Button Remove_PK_Button = new Button();
@@ -1222,8 +1226,8 @@ namespace PuTTY_Storm
             pk_name.UseMnemonic = false;
             pk_name.Text = pk;
             pk_name.Font = new Font("Calibri", 9);
-            pk_name.Location = new Point(3, 60);
-            pk_name.Size = new Size(250, 80);
+            pk_name.Location = DPIAwareScaling.ScalePoint(3, 60);
+            pk_name.Size = DPIAwareScaling.ScaleSize(250, 80);
             pk_name.ForeColor = Color.White;
             pk_name.Name = "pk_name_label";
 
@@ -1231,8 +1235,8 @@ namespace PuTTY_Storm
             pk_group.UseMnemonic = false;
             pk_group.Text = "Group: " + group;
             pk_group.Font = new Font("Calibri", 9);
-            pk_group.Location = new Point(3, 20);
-            pk_group.Size = new Size(125, 20);
+            pk_group.Location = DPIAwareScaling.ScalePoint(3, 20);
+            pk_group.Size = DPIAwareScaling.ScaleSize(125, 20);
             pk_group.ForeColor = Color.White;
             pk_group.Name = "pk_group_label";
 
@@ -1240,8 +1244,8 @@ namespace PuTTY_Storm
             pk_type.UseMnemonic = false;
             pk_type.Text = "Type: " + type;
             pk_type.Font = new Font("Calibri", 9);
-            pk_type.Location = new Point(128, 20);
-            pk_type.Size = new Size(125, 20);
+            pk_type.Location = DPIAwareScaling.ScalePoint(128, 20);
+            pk_type.Size = DPIAwareScaling.ScaleSize(125, 20);
             pk_type.ForeColor = Color.White;
             pk_type.Name = "pk_type_label";
 
@@ -1255,8 +1259,8 @@ namespace PuTTY_Storm
                 passphrase.Text = "PWD: YES";
             }
             passphrase.Font = new Font("Calibri", 9);
-            passphrase.Location = new Point(3, 40);
-            passphrase.Size = new Size(125, 20);
+            passphrase.Location = DPIAwareScaling.ScalePoint(3, 40);
+            passphrase.Size = DPIAwareScaling.ScaleSize(125, 20);
             passphrase.ForeColor = Color.White;
             passphrase.Name = "pk_passphrase_label";
 
@@ -1310,10 +1314,10 @@ namespace PuTTY_Storm
                 {
                     Point locationOnForm = PrivateKeys[g].FindForm().PointToClient(PrivateKeys[g].
                         Parent.PointToScreen(PrivateKeys[g].Location));
-                    int new_pk_panel_location = locationOnForm.Y - 530;
+                    int new_pk_panel_location = locationOnForm.Y - DPIAwareScaling._ScaleY(530);
 
                     Panel temp = PrivateKeys[g];
-                    temp.Location = new Point(0, new_pk_panel_location);
+                    temp.Location = new Point (0, new_pk_panel_location);
                 }
                 PK_Rows--;
             }
@@ -1349,7 +1353,7 @@ namespace PuTTY_Storm
                 {
                     Point locationOnForm = Groups[g].FindForm().PointToClient(Groups[g].
                         Parent.PointToScreen(Groups[g].Location));
-                    int new_groups_panel_location = locationOnForm.Y - 131;
+                    int new_groups_panel_location = locationOnForm.Y - DPIAwareScaling._ScaleY(131);
 
                     Panel temp = Groups[g];
                     temp.Location = new Point(0, new_groups_panel_location);
@@ -1425,7 +1429,7 @@ namespace PuTTY_Storm
             // Get the Y coordinate of last GroupBox container
             Point locationOnForm = containers_list[i-1].FindForm().PointToClient(containers_list[i-1].
                 Parent.PointToScreen(containers_list[i-1].Location));
-            int new_groupbox_location = locationOnForm.Y + 240;
+            int new_groupbox_location = locationOnForm.Y + DPIAwareScaling._ScaleY(240);
 
             // Add new GroupBox, set new Y location coordinate, increment its counter
             containers_list.Add(Add_Main_Component());
@@ -1501,8 +1505,9 @@ namespace PuTTY_Storm
 
             SessionsSplitContainer.Dock = DockStyle.Fill;
             SessionsSplitContainer.BorderStyle = BorderStyle.Fixed3D;
-            SessionsSplitContainer.SplitterDistance = 75;
+            SessionsSplitContainer.SplitterDistance = DPIAwareScaling.TabControlSplitterDistance;
             SessionsSplitContainer.Panel1.AutoScroll = true;
+            SessionsSplitContainer.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 
             SessionsForm = new SessionsForm(my_ProcessInfo_List_TC_1, tabcontrol1, tabcontrol2, SessionsSplitContainer, containers_list,
                 TabPagesForwardGlobalHotKeyWorker, TabPagesBackwardGlobalHotKeyWorker, SplitScreenGlobalHotKeyWorker, SFTPManagerGlobalHotKeyWorker,
@@ -1631,11 +1636,15 @@ namespace PuTTY_Storm
             tabcontrol1.Appearance = TabAppearance.FlatButtons;
             tabcontrol1.Resize += new EventHandler(Tabcontrol1_Resize);
             tabcontrol1.HandleDestroyed += new EventHandler(Tabcontrol1_HandleDestroyed);
+            tabcontrol1.Font = new Font("Calibri", DPIAwareScaling.TabcontrolFont);
+            tabcontrol1.ItemSize = DPIAwareScaling.ScaleSize(50, 25);
 
             tabcontrol2.MouseClick += new MouseEventHandler(Tabcontrol2_MouseClick);
             tabcontrol2.Resize += new EventHandler(Tabcontrol2_Resize);
             tabcontrol2.Appearance = TabAppearance.FlatButtons;
             tabcontrol2.HandleDestroyed += new EventHandler(Tabcontrol2_HandleDestroyed);
+            tabcontrol2.Font = new Font("Calibri", DPIAwareScaling.TabcontrolFont);
+            tabcontrol2.ItemSize = DPIAwareScaling.ScaleSize(50, 25);
 
             Panel tabcontrol_panel = new Panel();
             tabcontrol_panel.Dock = DockStyle.Fill;
@@ -1644,7 +1653,7 @@ namespace PuTTY_Storm
             tabcontrol_panel_2.Dock = DockStyle.Fill;
 
             new_connect_panel = new Panel();
-            new_connect_panel.Size = new Size(0, 30);
+            new_connect_panel.Size = DPIAwareScaling.ScaleSize(0, 30);
             new_connect_panel.Dock = DockStyle.Top;
             new_connect_panel.BackColor = SystemColors.Control;
             new_connect_panel.BorderStyle = BorderStyle.FixedSingle;
@@ -1660,49 +1669,50 @@ namespace PuTTY_Storm
             // SimpleServerPanePanel docked within the SessionSplitContainerAndServerPanel.Panel2 (SplitContainer).
             SimpleServerPanePanel = new Panel();
             SimpleServerPanePanel.Dock = DockStyle.Fill;
-            SimpleServerPanePanel.Size = new Size(300, 0);
+            SimpleServerPanePanel.Size = DPIAwareScaling.ScaleSize(300, 0);
 
             // This SplitContainer contains above SimpleServerPanePanel in Panel2 and the most important
             // SessionsSplitContainer in Panel1 (which contains tabcontrols with sessions).
             SessionSplitContainerAndServerPanel = new SplitContainer();
             SessionSplitContainerAndServerPanel.Dock = DockStyle.Fill;
-            SessionSplitContainerAndServerPanel.SplitterDistance = 400;
+            SessionSplitContainerAndServerPanel.SplitterDistance = DPIAwareScaling._ScaleX(400);
+            SessionSplitContainerAndServerPanel.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 
             Button new_connect_button = new Button();
             new_connect_button.Font = new Font("Calibri", 9);
-            new_connect_button.Location = new Point(630, 3);
-            new_connect_button.Size = new Size(70, 23);
+            new_connect_button.Location = DPIAwareScaling.ScalePoint(630, 3);
+            new_connect_button.Size = DPIAwareScaling.ScaleSize(70, 23);
             new_connect_button.Text = "Connect";
             new_connect_button.Click += new EventHandler(New_Connect_Click);
             new_connect_panel.Controls.Add(new_connect_button);
 
             Button manage_sessions_button = new Button();
             manage_sessions_button.Font = new Font("Calibri", 9);
-            manage_sessions_button.Location = new Point(930, 3);
-            manage_sessions_button.Size = new Size(80, 23);
+            manage_sessions_button.Location = DPIAwareScaling.ScalePoint(930, 3);
+            manage_sessions_button.Size = DPIAwareScaling.ScaleSize(80, 23);
             manage_sessions_button.Text = "Settings";
             manage_sessions_button.Click += new EventHandler(Manage_Sessions_Click);
             new_connect_panel.Controls.Add(manage_sessions_button);
 
             Button global_hot_keys_button = new Button();
             global_hot_keys_button.Font = new Font("Calibri", 9);
-            global_hot_keys_button.Location = new Point(1020, 3);
-            global_hot_keys_button.Size = new Size(110, 23);
+            global_hot_keys_button.Location = DPIAwareScaling.ScalePoint(1020, 3);
+            global_hot_keys_button.Size = DPIAwareScaling.ScaleSize(110, 23);
             global_hot_keys_button.Text = "GlobalHotKeys";
             global_hot_keys_button.Click += new EventHandler(Global_Hot_Keys_Click);
             new_connect_panel.Controls.Add(global_hot_keys_button);
 
             Button show_server_pane_button = new Button();
             show_server_pane_button.Font = new Font("Calibri", 9);
-            show_server_pane_button.Location = new Point(1150, 3);
-            show_server_pane_button.Size = new Size(130, 23);
+            show_server_pane_button.Location = DPIAwareScaling.ScalePoint(1150, 3);
+            show_server_pane_button.Size = DPIAwareScaling.ScaleSize(130, 23);
             show_server_pane_button.Text = "HideServersPanel";
             show_server_pane_button.Click += new EventHandler(Show_server_pane_Click);
             new_connect_panel.Controls.Add(show_server_pane_button);
            
             SessionsForm.ShowInTaskbar = true;
             SessionsForm.KeyPreview = true;
-            SessionsForm.Size = new Size(1200, 800);
+            SessionsForm.Size = DPIAwareScaling.ScaleSize(1200, 800);
             SessionsForm.StartPosition = FormStartPosition.CenterScreen;
             SessionsForm.AutoSize = true;
             SessionsForm.Text = GlobalVar.VERSION + " - Sessions";
@@ -2449,7 +2459,8 @@ namespace PuTTY_Storm
             {
                 if (my_ProcessInfo.mainhandle != IntPtr.Zero)
                 {
-                    NativeMethods.MoveWindow(my_ProcessInfo.mainhandle, -8, -30, SessionsSplitContainer.Panel1.Width + 5, SessionsSplitContainer.Panel1.Height + 5, true);
+                    NativeMethods.MoveWindow(my_ProcessInfo.mainhandle, DPIAwareScaling.MoveWindowX, DPIAwareScaling.MoveWindowY, 
+                        SessionsSplitContainer.Panel1.Width + DPIAwareScaling.MoveWindowNWidth, SessionsSplitContainer.Panel1.Height + DPIAwareScaling.MoveWindowNHeight, true);
                 }
                 base.OnResize(e);
             }
@@ -2464,7 +2475,8 @@ namespace PuTTY_Storm
             {
                 if (my_ProcessInfo.mainhandle != IntPtr.Zero)
                 {
-                    NativeMethods.MoveWindow(my_ProcessInfo.mainhandle, -8, -30, SessionsSplitContainer.Panel2.Width + 5, SessionsSplitContainer.Panel2.Height + 5, true);
+                    NativeMethods.MoveWindow(my_ProcessInfo.mainhandle, DPIAwareScaling.MoveWindowX, DPIAwareScaling.MoveWindowY, 
+                        SessionsSplitContainer.Panel2.Width + DPIAwareScaling.MoveWindowNWidth, SessionsSplitContainer.Panel2.Height + DPIAwareScaling.MoveWindowNHeight, true);
                 }
                 base.OnResize(e);
             }
@@ -2583,10 +2595,11 @@ namespace PuTTY_Storm
                     Controls.Remove(containers_list[(int)button.Tag]);
                     containers_list.RemoveAt((int)button.Tag);
 
-                    Control[] focus_control = this.Controls.Find("SettingPanel", true);
+                    Control[] focus_SettingsPanel = this.Controls.Find("SettingPanel", true);
+                    Control[] focus_SearchSessionConfigTextBox = this.Controls.Find("SearchSessionConfigTextBox", true);
 
-                    focus_control[0].Focus();
-                    TempScrollValue = LastScrollValue - 240;
+                    focus_SettingsPanel[0].Focus();
+                    TempScrollValue = LastScrollValue - DPIAwareScaling._ScaleY(240);
                     LastScrollValue = TempScrollValue;
 
                     if (LastScrollValue >= 0)
@@ -2594,7 +2607,8 @@ namespace PuTTY_Storm
                         this.VerticalScroll.Value = LastScrollValue;
                     }
 
-                    focus_control[0].Location = new Point(500, 255);
+                    focus_SettingsPanel[0].Location = DPIAwareScaling.ScalePoint(500, 255);
+                    focus_SearchSessionConfigTextBox[0].Location = DPIAwareScaling.ScalePoint(507, 215);
                     this.Refresh();
 
                     int y = 0;
@@ -2618,7 +2632,7 @@ namespace PuTTY_Storm
                     {
                         Point locationOnForm = containers_list[g].FindForm().PointToClient(containers_list[g].
                             Parent.PointToScreen(containers_list[g].Location));
-                        int new_groupbox_location = locationOnForm.Y - 240;
+                        int new_groupbox_location = locationOnForm.Y - DPIAwareScaling._ScaleY(240);
 
                         custom_controls.set_groupbox_location(containers_list[g], new_groupbox_location);
                     }

@@ -61,7 +61,7 @@ namespace PuTTY_Storm
             {
                 Label error = new Label();
                 error.Dock = DockStyle.Fill;
-                error.Size = new Size(800, 200);
+                error.Size = DPIAwareScaling.ScaleSize(800, 200);
                 error.AutoSize = false;
                 error.Text = "Host " + "'" + hostname + "'" + " does not exist!";
                 error.Font = new Font("Calibri", 28);
@@ -105,7 +105,8 @@ namespace PuTTY_Storm
             myProcessInfo.panel = panel;
             myProcessInfo.process = process;
             NativeMethods.SetWindowLong(myProcessInfo.mainhandle, NativeMethods.GWL_STYLE, NativeMethods.WS_VISIBLE + NativeMethods.WS_CAPTION);
-            NativeMethods.MoveWindow(myProcessInfo.mainhandle, -8, -30, SessionsSplitContainer.Panel1.Width + 5, SessionsSplitContainer.Panel1.Height + 5, true);
+            NativeMethods.MoveWindow(myProcessInfo.mainhandle, DPIAwareScaling.MoveWindowX, DPIAwareScaling.MoveWindowY, 
+                SessionsSplitContainer.Panel1.Width + DPIAwareScaling.MoveWindowNWidth, SessionsSplitContainer.Panel1.Height + DPIAwareScaling.MoveWindowNHeight, true);
 
             StreamWriter inputWriter = process.StandardInput;
             StreamReader outputReader = process.StandardOutput;

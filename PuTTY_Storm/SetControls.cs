@@ -45,8 +45,8 @@ namespace PuTTY_Storm
             container.ForeColor = Color.White;
             container.Font = new Font("Calibri", 25);
             container.Text = "1";
-            container.Location = new Point(23, 91);
-            container.Size = new Size(380, 225);
+            container.Location = DPIAwareScaling.ScalePoint(23, 91);
+            container.Size = DPIAwareScaling.ScaleSize(380, 225);
         }
 
         public void initialize_putty_config_container(GroupBox container)
@@ -55,8 +55,8 @@ namespace PuTTY_Storm
             container.ForeColor = Color.White;
             container.Font = new Font("Calibri", 14, FontStyle.Bold);
             container.Text = "PuTTY.exe";
-            container.Location = new Point(430, 100);
-            container.Size = new Size(370, 80);
+            container.Location = DPIAwareScaling.ScalePoint(430, 100);
+            container.Size = DPIAwareScaling.ScaleSize(370, 80);
             container.AutoSize = true;
         }
 
@@ -65,8 +65,8 @@ namespace PuTTY_Storm
             label.Font = new Font("Calibri", 15);
             label.BackColor = Color.SlateGray;
             label.ForeColor = Color.White;
-            label.Location = new Point(7, 30);
-            label.Size = new Size(278, 33);
+            label.Location = DPIAwareScaling.ScalePoint(7, 30);
+            label.Size = DPIAwareScaling.ScaleSize(278, 33);
             label.AutoSize = true;
             label.Name = "putty_path_label";
         }
@@ -75,8 +75,8 @@ namespace PuTTY_Storm
         {
             button.Font = new Font("Calibri", 10);
             button.ForeColor = Color.Black;
-            button.Location = new Point(7, 65);
-            button.Size = new Size(90, 28);
+            button.Location = DPIAwareScaling.ScalePoint(7, 65);
+            button.Size = DPIAwareScaling.ScaleSize(90, 28);
             button.Text = "Set path";
             button.UseVisualStyleBackColor = true;
         }
@@ -87,15 +87,15 @@ namespace PuTTY_Storm
             label.BackColor = Color.SlateGray;
             label.ForeColor = Color.White;
             label.Text = "Hostname or IP Address";
-            label.Location = new Point(63, 24);
-            label.Size = new Size(278, 33);
+            label.Location = DPIAwareScaling.ScalePoint(63, 24);
+            label.Size = DPIAwareScaling.ScaleSize(278, 33);
         }
 
         public void initialize_hostname_textbox (TextBox textbox)
         {
             textbox.Font = new Font("Calibri", 12);
-            textbox.Location = new Point(70, 60);
-            textbox.Size = new Size(260, 27);
+            textbox.Location = DPIAwareScaling.ScalePoint(70, 60);
+            textbox.Size = DPIAwareScaling.ScaleSize(260, 27);
             textbox.Name = "hostname_textbox";
         }
 
@@ -105,15 +105,15 @@ namespace PuTTY_Storm
             label.BackColor = Color.SlateGray;
             label.ForeColor = Color.White;
             label.Text = "Username";
-            label.Location = new Point(9, 95);
-            label.Size = new Size(113, 29);
+            label.Location = DPIAwareScaling.ScalePoint(9, 95);
+            label.Size = DPIAwareScaling.ScaleSize(113, 29);
         }
 
         public void initialize_username_textbox (TextBox textbox)
         {
             textbox.Font = new Font("Calibri", 12);
-            textbox.Location = new Point(124, 98);
-            textbox.Size = new Size(140, 27);
+            textbox.Location = DPIAwareScaling.ScalePoint(124, 98);
+            textbox.Size = DPIAwareScaling.ScaleSize(140, 27);
             textbox.Name = "username_textbox";
         }
 
@@ -123,15 +123,15 @@ namespace PuTTY_Storm
             label.BackColor = Color.SlateGray;
             label.ForeColor = Color.White;
             label.Text = "Password";
-            label.Location = new Point(11, 134);
-            label.Size = new Size(105, 29);
+            label.Location = DPIAwareScaling.ScalePoint(11, 134);
+            label.Size = DPIAwareScaling.ScaleSize(105, 29);
         }
 
         public void initialize_password_textbox (TextBox textbox)
         {
             textbox.Font = new Font("Calibri", 12);
-            textbox.Location = new Point(124, 137);
-            textbox.Size = new Size(140, 27);
+            textbox.Location = DPIAwareScaling.ScalePoint(124, 137);
+            textbox.Size = DPIAwareScaling.ScaleSize(140, 27);
             textbox.Name = "password_textbox";
             textbox.UseSystemPasswordChar = true;
         }
@@ -139,8 +139,8 @@ namespace PuTTY_Storm
         public void initialize_numbericupdown (NumericUpDown numericupdown, EventHandler numericupdown_ValueChanged)
         {
             numericupdown.Font = new Font("Calibri", 15);
-            numericupdown.Location = new Point(284, 118);
-            numericupdown.Size = new Size(43, 32);
+            numericupdown.Location = DPIAwareScaling.ScalePoint(284, 118);
+            numericupdown.Size = DPIAwareScaling.ScaleSize(43, 32);
             numericupdown.Value = 0;
             numericupdown.Name = "numericupdown";
             numericupdown.ValueChanged += new EventHandler(numericupdown_ValueChanged);
@@ -164,8 +164,8 @@ namespace PuTTY_Storm
                 combobox.DropDownWidth = DropDownWidth(combobox);
             }
             combobox.Font = new Font("Calibri", 10);
-            combobox.Location = new Point(15, 182);
-            combobox.Size = new Size(120, 32);
+            combobox.Location = DPIAwareScaling.ScalePoint(15, 182);
+            combobox.Size = DPIAwareScaling.ScaleSize(120, 32);
             combobox.Name = "combobox";
             combobox.DropDownStyle = ComboBoxStyle.DropDownList;
             combobox.SelectedIndexChanged += new EventHandler(combobox_SelectedIndexChanged);
@@ -191,22 +191,21 @@ namespace PuTTY_Storm
                 combobox.DropDownWidth = DropDownWidth(combobox);
             }
             combobox.Font = new Font("Calibri", 10);
-            combobox.Location = new Point(147, 182);
-            combobox.Size = new Size(120, 32);
+            combobox.Location = DPIAwareScaling.ScalePoint(147, 182);
+            combobox.Size = DPIAwareScaling.ScaleSize(120, 32);
             combobox.Name = "sub_groups_combobox";
             combobox.DropDownStyle = ComboBoxStyle.DropDownList;
             combobox.SelectedIndexChanged += new EventHandler(combobox_SelectedIndexChanged);
             combobox.SelectedIndexChanged += new EventHandler(sub_groups_combobox_PKGroupChanged);
-            combobox.Text = "LOL?";
         }
 
         public void initialize_removal_button(Button button, EventHandler ButtonClickOneEvent)
         {
             button.Name = "Remove_button";
             button.Font = new Font("Calibri", 10);
-            button.Location = new Point(290, 180);
+            button.Location = DPIAwareScaling.ScalePoint(290, 180);
             button.ForeColor = Color.Black;
-            button.Size = new Size(80, 28);
+            button.Size = DPIAwareScaling.ScaleSize(80, 28);
             button.Text = "Remove";
             button.UseVisualStyleBackColor = true;
             button.Click += new EventHandler(ButtonClickOneEvent);
@@ -222,15 +221,15 @@ namespace PuTTY_Storm
             label.BackColor = SystemColors.Control;
             label.ForeColor = Color.Black;
             label.Text = "Host";
-            label.Location = new Point(0, 3);
-            label.Size = new Size(40, 33);
+            label.Location = DPIAwareScaling.ScalePoint(0, 3);
+            label.Size = DPIAwareScaling.ScaleSize(40, 33);
         }
 
         public void initialize_new_connect_host_textbox(TextBox textbox)
         {
-            textbox.Font = new Font("Calibri", 10);
-            textbox.Location = new Point(43, 2);
-            textbox.Size = new Size(200, 27);
+            textbox.Font = new Font("Calibri", DPIAwareScaling.NewConnectHostTextboxFont);
+            textbox.Location = DPIAwareScaling.ScalePoint(43, 2);
+            textbox.Size = DPIAwareScaling.ScaleSize(200, 27);
             textbox.Name = "new_connect_host_textbox";
         }
 
@@ -240,15 +239,15 @@ namespace PuTTY_Storm
             label.BackColor = SystemColors.Control;
             label.ForeColor = Color.Black;
             label.Text = "User";
-            label.Location = new Point(260, 3);
-            label.Size = new Size(40, 33);
+            label.Location = DPIAwareScaling.ScalePoint(260, 3);
+            label.Size = DPIAwareScaling.ScaleSize(40, 33);
         }
 
         public void initialize_new_connect_username_textbox(TextBox textbox)
         {
-            textbox.Font = new Font("Calibri", 10);
-            textbox.Location = new Point(300, 2);
-            textbox.Size = new Size(60, 27);
+            textbox.Font = new Font("Calibri", DPIAwareScaling.NewConnectUsernameTextboxFont);
+            textbox.Location = DPIAwareScaling.ScalePoint(300, 2);
+            textbox.Size = DPIAwareScaling.ScaleSize(60, 27);
             textbox.Name = "new_connect_username_textbox";
         }
 
@@ -258,24 +257,24 @@ namespace PuTTY_Storm
             label.BackColor = SystemColors.Control;
             label.ForeColor = Color.Black;
             label.Text = "Password";
-            label.Location = new Point(380, 3);
-            label.Size = new Size(75, 33);
+            label.Location = DPIAwareScaling.ScalePoint(380, 3);
+            label.Size = DPIAwareScaling.ScaleSize(75, 33);
         }
 
         public void initialize_new_connect_password_textbox(TextBox textbox)
         {
-            textbox.Font = new Font("Calibri", 10);
-            textbox.Location = new Point(455, 2);
-            textbox.Size = new Size(60, 27);
+            textbox.Font = new Font("Calibri", DPIAwareScaling.NewConnectPasswordTextboxFont);
+            textbox.Location = DPIAwareScaling.ScalePoint(455, 2);
+            textbox.Size = DPIAwareScaling.ScaleSize(60, 27);
             textbox.Name = "new_connect_password_textbox";
             textbox.UseSystemPasswordChar = true;
         }
 
         public void initialize_new_connect_numbericupdown(NumericUpDown numericupdown)
         {
-            numericupdown.Font = new Font("Calibri", 10);
-            numericupdown.Location = new Point(550, 2);
-            numericupdown.Size = new Size(43, 30);
+            numericupdown.Font = new Font("Calibri", DPIAwareScaling.NewConnectNumericUpDownFont);
+            numericupdown.Location = DPIAwareScaling.ScalePoint(550, 2);
+            numericupdown.Size = DPIAwareScaling.ScaleSize(43, 30);
             numericupdown.Value = 0;
             numericupdown.Name = "new_connect_numericupdown";
         }
@@ -286,8 +285,8 @@ namespace PuTTY_Storm
             label.ForeColor = Color.Black;
             label.Text = "";
             label.BorderStyle = BorderStyle.Fixed3D;
-            label.Location = new Point(730, 2);
-            label.Size = new Size(2, 25);
+            label.Location = DPIAwareScaling.ScalePoint(730, 2);
+            label.Size = DPIAwareScaling.ScaleSize(2, 25);
         }
 
         public void initialize_new_connect_search_label(Label label)
@@ -296,15 +295,15 @@ namespace PuTTY_Storm
             label.BackColor = SystemColors.Control;
             label.ForeColor = Color.Black;
             label.Text = "Search";
-            label.Location = new Point(740, 3);
-            label.Size = new Size(60, 33);
+            label.Location = DPIAwareScaling.ScalePoint(740, 3);
+            label.Size = DPIAwareScaling.ScaleSize(60, 33);
         }
 
         public void initialize_new_connect_search_textbox(TextBox textbox, KeyEventHandler SearchTextbox_KeyDown)
         {
-            textbox.Font = new Font("Calibri", 10);
-            textbox.Location = new Point(800, 2);
-            textbox.Size = new Size(100, 27);
+            textbox.Font = new Font("Calibri", DPIAwareScaling.NewConnectSearchTextboxFont);
+            textbox.Location = DPIAwareScaling.ScalePoint(800, 2);
+            textbox.Size = DPIAwareScaling.ScaleSize(100, 27);
             textbox.Name = "new_connect_search_textbox";
             textbox.AcceptsReturn = true;
             textbox.KeyDown += new KeyEventHandler(SearchTextbox_KeyDown);
@@ -316,8 +315,8 @@ namespace PuTTY_Storm
             label.ForeColor = Color.Black;
             label.Text = "";
             label.BorderStyle = BorderStyle.Fixed3D;
-            label.Location = new Point(920, 2);
-            label.Size = new Size(2, 25);
+            label.Location = DPIAwareScaling.ScalePoint(920, 2);
+            label.Size = DPIAwareScaling.ScaleSize(2, 25);
         }
 
         /// <summary>
@@ -330,8 +329,8 @@ namespace PuTTY_Storm
             label.BackColor = Color.SlateGray;
             label.ForeColor = Color.White;
             label.Text = "Groups";
-            label.Location = new Point(3, 3);
-            label.Size = new Size(90, 33);
+            label.Location = DPIAwareScaling.ScalePoint(3, 3);
+            label.Size = DPIAwareScaling.ScaleSize(90, 33);
         }
 
         public void initialize_advanced_add_group_label(Label label)
@@ -340,16 +339,16 @@ namespace PuTTY_Storm
             label.BackColor = Color.SlateGray;
             label.ForeColor = Color.White;
             label.Text = "Add Group:";
-            label.Location = new Point(3, 46);
-            label.Size = new Size(90, 35);
+            label.Location = DPIAwareScaling.ScalePoint(3, 46);
+            label.Size = DPIAwareScaling.ScaleSize(90, 35);
             label.AutoSize = true;
         }
 
         public void initialize_advanced_add_group_textbox(TextBox textbox)
         {
             textbox.Font = new Font("Calibri", 10);
-            textbox.Location = new Point(100, 45);
-            textbox.Size = new Size(100, 27);
+            textbox.Location = DPIAwareScaling.ScalePoint(100, 45);
+            textbox.Size = DPIAwareScaling.ScaleSize(100, 27);
             textbox.Name = "advanced_add_group_textbox";
         }
 
@@ -357,9 +356,9 @@ namespace PuTTY_Storm
         {
             button.Name = "Remove_Group_button";
             button.Font = new Font("Calibri", 10);
-            button.Location = new Point(250, 20);
+            button.Location = DPIAwareScaling.ScalePoint(250, 20);
             button.ForeColor = Color.Black;
-            button.Size = new Size(65, 25);
+            button.Size = DPIAwareScaling.ScaleSize(65, 25);
             button.Text = "Remove";
             button.UseVisualStyleBackColor = true;
             button.Click += new EventHandler(ButtonClickGroupEvent);
@@ -370,9 +369,9 @@ namespace PuTTY_Storm
             label.BackColor = Color.White;
             label.ForeColor = Color.White;
             label.BorderStyle = BorderStyle.FixedSingle;
-            label.Location = new Point(6, 85);
+            label.Location = DPIAwareScaling.ScalePoint(6, 85);
             label.Text = "";
-            label.Size = new Size(350, 4);
+            label.Size = DPIAwareScaling.ScaleSize(350, 4);
         }
 
         /// <summary>
@@ -386,8 +385,8 @@ namespace PuTTY_Storm
             label.BackColor = Color.SlateGray;
             label.ForeColor = Color.White;
             label.Text = "Passwords";
-            label.Location = new Point(3, 3);
-            label.Size = new Size(100, 33);
+            label.Location = DPIAwareScaling.ScalePoint(3, 3);
+            label.Size = DPIAwareScaling.ScaleSize(100, 33);
         }
 
         public void initialize_advanced_new_password_label(Label label)
@@ -396,16 +395,16 @@ namespace PuTTY_Storm
             label.BackColor = Color.SlateGray;
             label.ForeColor = Color.White;
             label.Text = "New password:";
-            label.Location = new Point(3, 46);
-            label.Size = new Size(90, 35);
+            label.Location = DPIAwareScaling.ScalePoint(3, 46);
+            label.Size = DPIAwareScaling.ScaleSize(90, 35);
             label.AutoSize = true;
         }
 
         public void initialize_advanced_new_password_textbox(TextBox textbox)
         {
             textbox.Font = new Font("Calibri", 10);
-            textbox.Location = new Point(130, 45);
-            textbox.Size = new Size(130, 27);
+            textbox.Location = DPIAwareScaling.ScalePoint(130, 45);
+            textbox.Size = DPIAwareScaling.ScaleSize(130, 27);
             textbox.Name = "advanced_new_password_textbox";
             textbox.UseSystemPasswordChar = true;
         }
@@ -416,8 +415,8 @@ namespace PuTTY_Storm
             label.BackColor = Color.SlateGray;
             label.ForeColor = Color.White;
             label.Text = "For Group:";
-            label.Location = new Point(3, 86);
-            label.Size = new Size(90, 35);
+            label.Location = DPIAwareScaling.ScalePoint(3, 86);
+            label.Size = DPIAwareScaling.ScaleSize(90, 35);
             label.AutoSize = true;
         }
 
@@ -438,8 +437,8 @@ namespace PuTTY_Storm
                 combobox.DropDownWidth = DropDownWidth(combobox);
             }
             combobox.Font = new Font("Calibri", 11);
-            combobox.Location = new Point(130, 86);
-            combobox.Size = new Size(130, 32);
+            combobox.Location = DPIAwareScaling.ScalePoint(130, 86);
+            combobox.Size = DPIAwareScaling.ScaleSize(130, 32);
             combobox.Name = "new_password_combobox";
             combobox.DropDownStyle = ComboBoxStyle.DropDownList;
             combobox.SelectedIndexChanged += new EventHandler(combobox_SelectedIndexChanged);          
@@ -455,9 +454,9 @@ namespace PuTTY_Storm
             label.BackColor = Color.White;
             label.ForeColor = Color.White;
             label.BorderStyle = BorderStyle.FixedSingle;
-            label.Location = new Point(5, 250);
+            label.Location = DPIAwareScaling.ScalePoint(5, 250);
             label.Text = "";
-            label.Size = new Size(400, 4);
+            label.Size = DPIAwareScaling.ScaleSize(400, 4);
         }
 
         public void initialize_panel2_advanced_login_main_label(Label label)
@@ -466,8 +465,8 @@ namespace PuTTY_Storm
             label.BackColor = Color.SlateGray;
             label.ForeColor = Color.White;
             label.Text = "Change Login Password Secret";
-            label.Location = new Point(3, 270);
-            label.Size = new Size(90, 35);
+            label.Location = DPIAwareScaling.ScalePoint(3, 270);
+            label.Size = DPIAwareScaling.ScaleSize(90, 35);
             label.AutoSize = true;
         }
 
@@ -477,8 +476,8 @@ namespace PuTTY_Storm
             label.BackColor = Color.SlateGray;
             label.ForeColor = Color.White;
             label.Text = "Old password";
-            label.Location = new Point(3, 320);
-            label.Size = new Size(90, 35);
+            label.Location = DPIAwareScaling.ScalePoint(3, 320);
+            label.Size = DPIAwareScaling.ScaleSize(90, 35);
             label.AutoSize = true;
         }
 
@@ -488,8 +487,8 @@ namespace PuTTY_Storm
             label.BackColor = Color.SlateGray;
             label.ForeColor = Color.White;
             label.Text = "New password";
-            label.Location = new Point(3, 350);
-            label.Size = new Size(90, 35);
+            label.Location = DPIAwareScaling.ScalePoint(3, 350);
+            label.Size = DPIAwareScaling.ScaleSize(90, 35);
             label.AutoSize = true;
         }
 
@@ -499,16 +498,16 @@ namespace PuTTY_Storm
             label.BackColor = Color.SlateGray;
             label.ForeColor = Color.White;
             label.Text = "Confirm new password";
-            label.Location = new Point(3, 380);
-            label.Size = new Size(90, 35);
+            label.Location = DPIAwareScaling.ScalePoint(3, 380);
+            label.Size = DPIAwareScaling.ScaleSize(90, 35);
             label.AutoSize = true;
         }
 
         public void initialize_panel2_advanced_login_old_passwd_textbox(TextBox textbox)
         {
             textbox.Font = new Font("Calibri", 10);
-            textbox.Location = new Point(200, 320);
-            textbox.Size = new Size(150, 25);
+            textbox.Location = DPIAwareScaling.ScalePoint(200, 320);
+            textbox.Size = DPIAwareScaling.ScaleSize(150, 25);
             textbox.Name = "panel2_advanced_login_old_passwd_textbox";
             textbox.UseSystemPasswordChar = true;
         }
@@ -516,8 +515,8 @@ namespace PuTTY_Storm
         public void initialize_panel2_advanced_login_new_passwd_textbox(TextBox textbox)
         {
             textbox.Font = new Font("Calibri", 10);
-            textbox.Location = new Point(200, 350);
-            textbox.Size = new Size(150, 25);
+            textbox.Location = DPIAwareScaling.ScalePoint(200, 350);
+            textbox.Size = DPIAwareScaling.ScaleSize(150, 25);
             textbox.Name = "panel2_advanced_login_new_passwd_textbox";
             textbox.UseSystemPasswordChar = true;
         }
@@ -525,8 +524,8 @@ namespace PuTTY_Storm
         public void initialize_panel2_advanced_login_confirm_new_passwd_textbox(TextBox textbox)
         {
             textbox.Font = new Font("Calibri", 10);
-            textbox.Location = new Point(200, 380);
-            textbox.Size = new Size(150, 25);
+            textbox.Location = DPIAwareScaling.ScalePoint(200, 380);
+            textbox.Size = DPIAwareScaling.ScaleSize(150, 25);
             textbox.Name = "panel2_advanced_login_confirm_new_passwd_textbox";
             textbox.UseSystemPasswordChar = true;
         }
@@ -541,8 +540,8 @@ namespace PuTTY_Storm
             label.BackColor = Color.SlateGray;
             label.ForeColor = Color.White;
             label.Text = "Private Keys";
-            label.Location = new Point(3, 260);
-            label.Size = new Size(130, 30);
+            label.Location = DPIAwareScaling.ScalePoint(3, 260);
+            label.Size = DPIAwareScaling.ScaleSize(130, 30);
         }
 
         public void initialize_advanced_private_keys_textbox_filedialog(TextBox textbox)
@@ -552,8 +551,8 @@ namespace PuTTY_Storm
             textbox.ForeColor = Color.White;
             textbox.Text = "";
             textbox.Name = "private_keys_textbox_filedialog";
-            textbox.Location = new Point(80, 300);
-            textbox.Size = new Size(270, 20);
+            textbox.Location = DPIAwareScaling.ScalePoint(80, 300);
+            textbox.Size = DPIAwareScaling.ScaleSize(270, 20);
             textbox.ReadOnly = true;
         }
 
@@ -563,8 +562,8 @@ namespace PuTTY_Storm
             label.BackColor = Color.SlateGray;
             label.ForeColor = Color.White;
             label.Text = "Type";
-            label.Location = new Point(5, 340);
-            label.Size = new Size(50, 30);
+            label.Location = DPIAwareScaling.ScalePoint(5, 340);
+            label.Size = DPIAwareScaling.ScaleSize(50, 30);
         }
 
         public void initialize_advanced_private_keys_keytype_combobox(ComboBox combobox, EventHandler combobox_SelectedIndexChanged)
@@ -572,8 +571,8 @@ namespace PuTTY_Storm
             combobox.Items.Add("PPK");
             combobox.Items.Add("OpenSSH");
             combobox.Font = new Font("Calibri", 11);
-            combobox.Location = new Point(65, 340);
-            combobox.Size = new Size(80, 32);
+            combobox.Location = DPIAwareScaling.ScalePoint(65, 340);
+            combobox.Size = DPIAwareScaling.ScaleSize(80, 32);
             combobox.Name = "private_keys_keytype_combobox";
             combobox.DropDownStyle = ComboBoxStyle.DropDownList;
             combobox.SelectedIndexChanged += new EventHandler(combobox_SelectedIndexChanged);
@@ -585,8 +584,8 @@ namespace PuTTY_Storm
             label.BackColor = Color.SlateGray;
             label.ForeColor = Color.White;
             label.Text = "Group";
-            label.Location = new Point(160, 340);
-            label.Size = new Size(60, 30);
+            label.Location = DPIAwareScaling.ScalePoint(160, 340);
+            label.Size = DPIAwareScaling.ScaleSize(60, 30);
         }
 
         public void initialize_advanced_private_keys_group_combobox(ComboBox combobox, EventHandler combobox_SelectedIndexChanged)
@@ -606,8 +605,8 @@ namespace PuTTY_Storm
                 combobox.DropDownWidth = DropDownWidth(combobox);
             }
             combobox.Font = new Font("Calibri", 11);
-            combobox.Location = new Point(230, 340);
-            combobox.Size = new Size(120, 32);
+            combobox.Location = DPIAwareScaling.ScalePoint(230, 340);
+            combobox.Size = DPIAwareScaling.ScaleSize(120, 32);
             combobox.Name = "private_keys_group_combobox";
             combobox.DropDownStyle = ComboBoxStyle.DropDownList;
             combobox.SelectedIndexChanged += new EventHandler(combobox_SelectedIndexChanged);
@@ -618,18 +617,18 @@ namespace PuTTY_Storm
             label.BackColor = Color.White;
             label.ForeColor = Color.White;
             label.BorderStyle = BorderStyle.FixedSingle;
-            label.Location = new Point(6, 420);
+            label.Location = DPIAwareScaling.ScalePoint(6, 420);
             label.Text = "";
-            label.Size = new Size(350, 4);
+            label.Size = DPIAwareScaling.ScaleSize(350, 4);
         }
 
         public void initialize_advanced_remove_pk_button(Button button, EventHandler ButtonClickPKEvent)
         {
             button.Name = "Remove_PK_button";
             button.Font = new Font("Calibri", 10);
-            button.Location = new Point(270, 30);
+            button.Location = DPIAwareScaling.ScalePoint(270, 30);
             button.ForeColor = Color.Black;
-            button.Size = new Size(65, 25);
+            button.Size = DPIAwareScaling.ScaleSize(65, 25);
             button.Text = "Remove";
             button.UseVisualStyleBackColor = true;
             button.Click += new EventHandler(ButtonClickPKEvent);
@@ -641,8 +640,8 @@ namespace PuTTY_Storm
             label.BackColor = Color.SlateGray;
             label.ForeColor = Color.White;
             label.Text = "PWD";
-            label.Location = new Point(6, 385);
-            label.Size = new Size(40, 30);
+            label.Location = DPIAwareScaling.ScalePoint(6, 385);
+            label.Size = DPIAwareScaling.ScaleSize(40, 30);
         }
 
         public void initialize_advanced_private_keys_passphrase_textbox(TextBox textbox)
@@ -650,8 +649,8 @@ namespace PuTTY_Storm
             textbox.Font = new Font("Calibri", 10);
             //textbox.ForeColor = Color.White;
             textbox.Name = "private_keys_passphrase_textbox";
-            textbox.Location = new Point(50, 380);
-            textbox.Size = new Size(150, 20);
+            textbox.Location = DPIAwareScaling.ScalePoint(50, 380);
+            textbox.Size = DPIAwareScaling.ScaleSize(150, 20);
             textbox.UseSystemPasswordChar = true;
         }
 
@@ -683,7 +682,7 @@ namespace PuTTY_Storm
         /// </summary>
         public void set_groupbox_location (GroupBox groupbox, int height)
         {
-            groupbox.Location = new Point(23, height);
+            groupbox.Location = new Point(DPIAwareScaling._ScaleX(23), height);
         }
 
         public void set_group_box_text (GroupBox groupbox, string text)
@@ -693,7 +692,7 @@ namespace PuTTY_Storm
 
         public void set_button_location (Button button, int height)
         {
-            button.Location = new Point(292, height);
+            button.Location = DPIAwareScaling.ScalePoint(292, height);
         }
 
         /// <summary>
@@ -781,8 +780,9 @@ namespace PuTTY_Storm
             {
                 // Image list for ServerPane TreeView
                 ImageList ServerPaneImageList = new ImageList();
-                ServerPaneImageList.Images.Add(PuTTY_Storm.Properties.Resources.F12_Folder_28x);
-                ServerPaneImageList.Images.Add(PuTTY_Storm.Properties.Resources.LocalServer_32x);
+                ServerPaneImageList.ImageSize = DPIAwareScaling.ScaleSize(16, 16);
+                ServerPaneImageList.Images.Add(PuTTY_Storm.Properties.Resources.VSO_Folder_hoverblue_32x);
+                ServerPaneImageList.Images.Add(PuTTY_Storm.Properties.Resources.ComputerSystem_32x);
                 ServerPane.ImageList = ServerPaneImageList;
 
                 // Disable redrawing of ServerPane to prevent flickering while changes are made.
@@ -871,7 +871,7 @@ namespace PuTTY_Storm
                 for (int i = 0; i < 2; i++)
                 {
                     if (groups != null)
-                        RemoveEmptryTreeViewGroups(ServerPane, groups);
+                        RemoveEmptryTreeViewGroups(ServerPane, groups, containers_list);
                 }
 
                 // Sort Nodes in TreeView
@@ -887,7 +887,7 @@ namespace PuTTY_Storm
         /// <summary>
         /// Remove empty group and sub-group nodes
         /// </summary>
-        private void RemoveEmptryTreeViewGroups (TreeView ServerPane, SavedGroupInfo groups)
+        private void RemoveEmptryTreeViewGroups (TreeView ServerPane, SavedGroupInfo groups, List<GroupBox> containers_list)
         {
             foreach (string name in groups.names)
             {
@@ -897,10 +897,39 @@ namespace PuTTY_Storm
                 {
                     foreach (TreeNode remove_group in remove_empty_group_nodes)
                     {
+                        // If group or sub-group doesn't contain any other nodes remove it
                         if (remove_group.Nodes.Count == 0)
                         {
                             ServerPane.Nodes.Remove(remove_group);
                         }
+                        else
+                        {
+                            foreach (TreeNode node in remove_group.Nodes)
+                            {
+                                // If group or sub-group is not empty then:
+                                // 1) Skip sub-group if we are checking a group.
+                                //    - sub-group will be removed in the next iteration
+                                if (node != null && FindNodeGroupBetweenGroups(groups, node.Text))
+                                {
+                                    continue;
+                                }
+
+                                // 2) If the node is hostname and it is between sessions anymore,
+                                //    remove it.
+                                if (node != null && !FindHostnameInContainers(containers_list, node.Text))
+                                {
+                                    ServerPane.Nodes.Remove(node);
+                                }
+                            }
+
+                            // Chekck again if now group or sub-group is empty.
+                            // If yes remove it, if not go to the next group or sub-group or
+                            // to the next iteration.
+                            if (remove_group.Nodes.Count == 0)
+                            {
+                                ServerPane.Nodes.Remove(remove_group);
+                            }
+                        }                        
                     }
                 }
             }
@@ -940,6 +969,38 @@ namespace PuTTY_Storm
             }
             return maxWidth;
         }
+
+        private bool FindHostnameInContainers (List<GroupBox> containers_list, string hostname)
+        {
+            bool find = false;
+
+            foreach (GroupBox container in containers_list)
+            {
+                Control[] hostname_textbox = container.Controls.Find("hostname_textbox", true);
+                if (hostname_textbox[0].Text == hostname)
+                {
+                    find = true;
+                }
+            }
+
+            return find;
+        }
+
+        private bool FindNodeGroupBetweenGroups (SavedGroupInfo groups, string node_group)
+        {
+            bool find = false;
+
+            foreach (string group in groups.names)
+            {
+                if (group == node_group)
+                {
+                    find = true;
+                }
+            }
+
+            return find;
+        }
+
 
     }
 }

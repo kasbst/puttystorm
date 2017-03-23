@@ -568,15 +568,15 @@ namespace PuTTY_Storm
             RemoteFileTextbox.Text = null;
 
             RemoteFilesForm = new FormHelper();
-            RemoteFilesForm.Size = new Size(800, 600);
-            RemoteFilesForm.MinimumSize = new Size(800, 600);
-            RemoteFilesForm.MaximumSize = new Size(800, 600);
+            RemoteFilesForm.Size = DPIAwareScaling.ScaleSize(800, 600);
+            RemoteFilesForm.MinimumSize = DPIAwareScaling.ScaleSize(800, 600);
+            RemoteFilesForm.MaximumSize = DPIAwareScaling.ScaleSize(800, 600);
             RemoteFilesForm.MaximizeBox = false;
             RemoteFilesForm.Text = GlobalVar.VERSION + " - RemoteFiles " + hostname;
             RemoteFilesForm.StartPosition = FormStartPosition.CenterScreen;
 
             RemoteFilesListView = new ListView();
-            RemoteFilesListView.Size = new Size(785, 500);
+            RemoteFilesListView.Size = DPIAwareScaling.ScaleSize(785, 500);
             RemoteFilesListView.View = View.Details;
             RemoteFilesListView.AllowColumnReorder = true;
             RemoteFilesListView.Sorting = SortOrder.Ascending;
@@ -588,8 +588,8 @@ namespace PuTTY_Storm
 
             Button SelectMultipleFilesButton = new Button();
             SelectMultipleFilesButton.Text = "Select Files";
-            SelectMultipleFilesButton.Size = new Size(70, 30);
-            SelectMultipleFilesButton.Location = new Point(690, 515);
+            SelectMultipleFilesButton.Size = DPIAwareScaling.ScaleSize(70, 30);
+            SelectMultipleFilesButton.Location = DPIAwareScaling.ScalePoint(690, 515);
             SelectMultipleFilesButton.Click += new EventHandler(SelectMultipleFilesButton_Click);
              
             ListRemoteFiles(RemoteFilesListView);

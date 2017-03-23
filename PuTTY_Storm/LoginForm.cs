@@ -16,6 +16,7 @@ namespace PuTTY_Storm
         public LoginForm()
         {
             InitializeComponent();
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
         }
 
         private void Login_Form_Load(object sender, EventArgs e)

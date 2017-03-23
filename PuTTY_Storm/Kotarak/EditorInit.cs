@@ -43,7 +43,7 @@ namespace PuTTY_Storm
         string COMMAND =
 @"# Only per line expressions enclosed in double quotes are supported for now!
 # Example: ""date; uptime; free -m""
-# Example1: ""cat /proc/cpuinfo | grep processor; cat /proc/cpuinfo | grep ""model name""
+# Example1: ""cat /proc/cpuinfo | grep processor; cat /proc/cpuinfo | grep ""model name""""
 ";
 
         public void BashInit(RadioButton radiobutton, Scintilla scintilla)

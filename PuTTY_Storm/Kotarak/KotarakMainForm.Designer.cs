@@ -36,11 +36,6 @@
             this.RunCodeButton = new System.Windows.Forms.Button();
             this.SelectAllDevicesButton = new System.Windows.Forms.Button();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.IndexColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.SelectColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.HostnameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ReturnCodeColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.OutputColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.UnselectAllDevicesButton = new System.Windows.Forms.Button();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
@@ -58,6 +53,11 @@
             this.label1 = new System.Windows.Forms.Label();
             this.CommandRadioButton = new System.Windows.Forms.RadioButton();
             this.BashScriptRadioButton = new System.Windows.Forms.RadioButton();
+            this.IndexColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.SelectColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.HostnameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ReturnCodeColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.OutputColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -149,42 +149,6 @@
             this.dataGridView1.Size = new System.Drawing.Size(980, 406);
             this.dataGridView1.TabIndex = 3;
             this.dataGridView1.AutoSizeRowsModeChanged += new System.Windows.Forms.DataGridViewAutoSizeModeEventHandler(this.AutoSizeRowsMode);
-            // 
-            // IndexColumn
-            // 
-            this.IndexColumn.HeaderText = "Index";
-            this.IndexColumn.Name = "IndexColumn";
-            this.IndexColumn.Width = 58;
-            // 
-            // SelectColumn
-            // 
-            this.SelectColumn.HeaderText = "Select";
-            this.SelectColumn.Name = "SelectColumn";
-            this.SelectColumn.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.SelectColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.SelectColumn.Width = 62;
-            // 
-            // HostnameColumn
-            // 
-            this.HostnameColumn.HeaderText = "Hostname";
-            this.HostnameColumn.Name = "HostnameColumn";
-            this.HostnameColumn.Width = 80;
-            // 
-            // ReturnCodeColumn
-            // 
-            this.ReturnCodeColumn.HeaderText = "Return Code";
-            this.ReturnCodeColumn.Name = "ReturnCodeColumn";
-            this.ReturnCodeColumn.Width = 92;
-            // 
-            // OutputColumn
-            // 
-            this.OutputColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.BottomLeft;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.OutputColumn.DefaultCellStyle = dataGridViewCellStyle1;
-            this.OutputColumn.FillWeight = 60000F;
-            this.OutputColumn.HeaderText = "Output";
-            this.OutputColumn.Name = "OutputColumn";
             // 
             // UnselectAllDevicesButton
             // 
@@ -407,6 +371,42 @@
             this.BashScriptRadioButton.UseVisualStyleBackColor = true;
             this.BashScriptRadioButton.CheckedChanged += new System.EventHandler(this.BashScriptRadioButton_CheckedChanged);
             // 
+            // IndexColumn
+            // 
+            this.IndexColumn.HeaderText = "Index";
+            this.IndexColumn.Name = "IndexColumn";
+            this.IndexColumn.Width = 58;
+            // 
+            // SelectColumn
+            // 
+            this.SelectColumn.HeaderText = "Select";
+            this.SelectColumn.Name = "SelectColumn";
+            this.SelectColumn.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.SelectColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.SelectColumn.Width = 62;
+            // 
+            // HostnameColumn
+            // 
+            this.HostnameColumn.HeaderText = "Hostname";
+            this.HostnameColumn.Name = "HostnameColumn";
+            this.HostnameColumn.Width = 80;
+            // 
+            // ReturnCodeColumn
+            // 
+            this.ReturnCodeColumn.HeaderText = "Return Code";
+            this.ReturnCodeColumn.Name = "ReturnCodeColumn";
+            this.ReturnCodeColumn.Width = 92;
+            // 
+            // OutputColumn
+            // 
+            this.OutputColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.BottomLeft;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.OutputColumn.DefaultCellStyle = dataGridViewCellStyle1;
+            this.OutputColumn.FillWeight = 60000F;
+            this.OutputColumn.HeaderText = "Output";
+            this.OutputColumn.Name = "OutputColumn";
+            // 
             // KotarakMainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -460,14 +460,14 @@
         private System.Windows.Forms.Label KotarakAltLabel;
         private System.Windows.Forms.Label KotarakHeadLabel;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button SelectGroupSubGroupButton;
+        private System.Windows.Forms.ComboBox SelectGroupSubGroupCombobox;
+        private System.Windows.Forms.Label SelectGroupSubGroupLabel;
         private System.Windows.Forms.DataGridViewTextBoxColumn IndexColumn;
         private System.Windows.Forms.DataGridViewCheckBoxColumn SelectColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn HostnameColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn ReturnCodeColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn OutputColumn;
-        private System.Windows.Forms.Button SelectGroupSubGroupButton;
-        private System.Windows.Forms.ComboBox SelectGroupSubGroupCombobox;
-        private System.Windows.Forms.Label SelectGroupSubGroupLabel;
     }
 }
 

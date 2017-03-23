@@ -39,9 +39,9 @@ namespace PuTTY_Storm
             this.login_form = _login_form;
             this.login_form.Text = GlobalVar.VERSION + " - Login";
             this.login_form.MaximizeBox = false;
-            this.login_form.MaximumSize = new Size(450, 300);
-            this.login_form.Size = new Size(450, 300);
-            this.login_form.MinimumSize = new Size(450, 300);
+            this.login_form.MaximumSize = DPIAwareScaling.ScaleSize(450, 300);
+            this.login_form.Size = DPIAwareScaling.ScaleSize(450, 300);
+            this.login_form.MinimumSize = DPIAwareScaling.ScaleSize(450, 300);
             this.login_form.StartPosition = FormStartPosition.CenterScreen;
             this.login_form.BackColor = Color.SlateGray;
             this.login_form.Load += new EventHandler(Login_Form_Load);
@@ -59,22 +59,22 @@ namespace PuTTY_Storm
             ok_button.Text = "OK";
             ok_button.Name = "ok_button";
             ok_button.Click += new EventHandler(OK_Button_Click);
-            ok_button.Location = new Point(130, 150);
-            ok_button.Size = new Size(70, 30);
+            ok_button.Location = DPIAwareScaling.ScalePoint(130, 150);
+            ok_button.Size = DPIAwareScaling.ScaleSize(70, 30);
             ok_button.UseVisualStyleBackColor = true;
 
             Button cancel_button = new Button();
             cancel_button.Text = "Cancel";
             cancel_button.Name = "cancel_button";
             cancel_button.Click += new EventHandler(Cancel_Button_Click);
-            cancel_button.Location = new Point(230, 150);
-            cancel_button.Size = new Size(70, 30);
+            cancel_button.Location = DPIAwareScaling.ScalePoint(230, 150);
+            cancel_button.Size = DPIAwareScaling.ScaleSize(70, 30);
             cancel_button.UseVisualStyleBackColor = true;
 
             TextBox login_textbox = new TextBox();
             login_textbox.Font = new Font("Calibri", 10);
-            login_textbox.Location = new Point(130, 90);
-            login_textbox.Size = new Size(170, 27);
+            login_textbox.Location = DPIAwareScaling.ScalePoint(130, 90);
+            login_textbox.Size = DPIAwareScaling.ScaleSize(170, 27);
             login_textbox.Name = "login_secret_textbox";
             login_textbox.UseSystemPasswordChar = true;
             login_textbox.AcceptsReturn = true;
@@ -82,8 +82,8 @@ namespace PuTTY_Storm
 
             TextBox new_login_textbox = new TextBox();
             new_login_textbox.Font = new Font("Calibri", 10);
-            new_login_textbox.Location = new Point(130, 110);
-            new_login_textbox.Size = new Size(170, 27);
+            new_login_textbox.Location = DPIAwareScaling.ScalePoint(130, 110);
+            new_login_textbox.Size = DPIAwareScaling.ScaleSize(170, 27);
             new_login_textbox.Name = "new_login_secret_textbox";
             new_login_textbox.UseSystemPasswordChar = true;
             new_login_textbox.AcceptsReturn = true;
@@ -92,8 +92,8 @@ namespace PuTTY_Storm
 
             TextBox new_login_textbox_confirm = new TextBox();
             new_login_textbox_confirm.Font = new Font("Calibri", 10);
-            new_login_textbox_confirm.Location = new Point(130, 70);
-            new_login_textbox_confirm.Size = new Size(170, 27);
+            new_login_textbox_confirm.Location = DPIAwareScaling.ScalePoint(130, 70);
+            new_login_textbox_confirm.Size = DPIAwareScaling.ScaleSize(170, 27);
             new_login_textbox_confirm.Name = "new_login_secret_textbox_confirm";
             new_login_textbox_confirm.UseSystemPasswordChar = true;
             new_login_textbox_confirm.Hide();
@@ -102,15 +102,15 @@ namespace PuTTY_Storm
             login_label.Font = new Font("Calibri", 16, FontStyle.Bold);
             login_label.BackColor = Color.SlateGray;
             login_label.ForeColor = Color.White;
-            login_label.Location = new Point(100, 30);
-            login_label.Size = new Size(90, 35);
+            login_label.Location = DPIAwareScaling.ScalePoint(100, 30);
+            login_label.Size = DPIAwareScaling.ScaleSize(90, 35);
             login_label.AutoSize = true;
             login_label.Name = "login_secret_label";
 
             if (mus.password_secret == null)
             {
                 login_label.Text = "Enter your new Safe Combination";
-                login_label.Location = new Point(60, 30);
+                login_label.Location = DPIAwareScaling.ScalePoint(60, 30);
                 login_textbox.Hide();
                 new_login_textbox.Show();
                 new_login_textbox_confirm.Show();

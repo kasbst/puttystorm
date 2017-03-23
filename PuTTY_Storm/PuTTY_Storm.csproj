@@ -70,6 +70,9 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Renci.SshNet, Version=2016.0.0.0, Culture=neutral, PublicKeyToken=1cee9f8bde3db106, processorArchitecture=MSIL">
       <HintPath>..\packages\SSH.NET.2016.0.0\lib\net40\Renci.SshNet.dll</HintPath>
@@ -93,6 +96,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CryptoHelper.cs" />
+    <Compile Include="DPIAwareScaling.cs" />
     <Compile Include="GlobalHotKeysManager\GlobalHotKeysManager.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -197,6 +201,7 @@
     <EmbeddedResource Include="Splash Screens\StopScreen.resx">
       <DependentUpon>StopScreen.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="app.manifest" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -215,8 +220,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="puttystorm.ico" />
-    <None Include="Resources\LocalServer_32x.png" />
-    <None Include="Resources\F12_Folder_28x.png" />
+    <None Include="Resources\ComputerSystem_32x.png" />
+    <None Include="Resources\VSO_Folder_hoverblue_32x.png" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">

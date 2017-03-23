@@ -15,6 +15,7 @@ namespace PuTTY_Storm
         public FormHelper()
         {
             InitializeComponent();
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
         }
 
         public FormHelper return_form2_object ()
