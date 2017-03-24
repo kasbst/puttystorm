@@ -29,6 +29,9 @@
         private void InitializeComponent()
         {
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(KotarakMainForm));
             this.scintilla1 = new ScintillaNET.Scintilla();
             this.ExportButton = new System.Windows.Forms.Button();
@@ -36,6 +39,11 @@
             this.RunCodeButton = new System.Windows.Forms.Button();
             this.SelectAllDevicesButton = new System.Windows.Forms.Button();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.IndexColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.SelectColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.HostnameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ReturnCodeColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.OutputColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.UnselectAllDevicesButton = new System.Windows.Forms.Button();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
@@ -53,11 +61,6 @@
             this.label1 = new System.Windows.Forms.Label();
             this.CommandRadioButton = new System.Windows.Forms.RadioButton();
             this.BashScriptRadioButton = new System.Windows.Forms.RadioButton();
-            this.IndexColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.SelectColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.HostnameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ReturnCodeColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.OutputColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -84,6 +87,7 @@
             // 
             // ExportButton
             // 
+            this.ExportButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.ExportButton.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ExportButton.Location = new System.Drawing.Point(95, 179);
             this.ExportButton.Name = "ExportButton";
@@ -95,6 +99,7 @@
             // 
             // ImportButton
             // 
+            this.ImportButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.ImportButton.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ImportButton.Location = new System.Drawing.Point(95, 150);
             this.ImportButton.Name = "ImportButton";
@@ -106,6 +111,7 @@
             // 
             // RunCodeButton
             // 
+            this.RunCodeButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.RunCodeButton.Font = new System.Drawing.Font("Calibri", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.RunCodeButton.Location = new System.Drawing.Point(95, 86);
             this.RunCodeButton.Name = "RunCodeButton";
@@ -117,6 +123,7 @@
             // 
             // SelectAllDevicesButton
             // 
+            this.SelectAllDevicesButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.SelectAllDevicesButton.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.SelectAllDevicesButton.Location = new System.Drawing.Point(23, 86);
             this.SelectAllDevicesButton.Name = "SelectAllDevicesButton";
@@ -133,6 +140,14 @@
             this.dataGridView1.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
             this.dataGridView1.BackgroundColor = System.Drawing.Color.SlateGray;
             this.dataGridView1.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.IndexColumn,
@@ -140,9 +155,25 @@
             this.HostnameColumn,
             this.ReturnCodeColumn,
             this.OutputColumn});
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView1.DefaultCellStyle = dataGridViewCellStyle3;
             this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridView1.Location = new System.Drawing.Point(0, 0);
             this.dataGridView1.Name = "dataGridView1";
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView1.RowHeadersDefaultCellStyle = dataGridViewCellStyle4;
             this.dataGridView1.RowTemplate.DividerHeight = 20;
             this.dataGridView1.RowTemplate.Height = 50000;
             this.dataGridView1.RowTemplate.Resizable = System.Windows.Forms.DataGridViewTriState.True;
@@ -150,8 +181,45 @@
             this.dataGridView1.TabIndex = 3;
             this.dataGridView1.AutoSizeRowsModeChanged += new System.Windows.Forms.DataGridViewAutoSizeModeEventHandler(this.AutoSizeRowsMode);
             // 
+            // IndexColumn
+            // 
+            this.IndexColumn.HeaderText = "Index";
+            this.IndexColumn.Name = "IndexColumn";
+            this.IndexColumn.Width = 58;
+            // 
+            // SelectColumn
+            // 
+            this.SelectColumn.HeaderText = "Select";
+            this.SelectColumn.Name = "SelectColumn";
+            this.SelectColumn.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.SelectColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.SelectColumn.Width = 62;
+            // 
+            // HostnameColumn
+            // 
+            this.HostnameColumn.HeaderText = "Hostname";
+            this.HostnameColumn.Name = "HostnameColumn";
+            this.HostnameColumn.Width = 80;
+            // 
+            // ReturnCodeColumn
+            // 
+            this.ReturnCodeColumn.HeaderText = "Return Code";
+            this.ReturnCodeColumn.Name = "ReturnCodeColumn";
+            this.ReturnCodeColumn.Width = 92;
+            // 
+            // OutputColumn
+            // 
+            this.OutputColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.BottomLeft;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.OutputColumn.DefaultCellStyle = dataGridViewCellStyle2;
+            this.OutputColumn.FillWeight = 60000F;
+            this.OutputColumn.HeaderText = "Output";
+            this.OutputColumn.Name = "OutputColumn";
+            // 
             // UnselectAllDevicesButton
             // 
+            this.UnselectAllDevicesButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.UnselectAllDevicesButton.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.UnselectAllDevicesButton.Location = new System.Drawing.Point(23, 115);
             this.UnselectAllDevicesButton.Name = "UnselectAllDevicesButton";
@@ -211,6 +279,7 @@
             // 
             // SelectGroupSubGroupButton
             // 
+            this.SelectGroupSubGroupButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.SelectGroupSubGroupButton.Location = new System.Drawing.Point(163, 191);
             this.SelectGroupSubGroupButton.Name = "SelectGroupSubGroupButton";
             this.SelectGroupSubGroupButton.Size = new System.Drawing.Size(75, 23);
@@ -370,42 +439,6 @@
             this.BashScriptRadioButton.Text = "Bash script";
             this.BashScriptRadioButton.UseVisualStyleBackColor = true;
             this.BashScriptRadioButton.CheckedChanged += new System.EventHandler(this.BashScriptRadioButton_CheckedChanged);
-            // 
-            // IndexColumn
-            // 
-            this.IndexColumn.HeaderText = "Index";
-            this.IndexColumn.Name = "IndexColumn";
-            this.IndexColumn.Width = 58;
-            // 
-            // SelectColumn
-            // 
-            this.SelectColumn.HeaderText = "Select";
-            this.SelectColumn.Name = "SelectColumn";
-            this.SelectColumn.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.SelectColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.SelectColumn.Width = 62;
-            // 
-            // HostnameColumn
-            // 
-            this.HostnameColumn.HeaderText = "Hostname";
-            this.HostnameColumn.Name = "HostnameColumn";
-            this.HostnameColumn.Width = 80;
-            // 
-            // ReturnCodeColumn
-            // 
-            this.ReturnCodeColumn.HeaderText = "Return Code";
-            this.ReturnCodeColumn.Name = "ReturnCodeColumn";
-            this.ReturnCodeColumn.Width = 92;
-            // 
-            // OutputColumn
-            // 
-            this.OutputColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.BottomLeft;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.OutputColumn.DefaultCellStyle = dataGridViewCellStyle1;
-            this.OutputColumn.FillWeight = 60000F;
-            this.OutputColumn.HeaderText = "Output";
-            this.OutputColumn.Name = "OutputColumn";
             // 
             // KotarakMainForm
             // 

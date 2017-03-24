@@ -48,10 +48,11 @@
             // 
             // puttyStormLoadBar
             // 
-            this.puttyStormLoadBar.Location = new System.Drawing.Point(0, 331);
+            this.puttyStormLoadBar.BackColor = System.Drawing.Color.SlateGray;
+            this.puttyStormLoadBar.Location = new System.Drawing.Point(-1, 331);
             this.puttyStormLoadBar.MarqueeAnimationSpeed = 50;
             this.puttyStormLoadBar.Name = "puttyStormLoadBar";
-            this.puttyStormLoadBar.Size = new System.Drawing.Size(576, 29);
+            this.puttyStormLoadBar.Size = new System.Drawing.Size(580, 29);
             this.puttyStormLoadBar.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
             this.puttyStormLoadBar.TabIndex = 1;
             // 

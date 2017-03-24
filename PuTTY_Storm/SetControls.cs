@@ -78,6 +78,7 @@ namespace PuTTY_Storm
             button.Location = DPIAwareScaling.ScalePoint(7, 65);
             button.Size = DPIAwareScaling.ScaleSize(90, 28);
             button.Text = "Set path";
+            button.FlatStyle = FlatStyle.System;
             button.UseVisualStyleBackColor = true;
         }
 
@@ -208,6 +209,7 @@ namespace PuTTY_Storm
             button.Size = DPIAwareScaling.ScaleSize(80, 28);
             button.Text = "Remove";
             button.UseVisualStyleBackColor = true;
+            button.FlatStyle = FlatStyle.System;
             button.Click += new EventHandler(ButtonClickOneEvent);
         }
 
@@ -361,6 +363,7 @@ namespace PuTTY_Storm
             button.Size = DPIAwareScaling.ScaleSize(65, 25);
             button.Text = "Remove";
             button.UseVisualStyleBackColor = true;
+            button.FlatStyle = FlatStyle.System;
             button.Click += new EventHandler(ButtonClickGroupEvent);
         }
 
@@ -631,6 +634,7 @@ namespace PuTTY_Storm
             button.Size = DPIAwareScaling.ScaleSize(65, 25);
             button.Text = "Remove";
             button.UseVisualStyleBackColor = true;
+            button.FlatStyle = FlatStyle.System;
             button.Click += new EventHandler(ButtonClickPKEvent);
         }
 
@@ -914,7 +918,7 @@ namespace PuTTY_Storm
                                     continue;
                                 }
 
-                                // 2) If the node is hostname and it is between sessions anymore,
+                                // 2) If the node is hostname and it is not between sessions anymore,
                                 //    remove it.
                                 if (node != null && !FindHostnameInContainers(containers_list, node.Text))
                                 {
@@ -922,7 +926,7 @@ namespace PuTTY_Storm
                                 }
                             }
 
-                            // Chekck again if now group or sub-group is empty.
+                            // Check again if now group or sub-group is empty.
                             // If yes remove it, if not go to the next group or sub-group or
                             // to the next iteration.
                             if (remove_group.Nodes.Count == 0)

@@ -267,6 +267,7 @@ namespace PuTTY_Storm
             AddEntry.Name = "Add_New_Entry";
             AddEntry.UseVisualStyleBackColor = true;
             AddEntry.Click += new EventHandler(AddEntry_Click);
+            AddEntry.FlatStyle = FlatStyle.System;
 
             Button Connect = new Button();
             Connect.Font = new Font("Calibri", 10);
@@ -276,6 +277,7 @@ namespace PuTTY_Storm
             Connect.Name = "Connect";
             Connect.UseVisualStyleBackColor = true;
             Connect.Click += new EventHandler(Connect_Click);
+            Connect.FlatStyle = FlatStyle.System;
 
             Button Save_Close = new Button();
             Save_Close.Font = new Font("Calibri", 10);
@@ -285,6 +287,7 @@ namespace PuTTY_Storm
             Save_Close.Name = "Save_Close";
             Save_Close.UseVisualStyleBackColor = true;
             Save_Close.Click += new EventHandler(Save_Close_Click);
+            Save_Close.FlatStyle = FlatStyle.System;
             Save_Close.Hide();
 
             Button Advanced_Options = new Button();
@@ -295,6 +298,7 @@ namespace PuTTY_Storm
             Advanced_Options.Name = "Advanced";
             Advanced_Options.UseVisualStyleBackColor = true;
             Advanced_Options.Click += new EventHandler(Advanced_Click);
+            Advanced_Options.FlatStyle = FlatStyle.System;
 
             if (File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
             "PuTTYStorm", "sessions.xml")))
@@ -726,6 +730,7 @@ namespace PuTTY_Storm
             Save_groups_button.Text = "Save";
             Save_groups_button.Name = "save_groups";
             Save_groups_button.UseVisualStyleBackColor = true;
+            Save_groups_button.FlatStyle = FlatStyle.System;
             Save_groups_button.Click += new EventHandler(Save_Groups_Click);
 
             Button Add_Group_button = new Button();
@@ -735,6 +740,7 @@ namespace PuTTY_Storm
             Add_Group_button.Text = "Add";
             Add_Group_button.Name = "add_group";
             Add_Group_button.UseVisualStyleBackColor = true;
+            Add_Group_button.FlatStyle = FlatStyle.System;
             Add_Group_button.Click += new EventHandler(Add_Group_Click);
 
             Button Set_passwords_button = new Button();
@@ -744,6 +750,7 @@ namespace PuTTY_Storm
             Set_passwords_button.Text = "Set password";
             Set_passwords_button.Name = "set_password";
             Set_passwords_button.UseVisualStyleBackColor = true;
+            Set_passwords_button.FlatStyle = FlatStyle.System;
             Set_passwords_button.Click += new EventHandler(Set_Passwords_Click);
 
             Button Set_new_secret_button = new Button();
@@ -753,6 +760,7 @@ namespace PuTTY_Storm
             Set_new_secret_button.Text = "Set new secret";
             Set_new_secret_button.Name = "set_new_secret";
             Set_new_secret_button.UseVisualStyleBackColor = true;
+            Set_new_secret_button.FlatStyle = FlatStyle.System;
             Set_new_secret_button.Click += new EventHandler(Set_New_Secret_Click);
 
             Button Select_private_key_button = new Button();
@@ -762,6 +770,7 @@ namespace PuTTY_Storm
             Select_private_key_button.Text = "Select";
             Select_private_key_button.Name = "select_private_key";
             Select_private_key_button.UseVisualStyleBackColor = true;
+            Select_private_key_button.FlatStyle = FlatStyle.System;
             Select_private_key_button.Click += new EventHandler(Select_private_key_Click);
 
             Button Add_private_key_button = new Button();
@@ -771,6 +780,7 @@ namespace PuTTY_Storm
             Add_private_key_button.Text = "Add";
             Add_private_key_button.Name = "add_private_key";
             Add_private_key_button.UseVisualStyleBackColor = true;
+            Add_private_key_button.FlatStyle = FlatStyle.System;
             Add_private_key_button.Click += new EventHandler(Add_private_key_Click);
 
             Button Save_private_key_button = new Button();
@@ -780,6 +790,7 @@ namespace PuTTY_Storm
             Save_private_key_button.Text = "Save";
             Save_private_key_button.Name = "save_private_key";
             Save_private_key_button.UseVisualStyleBackColor = true;
+            Save_private_key_button.FlatStyle = FlatStyle.System;
             Save_private_key_button.Click += new EventHandler(Save_private_key_Click);
 
             section_panel = new Panel();

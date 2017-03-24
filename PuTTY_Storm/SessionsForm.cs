@@ -407,6 +407,7 @@ namespace PuTTY_Storm
             connection1Button.Font = new Font("Calibri", 10);
             connection1Button.Text = _selectedTab1;
             connection1Button.UseVisualStyleBackColor = true;
+            connection1Button.FlatStyle = FlatStyle.System;
             connection1Button.Click += new EventHandler(connection1Button_Click);
 
             Button connection2Button = new Button();
@@ -415,6 +416,7 @@ namespace PuTTY_Storm
             connection2Button.Font = new Font("Calibri", 10);
             connection2Button.Text = _selectedTab2;
             connection2Button.UseVisualStyleBackColor = true;
+            connection2Button.FlatStyle = FlatStyle.System;
             connection2Button.Click += new EventHandler(connection2Button_Click);
 
 

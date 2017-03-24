@@ -49,6 +49,16 @@ namespace PuTTY_Storm
         public SFTPManager(String _hostname, String _username, String _password, String _privatekey, String _pk_pwd)
         {
             InitializeComponent();
+
+            if (DPIAwareScaling.UsingWindows7ClassicTheme())
+            {
+                progressBar1.BackColor = SystemColors.Control;
+                progressBar1.ForeColor = Color.Green;
+
+                progressBar2.BackColor = SystemColors.Control;
+                progressBar2.ForeColor = Color.Green;
+            }
+
             this.hostname = _hostname;
             this.username = _username;
             this.password = _password;

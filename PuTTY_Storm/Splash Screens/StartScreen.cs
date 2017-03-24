@@ -25,6 +25,7 @@
 using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Drawing;
 
 namespace PuTTY_Storm.Splash_Screens
 {
@@ -33,6 +34,12 @@ namespace PuTTY_Storm.Splash_Screens
         public StartScreen()
         {
             InitializeComponent();
+
+            if (DPIAwareScaling.UsingWindows7ClassicTheme())
+            {
+                puttyStormLoadBar.BackColor = SystemColors.Control;
+                puttyStormLoadBar.ForeColor = Color.Green;
+            }
         }
 
         //Delegate for cross thread call to close StartScreen

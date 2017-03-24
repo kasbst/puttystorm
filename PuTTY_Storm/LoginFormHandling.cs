@@ -61,6 +61,7 @@ namespace PuTTY_Storm
             ok_button.Click += new EventHandler(OK_Button_Click);
             ok_button.Location = DPIAwareScaling.ScalePoint(130, 150);
             ok_button.Size = DPIAwareScaling.ScaleSize(70, 30);
+            ok_button.FlatStyle = FlatStyle.System;
             ok_button.UseVisualStyleBackColor = true;
 
             Button cancel_button = new Button();
@@ -69,6 +70,7 @@ namespace PuTTY_Storm
             cancel_button.Click += new EventHandler(Cancel_Button_Click);
             cancel_button.Location = DPIAwareScaling.ScalePoint(230, 150);
             cancel_button.Size = DPIAwareScaling.ScaleSize(70, 30);
+            cancel_button.FlatStyle = FlatStyle.System;
             cancel_button.UseVisualStyleBackColor = true;
 
             TextBox login_textbox = new TextBox();

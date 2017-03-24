@@ -157,6 +157,7 @@
             // TabPagesForwardALTMOD
             // 
             this.TabPagesForwardALTMOD.Appearance = System.Windows.Forms.Appearance.Button;
+            this.TabPagesForwardALTMOD.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.TabPagesForwardALTMOD.Location = new System.Drawing.Point(98, 119);
             this.TabPagesForwardALTMOD.Name = "TabPagesForwardALTMOD";
             this.TabPagesForwardALTMOD.Size = new System.Drawing.Size(50, 25);
@@ -169,6 +170,7 @@
             // TabPagesForwardSHIFTMOD
             // 
             this.TabPagesForwardSHIFTMOD.Appearance = System.Windows.Forms.Appearance.Button;
+            this.TabPagesForwardSHIFTMOD.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.TabPagesForwardSHIFTMOD.Location = new System.Drawing.Point(167, 119);
             this.TabPagesForwardSHIFTMOD.Name = "TabPagesForwardSHIFTMOD";
             this.TabPagesForwardSHIFTMOD.Size = new System.Drawing.Size(50, 25);
@@ -181,6 +183,7 @@
             // TabPagesForwardWINMOD
             // 
             this.TabPagesForwardWINMOD.Appearance = System.Windows.Forms.Appearance.Button;
+            this.TabPagesForwardWINMOD.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.TabPagesForwardWINMOD.Location = new System.Drawing.Point(235, 119);
             this.TabPagesForwardWINMOD.Name = "TabPagesForwardWINMOD";
             this.TabPagesForwardWINMOD.Size = new System.Drawing.Size(50, 25);
@@ -193,6 +196,7 @@
             // TabPagesBackwardWINMOD
             // 
             this.TabPagesBackwardWINMOD.Appearance = System.Windows.Forms.Appearance.Button;
+            this.TabPagesBackwardWINMOD.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.TabPagesBackwardWINMOD.Location = new System.Drawing.Point(235, 227);
             this.TabPagesBackwardWINMOD.Name = "TabPagesBackwardWINMOD";
             this.TabPagesBackwardWINMOD.Size = new System.Drawing.Size(50, 25);
@@ -205,6 +209,7 @@
             // TabPagesBackwardSHIFTMOD
             // 
             this.TabPagesBackwardSHIFTMOD.Appearance = System.Windows.Forms.Appearance.Button;
+            this.TabPagesBackwardSHIFTMOD.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.TabPagesBackwardSHIFTMOD.Location = new System.Drawing.Point(167, 227);
             this.TabPagesBackwardSHIFTMOD.Name = "TabPagesBackwardSHIFTMOD";
             this.TabPagesBackwardSHIFTMOD.Size = new System.Drawing.Size(50, 25);
@@ -217,6 +222,7 @@
             // TabPagesBackwardALTMOD
             // 
             this.TabPagesBackwardALTMOD.Appearance = System.Windows.Forms.Appearance.Button;
+            this.TabPagesBackwardALTMOD.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.TabPagesBackwardALTMOD.Location = new System.Drawing.Point(98, 227);
             this.TabPagesBackwardALTMOD.Name = "TabPagesBackwardALTMOD";
             this.TabPagesBackwardALTMOD.Size = new System.Drawing.Size(50, 25);
@@ -229,6 +235,7 @@
             // TabPagesBackwardCTRLMOD
             // 
             this.TabPagesBackwardCTRLMOD.Appearance = System.Windows.Forms.Appearance.Button;
+            this.TabPagesBackwardCTRLMOD.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.TabPagesBackwardCTRLMOD.Location = new System.Drawing.Point(30, 227);
             this.TabPagesBackwardCTRLMOD.Name = "TabPagesBackwardCTRLMOD";
             this.TabPagesBackwardCTRLMOD.Size = new System.Drawing.Size(50, 25);
@@ -252,6 +259,7 @@
             // SplitScreenWINMOD
             // 
             this.SplitScreenWINMOD.Appearance = System.Windows.Forms.Appearance.Button;
+            this.SplitScreenWINMOD.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.SplitScreenWINMOD.Location = new System.Drawing.Point(235, 333);
             this.SplitScreenWINMOD.Name = "SplitScreenWINMOD";
             this.SplitScreenWINMOD.Size = new System.Drawing.Size(50, 25);
@@ -264,6 +272,7 @@
             // SplitScreenSHIFTMOD
             // 
             this.SplitScreenSHIFTMOD.Appearance = System.Windows.Forms.Appearance.Button;
+            this.SplitScreenSHIFTMOD.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.SplitScreenSHIFTMOD.Location = new System.Drawing.Point(167, 333);
             this.SplitScreenSHIFTMOD.Name = "SplitScreenSHIFTMOD";
             this.SplitScreenSHIFTMOD.Size = new System.Drawing.Size(50, 25);
@@ -276,6 +285,7 @@
             // SplitScreenALTMOD
             // 
             this.SplitScreenALTMOD.Appearance = System.Windows.Forms.Appearance.Button;
+            this.SplitScreenALTMOD.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.SplitScreenALTMOD.Location = new System.Drawing.Point(98, 333);
             this.SplitScreenALTMOD.Name = "SplitScreenALTMOD";
             this.SplitScreenALTMOD.Size = new System.Drawing.Size(50, 25);
@@ -288,6 +298,7 @@
             // SplitScreenCTRLMOD
             // 
             this.SplitScreenCTRLMOD.Appearance = System.Windows.Forms.Appearance.Button;
+            this.SplitScreenCTRLMOD.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.SplitScreenCTRLMOD.Location = new System.Drawing.Point(30, 333);
             this.SplitScreenCTRLMOD.Name = "SplitScreenCTRLMOD";
             this.SplitScreenCTRLMOD.Size = new System.Drawing.Size(50, 25);
@@ -311,6 +322,7 @@
             // SFTPManagerWINMOD
             // 
             this.SFTPManagerWINMOD.Appearance = System.Windows.Forms.Appearance.Button;
+            this.SFTPManagerWINMOD.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.SFTPManagerWINMOD.Location = new System.Drawing.Point(572, 117);
             this.SFTPManagerWINMOD.Name = "SFTPManagerWINMOD";
             this.SFTPManagerWINMOD.Size = new System.Drawing.Size(50, 25);
@@ -323,6 +335,7 @@
             // SFTPManagerSHIFTMOD
             // 
             this.SFTPManagerSHIFTMOD.Appearance = System.Windows.Forms.Appearance.Button;
+            this.SFTPManagerSHIFTMOD.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.SFTPManagerSHIFTMOD.Location = new System.Drawing.Point(504, 117);
             this.SFTPManagerSHIFTMOD.Name = "SFTPManagerSHIFTMOD";
             this.SFTPManagerSHIFTMOD.Size = new System.Drawing.Size(50, 25);
@@ -335,6 +348,7 @@
             // SFTPManagerALTMOD
             // 
             this.SFTPManagerALTMOD.Appearance = System.Windows.Forms.Appearance.Button;
+            this.SFTPManagerALTMOD.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.SFTPManagerALTMOD.Location = new System.Drawing.Point(435, 117);
             this.SFTPManagerALTMOD.Name = "SFTPManagerALTMOD";
             this.SFTPManagerALTMOD.Size = new System.Drawing.Size(50, 25);
@@ -347,6 +361,7 @@
             // SFTPManagerCTRLMOD
             // 
             this.SFTPManagerCTRLMOD.Appearance = System.Windows.Forms.Appearance.Button;
+            this.SFTPManagerCTRLMOD.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.SFTPManagerCTRLMOD.Location = new System.Drawing.Point(367, 117);
             this.SFTPManagerCTRLMOD.Name = "SFTPManagerCTRLMOD";
             this.SFTPManagerCTRLMOD.Size = new System.Drawing.Size(50, 25);
@@ -370,6 +385,7 @@
             // KotarakWINMOD
             // 
             this.KotarakWINMOD.Appearance = System.Windows.Forms.Appearance.Button;
+            this.KotarakWINMOD.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.KotarakWINMOD.Location = new System.Drawing.Point(571, 227);
             this.KotarakWINMOD.Name = "KotarakWINMOD";
             this.KotarakWINMOD.Size = new System.Drawing.Size(50, 25);
@@ -382,6 +398,7 @@
             // KotarakSHIFTMOD
             // 
             this.KotarakSHIFTMOD.Appearance = System.Windows.Forms.Appearance.Button;
+            this.KotarakSHIFTMOD.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.KotarakSHIFTMOD.Location = new System.Drawing.Point(503, 227);
             this.KotarakSHIFTMOD.Name = "KotarakSHIFTMOD";
             this.KotarakSHIFTMOD.Size = new System.Drawing.Size(50, 25);
@@ -394,6 +411,7 @@
             // KotarakALTMOD
             // 
             this.KotarakALTMOD.Appearance = System.Windows.Forms.Appearance.Button;
+            this.KotarakALTMOD.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.KotarakALTMOD.Location = new System.Drawing.Point(434, 227);
             this.KotarakALTMOD.Name = "KotarakALTMOD";
             this.KotarakALTMOD.Size = new System.Drawing.Size(50, 25);
@@ -406,6 +424,7 @@
             // KotarakCTRLMOD
             // 
             this.KotarakCTRLMOD.Appearance = System.Windows.Forms.Appearance.Button;
+            this.KotarakCTRLMOD.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.KotarakCTRLMOD.Location = new System.Drawing.Point(366, 227);
             this.KotarakCTRLMOD.Name = "KotarakCTRLMOD";
             this.KotarakCTRLMOD.Size = new System.Drawing.Size(50, 25);
@@ -428,6 +447,7 @@
             // 
             // SaveBtn
             // 
+            this.SaveBtn.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.SaveBtn.Location = new System.Drawing.Point(541, 420);
             this.SaveBtn.Name = "SaveBtn";
             this.SaveBtn.Size = new System.Drawing.Size(86, 29);

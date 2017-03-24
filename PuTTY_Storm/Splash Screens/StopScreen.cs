@@ -23,6 +23,7 @@
  */
 
 using System;
+using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -33,6 +34,12 @@ namespace PuTTY_Storm.Splash_Screens
         public StopScreen()
         {
             InitializeComponent();
+
+            if (DPIAwareScaling.UsingWindows7ClassicTheme())
+            {
+                puttyStormStopBar.BackColor = SystemColors.Control;
+                puttyStormStopBar.ForeColor = Color.Green;
+            }
         }
 
         //Delegate for cross thread call to close StopScreen

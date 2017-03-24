@@ -62,6 +62,7 @@
             // 
             // downloadBtn
             // 
+            this.downloadBtn.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.downloadBtn.Location = new System.Drawing.Point(24, 261);
             this.downloadBtn.Name = "downloadBtn";
             this.downloadBtn.Size = new System.Drawing.Size(75, 23);
@@ -92,6 +93,7 @@
             // 
             // CancelDownloadBtn
             // 
+            this.CancelDownloadBtn.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.CancelDownloadBtn.Location = new System.Drawing.Point(117, 260);
             this.CancelDownloadBtn.Name = "CancelDownloadBtn";
             this.CancelDownloadBtn.Size = new System.Drawing.Size(75, 23);
@@ -102,6 +104,7 @@
             // 
             // UploadBtn
             // 
+            this.UploadBtn.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.UploadBtn.Location = new System.Drawing.Point(14, 178);
             this.UploadBtn.Name = "UploadBtn";
             this.UploadBtn.Size = new System.Drawing.Size(75, 23);
@@ -112,6 +115,7 @@
             // 
             // CancelUploadBtn
             // 
+            this.CancelUploadBtn.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.CancelUploadBtn.Location = new System.Drawing.Point(107, 178);
             this.CancelUploadBtn.Name = "CancelUploadBtn";
             this.CancelUploadBtn.Size = new System.Drawing.Size(75, 23);
@@ -204,8 +208,8 @@
             this.splitContainer1.Panel2.Controls.Add(this.progressBar1);
             this.splitContainer1.Panel2.Controls.Add(this.CancelDownloadBtn);
             this.splitContainer1.Panel2.Controls.Add(this.DownloadLabel);
-            this.splitContainer1.Size = new System.Drawing.Size(1084, 649);
-            this.splitContainer1.SplitterDistance = 525;
+            this.splitContainer1.Size = new System.Drawing.Size(1092, 661);
+            this.splitContainer1.SplitterDistance = 528;
             this.splitContainer1.TabIndex = 13;
             // 
             // UploadBytesLabel
@@ -244,6 +248,7 @@
             // 
             // SelectFileButton
             // 
+            this.SelectFileButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.SelectFileButton.Location = new System.Drawing.Point(191, 69);
             this.SelectFileButton.Name = "SelectFileButton";
             this.SelectFileButton.Size = new System.Drawing.Size(75, 23);
@@ -299,6 +304,7 @@
             // 
             // SelectFilesToDownload
             // 
+            this.SelectFilesToDownload.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.SelectFilesToDownload.Location = new System.Drawing.Point(229, 69);
             this.SelectFilesToDownload.Name = "SelectFilesToDownload";
             this.SelectFilesToDownload.Size = new System.Drawing.Size(75, 23);
@@ -319,6 +325,7 @@
             // 
             // SelectFolderButton
             // 
+            this.SelectFolderButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.SelectFolderButton.Location = new System.Drawing.Point(167, 174);
             this.SelectFolderButton.Name = "SelectFolderButton";
             this.SelectFolderButton.Size = new System.Drawing.Size(75, 23);
@@ -363,7 +370,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1084, 649);
+            this.ClientSize = new System.Drawing.Size(1092, 661);
             this.Controls.Add(this.splitContainer1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;

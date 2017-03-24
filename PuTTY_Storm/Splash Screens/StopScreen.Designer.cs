@@ -73,7 +73,7 @@
             this.puttyStormStopBar.Location = new System.Drawing.Point(0, 331);
             this.puttyStormStopBar.MarqueeAnimationSpeed = 50;
             this.puttyStormStopBar.Name = "puttyStormStopBar";
-            this.puttyStormStopBar.Size = new System.Drawing.Size(576, 29);
+            this.puttyStormStopBar.Size = new System.Drawing.Size(579, 29);
             this.puttyStormStopBar.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
             this.puttyStormStopBar.TabIndex = 5;
             // 
