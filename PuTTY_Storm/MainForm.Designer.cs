@@ -52,7 +52,7 @@
             this.AutoScrollMargin = new System.Drawing.Size(0, 40);
             this.AutoSize = true;
             this.BackColor = System.Drawing.Color.SlateGray;
-            this.ClientSize = new System.Drawing.Size(854, 625);
+            this.ClientSize = new System.Drawing.Size(854, 624);
             this.Controls.Add(this.main_header);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;

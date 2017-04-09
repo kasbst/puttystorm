@@ -208,8 +208,8 @@
             this.splitContainer1.Panel2.Controls.Add(this.progressBar1);
             this.splitContainer1.Panel2.Controls.Add(this.CancelDownloadBtn);
             this.splitContainer1.Panel2.Controls.Add(this.DownloadLabel);
-            this.splitContainer1.Size = new System.Drawing.Size(1092, 661);
-            this.splitContainer1.SplitterDistance = 528;
+            this.splitContainer1.Size = new System.Drawing.Size(1084, 649);
+            this.splitContainer1.SplitterDistance = 524;
             this.splitContainer1.TabIndex = 13;
             // 
             // UploadBytesLabel
@@ -370,7 +370,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1092, 661);
+            this.ClientSize = new System.Drawing.Size(1084, 649);
             this.Controls.Add(this.splitContainer1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;

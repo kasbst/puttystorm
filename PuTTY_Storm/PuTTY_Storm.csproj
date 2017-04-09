@@ -194,6 +194,9 @@
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="SessionsForm.resx">
+      <DependentUpon>SessionsForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="SFTPManager.resx">
       <DependentUpon>SFTPManager.cs</DependentUpon>
     </EmbeddedResource>
