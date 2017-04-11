@@ -194,6 +194,11 @@ namespace PuTTY_Storm
             }
             catch (Exception ex)
             {
+                Modify_progressBar1(progressBar1, 0);
+                Modify_DownloadLabel(DownloadLabel, "Status: Error occurred");
+                Modify_DownloadStatusTextBox(DownloadStatusTextBox, "Error occurred, try again!" + System.Environment.NewLine);
+                Modify_downloadBtnStatus(downloadBtn);
+                sftpAsyncr = null;
                 MessageBox.Show(ex.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -392,6 +397,11 @@ namespace PuTTY_Storm
             }
             catch (Exception ex)
             {
+                Modify_progressBar2(progressBar2, 0);
+                Modify_UploadLabel(UploadLabel, "Status: Error occurred");
+                Modify_UploadStatusTextBox(UploadStatusTextBox, "Error occurred, try again!" +System.Environment.NewLine);
+                Modify_UploadBtnStatus(UploadBtn);
+                sftpAsyncrUpload = null;
                 MessageBox.Show(ex.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

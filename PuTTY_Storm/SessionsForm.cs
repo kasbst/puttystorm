@@ -237,7 +237,23 @@ namespace PuTTY_Storm
                 {
                     Console.WriteLine("SFTP Manager started but split screen is enabled, we have to decide which server to use!");
 
-                    if (tabcontrol2.TabCount == 0)
+                    // If tabcontrol1 doesn't contain any opened tabs, then we are going to use tabcontrol2 for SFTP manager
+                    if (tabcontrol1.TabCount == 0)
+                    {
+                        if (tabcontrol2.TabCount > 0)
+                        {
+                            Console.WriteLine("Split screen enabled but tabcontrol1 is empty");
+                            var credentials = GetSFTPCredentials(containers_list, tabcontrol2, null);
+                            StartSFTPManager(credentials);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Unable to start SFTP Manager - No active sessions!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                            return;
+                        }
+                    }
+                    // If tabcontrol2 doesn't contain any opened tabs, then we are going to use tabcontrol1 for SFTP manager
+                    else if (tabcontrol2.TabCount == 0)
                     {
                         if (tabcontrol1.TabCount > 0)
                         {
@@ -251,6 +267,7 @@ namespace PuTTY_Storm
                             return;
                         }
                     }
+                    // Otherwise we have opened tabs in both tabcontrols, so we are going to select the session for SFTP manager connect.
                     else
                     {
                         Console.WriteLine("Split screen enabled and tabcontrol2 contains active sessions");
