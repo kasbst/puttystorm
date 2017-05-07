@@ -1,5 +1,5 @@
 # PuTTYStorm
-Lightweight tabbed window manager for putty sessions
+Lightweight tabbed window manager for putty sessions with simple SFTP Manager and Configuration Management plugin
 
 ### Features
  - Open multiple sessions with one click
