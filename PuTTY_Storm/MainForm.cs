@@ -34,6 +34,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Security.Cryptography;
 using System.Threading;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace PuTTY_Storm
@@ -1623,10 +1624,11 @@ namespace PuTTY_Storm
                     }
                 }
 
-                Regex pattern = new Regex(@"^.*?(?=\.)");
-                Match match = pattern.Match(hostname);
-                string shortname = match.Groups[0].Value;
-
+                // If the hostname string is a valid IP address then show
+                // the IP address in a session's tabpage. Otherwise show only
+                // hostname's shortname.
+                string shortname = custom_controls.SetSessionTabShortname(hostname);
+                
                 for (i = 0; i < c_count; i++)
                 {
                     Process process = new Process();
@@ -2029,9 +2031,10 @@ namespace PuTTY_Storm
                 new_c_count = (int)ctlNumeric.Value;
             }
 
-            Regex pattern = new Regex(@"^.*?(?=\.)");
-            Match match = pattern.Match(new_hostname);
-            string shortname = match.Groups[0].Value;
+            // If the hostname string is a valid IP address then show
+            // the IP address in a session's tabpage. Otherwise show only
+            // hostname's shortname.
+            string shortname = custom_controls.SetSessionTabShortname(new_hostname);
 
             if (new_hostname == "" || new_username == "")
             {
@@ -2154,9 +2157,10 @@ namespace PuTTY_Storm
                 if (SimpleServerPane.SelectedNode.Text != _group && SimpleServerPane.SelectedNode.Text == _hostname)
                 {
                     Console.WriteLine("## All fine we are processing hostname and not a group or sub-group");
-                    Regex pattern = new Regex(@"^.*?(?=\.)");
-                    Match match = pattern.Match(_hostname);
-                    string shortname = match.Groups[0].Value;
+                    // If the hostname string is a valid IP address then show
+                    // the IP address in a session's tabpage. Otherwise show only
+                    // hostname's shortname.
+                    string shortname = custom_controls.SetSessionTabShortname(_hostname);
 
                     // In case we are going to use private key to login - check if it exists first!
                     // And also check if group or sub-group in this session is part of private keys setup.

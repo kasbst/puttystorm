@@ -27,6 +27,7 @@ using System.Windows.Forms;
 using Renci.SshNet;
 using System.Text.RegularExpressions;
 using Renci.SshNet.Common;
+using System.Text;
 
 namespace PuTTY_Storm
 {
@@ -137,7 +138,8 @@ namespace PuTTY_Storm
                     {
                         terminal = client.RunCommand(command);
                         Console.WriteLine("Command: " + command + " executed");
-                        output = terminal.Result;
+                        Console.WriteLine(terminal.Result);
+                        output = ReplaceTabsWithSpaces(terminal.Result, 4);
                         exitCode = terminal.ExitStatus;
 
                         if (exitCode != 0)
@@ -256,6 +258,68 @@ namespace PuTTY_Storm
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Tabs are represented as non-printable characters in DataGridView, therefore we need
+        /// to replace tabs with required number of spaces.
+        /// 
+        /// The solution below replaces tab with up to 4 or 8 spaces.
+        /// The logic iterates through the input string, one character at a time 
+        /// and keeps track of the current position (column #) in output string.
+        /// 
+        /// - If it encounters \t (tab char) - Finds the next tab stop, calculates how many spaces 
+        ///   it needs to get to the next tab stop, replaces \t with those number of spaces.
+        /// - If \n (new line) - Appends it to the output string and Resets the position pointer to 1 
+        ///   on new line.
+        /// - Any other characters - Appends it to the output string and increments the position.
+        /// </summary>
+        private int GetNearestTabStop(int currentPosition, int tabLength)
+        {
+            // if already at the tab stop, jump to the next tab stop.
+            if ((currentPosition % tabLength) == 1)
+                currentPosition += tabLength;
+            else
+            {
+                // if in the middle of two tab stops, move forward to the nearest.
+                for (int i = 0; i < tabLength; i++, currentPosition++)
+                    if ((currentPosition % tabLength) == 1)
+                        break;
+            }
+
+            return currentPosition;
+        }
+
+        private string ReplaceTabsWithSpaces(string input, int tabLength)
+        {
+            if (string.IsNullOrEmpty(input))
+                return input;
+
+            StringBuilder output = new StringBuilder();
+
+            int positionInOutput = 1;
+            foreach (var c in input)
+            {
+                switch (c)
+                {
+                    case '\t':
+                        int spacesToAdd = GetNearestTabStop(positionInOutput, tabLength) - positionInOutput;
+                        output.Append(new string(' ', spacesToAdd));
+                        positionInOutput += spacesToAdd;
+                        break;
+
+                    case '\n':
+                        output.Append(c);
+                        positionInOutput = 1;
+                        break;
+
+                    default:
+                        output.Append(c);
+                        positionInOutput++;
+                        break;
+                }
+            }
+            return output.ToString();
         }
 
 

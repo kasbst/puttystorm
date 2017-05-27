@@ -29,6 +29,8 @@ using System.Windows.Forms;
 using System.Drawing;
 using System.IO;
 using System.Collections;
+using System.Net;
+using System.Text.RegularExpressions;
 
 namespace PuTTY_Storm
 {
@@ -1003,6 +1005,32 @@ namespace PuTTY_Storm
             }
 
             return find;
+        }
+
+        /// <summary>
+        /// If the hostname string is a valid IP address then show
+        /// the IP address in a session's tabpage. Otherwise show only
+        /// hostname's shortname.
+        /// </summary>
+        /// <param name="hostname"></param>
+        /// <returns>valid shortname</returns>
+        public string SetSessionTabShortname (string hostname)
+        {
+            string shortname;
+            IPAddress ipAddress = null;
+
+            if (IPAddress.TryParse(hostname, out ipAddress))
+            {
+                shortname = hostname;
+            }
+            else
+            {
+                Regex pattern = new Regex(@"^.*?(?=\.)");
+                Match match = pattern.Match(hostname);
+                shortname = match.Groups[0].Value;
+            }
+
+            return shortname;
         }
 
 
