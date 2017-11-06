@@ -147,10 +147,11 @@ namespace PuTTY_Storm
                 return;
             }
 
-            new Thread(delegate ()
-            {
-                  __DOWNLOAD_THREAD();
-            }).Start();
+            Task newtask = Task.Factory.StartNew(() =>
+                {
+                    __DOWNLOAD_THREAD();
+                }, TaskCreationOptions.LongRunning
+            );
 
             downloadBtn.Enabled = false;
         }
@@ -351,10 +352,11 @@ namespace PuTTY_Storm
                 return;
             }
 
-            new Thread(delegate ()
-            {
-                ___UPLOAD_THREAD();
-            }).Start();
+            Task newtask = Task.Factory.StartNew(() =>
+                {
+                    ___UPLOAD_THREAD();
+                }, TaskCreationOptions.LongRunning
+            );
 
             UploadBtn.Enabled = false;
         }
@@ -582,7 +584,7 @@ namespace PuTTY_Storm
         ListView RemoteFilesListView;
         FormHelper RemoteFilesForm;
 
-        private void SelectFilesToDownload_Click(object sender, EventArgs e)
+        private async void SelectFilesToDownload_Click(object sender, EventArgs e)
         {
             GettingTheListLabel.Show();
             RemoteFileTextbox.Text = null;
@@ -611,9 +613,9 @@ namespace PuTTY_Storm
             SelectMultipleFilesButton.Size = DPIAwareScaling.ScaleSize(70, 30);
             SelectMultipleFilesButton.Location = DPIAwareScaling.ScalePoint(690, 515);
             SelectMultipleFilesButton.Click += new EventHandler(SelectMultipleFilesButton_Click);
-             
-            ListRemoteFiles(RemoteFilesListView);
-    
+
+            await Task.Run(() => ListRemoteFiles(RemoteFilesListView));
+
             RemoteFilesForm.Controls.Add(RemoteFilesListView);
             RemoteFilesForm.Controls.Add(SelectMultipleFilesButton);
             RemoteFilesForm.Show();
@@ -630,7 +632,7 @@ namespace PuTTY_Storm
                 using (SftpClient client = new SftpClient(con))
                 {
                     client.Connect();
-                    var files = client.ListDirectory("");
+                     var files = client.ListDirectory("");
                     foreach (var file in files)
                     {
                         if (file.IsRegularFile)

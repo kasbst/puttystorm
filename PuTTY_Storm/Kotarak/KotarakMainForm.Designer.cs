@@ -39,11 +39,6 @@
             this.RunCodeButton = new System.Windows.Forms.Button();
             this.SelectAllDevicesButton = new System.Windows.Forms.Button();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.IndexColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.SelectColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.HostnameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ReturnCodeColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.OutputColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.UnselectAllDevicesButton = new System.Windows.Forms.Button();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
@@ -58,9 +53,15 @@
             this.KotarakAltLabel = new System.Windows.Forms.Label();
             this.KotarakHeadLabel = new System.Windows.Forms.Label();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
-            this.label1 = new System.Windows.Forms.Label();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.CommandRadioButton = new System.Windows.Forms.RadioButton();
             this.BashScriptRadioButton = new System.Windows.Forms.RadioButton();
+            this.label1 = new System.Windows.Forms.Label();
+            this.IndexColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.SelectColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.HostnameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ReturnCodeColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.OutputColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -74,6 +75,7 @@
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // scintilla1
@@ -180,42 +182,6 @@
             this.dataGridView1.Size = new System.Drawing.Size(980, 406);
             this.dataGridView1.TabIndex = 3;
             this.dataGridView1.AutoSizeRowsModeChanged += new System.Windows.Forms.DataGridViewAutoSizeModeEventHandler(this.AutoSizeRowsMode);
-            // 
-            // IndexColumn
-            // 
-            this.IndexColumn.HeaderText = "Index";
-            this.IndexColumn.Name = "IndexColumn";
-            this.IndexColumn.Width = 58;
-            // 
-            // SelectColumn
-            // 
-            this.SelectColumn.HeaderText = "Select";
-            this.SelectColumn.Name = "SelectColumn";
-            this.SelectColumn.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.SelectColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.SelectColumn.Width = 62;
-            // 
-            // HostnameColumn
-            // 
-            this.HostnameColumn.HeaderText = "Hostname";
-            this.HostnameColumn.Name = "HostnameColumn";
-            this.HostnameColumn.Width = 80;
-            // 
-            // ReturnCodeColumn
-            // 
-            this.ReturnCodeColumn.HeaderText = "Return Code";
-            this.ReturnCodeColumn.Name = "ReturnCodeColumn";
-            this.ReturnCodeColumn.Width = 92;
-            // 
-            // OutputColumn
-            // 
-            this.OutputColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.BottomLeft;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.OutputColumn.DefaultCellStyle = dataGridViewCellStyle2;
-            this.OutputColumn.FillWeight = 60000F;
-            this.OutputColumn.HeaderText = "Output";
-            this.OutputColumn.Name = "OutputColumn";
             // 
             // UnselectAllDevicesButton
             // 
@@ -391,9 +357,8 @@
             // 
             // splitContainer2.Panel2
             // 
+            this.splitContainer2.Panel2.Controls.Add(this.groupBox1);
             this.splitContainer2.Panel2.Controls.Add(this.label1);
-            this.splitContainer2.Panel2.Controls.Add(this.CommandRadioButton);
-            this.splitContainer2.Panel2.Controls.Add(this.BashScriptRadioButton);
             this.splitContainer2.Panel2.Controls.Add(this.RunCodeButton);
             this.splitContainer2.Panel2.Controls.Add(this.ImportButton);
             this.splitContainer2.Panel2.Controls.Add(this.ExportButton);
@@ -401,23 +366,25 @@
             this.splitContainer2.SplitterDistance = 981;
             this.splitContainer2.TabIndex = 9;
             // 
-            // label1
+            // groupBox1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Calibri", 18F);
-            this.label1.ForeColor = System.Drawing.Color.White;
-            this.label1.Location = new System.Drawing.Point(24, 15);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(223, 29);
-            this.label1.TabIndex = 10;
-            this.label1.Text = "Code and Commands";
+            this.groupBox1.Controls.Add(this.CommandRadioButton);
+            this.groupBox1.Controls.Add(this.BashScriptRadioButton);
+            this.groupBox1.Font = new System.Drawing.Font("Calibri", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox1.ForeColor = System.Drawing.Color.White;
+            this.groupBox1.Location = new System.Drawing.Point(16, 223);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(248, 116);
+            this.groupBox1.TabIndex = 11;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Action";
             // 
             // CommandRadioButton
             // 
             this.CommandRadioButton.AutoSize = true;
             this.CommandRadioButton.Font = new System.Drawing.Font("Calibri", 13F);
             this.CommandRadioButton.ForeColor = System.Drawing.Color.White;
-            this.CommandRadioButton.Location = new System.Drawing.Point(19, 266);
+            this.CommandRadioButton.Location = new System.Drawing.Point(10, 64);
             this.CommandRadioButton.Name = "CommandRadioButton";
             this.CommandRadioButton.Size = new System.Drawing.Size(179, 26);
             this.CommandRadioButton.TabIndex = 9;
@@ -431,7 +398,7 @@
             this.BashScriptRadioButton.AutoSize = true;
             this.BashScriptRadioButton.Font = new System.Drawing.Font("Calibri", 13F);
             this.BashScriptRadioButton.ForeColor = System.Drawing.Color.White;
-            this.BashScriptRadioButton.Location = new System.Drawing.Point(19, 237);
+            this.BashScriptRadioButton.Location = new System.Drawing.Point(10, 35);
             this.BashScriptRadioButton.Name = "BashScriptRadioButton";
             this.BashScriptRadioButton.Size = new System.Drawing.Size(107, 26);
             this.BashScriptRadioButton.TabIndex = 8;
@@ -439,6 +406,57 @@
             this.BashScriptRadioButton.Text = "Bash script";
             this.BashScriptRadioButton.UseVisualStyleBackColor = true;
             this.BashScriptRadioButton.CheckedChanged += new System.EventHandler(this.BashScriptRadioButton_CheckedChanged);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Calibri", 18F);
+            this.label1.ForeColor = System.Drawing.Color.White;
+            this.label1.Location = new System.Drawing.Point(24, 15);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(223, 29);
+            this.label1.TabIndex = 10;
+            this.label1.Text = "Code and Commands";
+            // 
+            // IndexColumn
+            // 
+            this.IndexColumn.HeaderText = "Index";
+            this.IndexColumn.Name = "IndexColumn";
+            this.IndexColumn.ReadOnly = true;
+            this.IndexColumn.Width = 58;
+            // 
+            // SelectColumn
+            // 
+            this.SelectColumn.HeaderText = "Select";
+            this.SelectColumn.Name = "SelectColumn";
+            this.SelectColumn.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.SelectColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.SelectColumn.Width = 62;
+            // 
+            // HostnameColumn
+            // 
+            this.HostnameColumn.HeaderText = "Hostname";
+            this.HostnameColumn.Name = "HostnameColumn";
+            this.HostnameColumn.ReadOnly = true;
+            this.HostnameColumn.Width = 80;
+            // 
+            // ReturnCodeColumn
+            // 
+            this.ReturnCodeColumn.HeaderText = "Return Code";
+            this.ReturnCodeColumn.Name = "ReturnCodeColumn";
+            this.ReturnCodeColumn.ReadOnly = true;
+            this.ReturnCodeColumn.Width = 92;
+            // 
+            // OutputColumn
+            // 
+            this.OutputColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.BottomLeft;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.OutputColumn.DefaultCellStyle = dataGridViewCellStyle2;
+            this.OutputColumn.FillWeight = 60000F;
+            this.OutputColumn.HeaderText = "Output";
+            this.OutputColumn.Name = "OutputColumn";
+            this.OutputColumn.ReadOnly = true;
             // 
             // KotarakMainForm
             // 
@@ -468,6 +486,8 @@
             this.splitContainer2.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -496,6 +516,7 @@
         private System.Windows.Forms.Button SelectGroupSubGroupButton;
         private System.Windows.Forms.ComboBox SelectGroupSubGroupCombobox;
         private System.Windows.Forms.Label SelectGroupSubGroupLabel;
+        private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.DataGridViewTextBoxColumn IndexColumn;
         private System.Windows.Forms.DataGridViewCheckBoxColumn SelectColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn HostnameColumn;

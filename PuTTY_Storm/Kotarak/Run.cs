@@ -28,12 +28,16 @@ using Renci.SshNet;
 using System.Text.RegularExpressions;
 using Renci.SshNet.Common;
 using System.Text;
+using System.Collections.Generic;
 
 namespace PuTTY_Storm
 {
     class Run
     {
         string password = null;
+
+        // Dictionary (key: hostname => value: output) which contains the full output for DataGridView output column.
+        Dictionary<string, string> DataGridViewGetFullOutputDictionary = new Dictionary<string, string>();
 
         /// <summary>
         /// Event handler for KeyboardInteractiveAuthenticationMethod which passes the password
@@ -132,19 +136,19 @@ namespace PuTTY_Storm
                     // Default params if no command is provided
                     SshCommand terminal = null;
                     string output = "Nothing to be executed!";
-                    int exitCode = 9999;
+                    int exitCode = 999;
 
                     if (command != null)
                     {
                         terminal = client.RunCommand(command);
                         Console.WriteLine("Command: " + command + " executed");
                         Console.WriteLine(terminal.Result);
-                        output = ReplaceTabsWithSpaces(terminal.Result, 4);
+                        output = ReplaceTabsWithSpaces(terminal.Result, 4).TrimEnd('\r', '\n');
                         exitCode = terminal.ExitStatus;
 
                         if (exitCode != 0)
                         {
-                            output = terminal.Error;
+                            output = terminal.Error.TrimEnd('\r', '\n');
                         }
                     }
 
@@ -154,7 +158,7 @@ namespace PuTTY_Storm
                 }
             } catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                WriteDataGridViewOutput(dataGridView1, _hostname, 999, ex.Message);
             }
         }
 
@@ -215,7 +219,7 @@ namespace PuTTY_Storm
                     // Default params if no command is provided
                     SshCommand terminal = null;
                     string output = "Nothing to be executed!";
-                    int exitCode = 9999;
+                    int exitCode = 999;
                     string command = "echo $'" + text.Replace("'", "\\'").Replace("\r", string.Empty) +
                         "'" + " > PuTTY_STORM_TMP.sh; chmod +x PuTTY_STORM_TMP.sh; OUTPUT=\"$(./PuTTY_STORM_TMP.sh 2>&1)\"; echo $OUTPUT; rm PuTTY_STORM_TMP.sh";
 
@@ -223,7 +227,7 @@ namespace PuTTY_Storm
                     {
                         terminal = client.RunCommand(command);
                         Console.WriteLine("Command: " + command + " executed");
-                        output = terminal.Result;
+                        output = terminal.Result.TrimEnd('\r', '\n');
                         exitCode = terminal.ExitStatus;
                     }
 
@@ -233,7 +237,7 @@ namespace PuTTY_Storm
                 }
             } catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                WriteDataGridViewOutput(dataGridView1, _hostname, 999, ex.Message);
             }
         }
 
@@ -253,8 +257,35 @@ namespace PuTTY_Storm
                 {
                     if (dataGridView1.Rows[i].Cells["HostnameColumn"].Value.ToString() == hostname)
                     {
+                        if (returnCode != null && returnCode != 0)
+                        {
+                            dataGridView1.Rows[i].Cells["ReturnCodeColumn"].Style.BackColor = System.Drawing.Color.OrangeRed;
+                        }
+                        else if (returnCode != null && returnCode == 0)
+                        {
+                            dataGridView1.Rows[i].Cells["ReturnCodeColumn"].Style.BackColor = System.Drawing.Color.LightGreen;
+                        }
                         dataGridView1.Rows[i].Cells["ReturnCodeColumn"].Value = returnCode;
-                        dataGridView1.Rows[i].Cells["OutputColumn"].Value = output;
+
+                        // Truncate the output if it is longer than 200 characters
+                        if (output.Length > 200)
+                        {
+                            string truncate = output.Substring(0, 200) + "\r\n\r\nOutput truncated... Double click to get the full output...";
+                            dataGridView1.Rows[i].Cells["OutputColumn"].Value = truncate;
+
+                            if (DataGridViewGetFullOutputDictionary.ContainsKey(hostname))
+                            {
+                                DataGridViewGetFullOutputDictionary[hostname] = output;
+                            }
+                            else
+                            {
+                                DataGridViewGetFullOutputDictionary.Add(hostname, output);
+                            }
+                        }
+                        else
+                        {
+                            dataGridView1.Rows[i].Cells["OutputColumn"].Value = output;
+                        }
                     }
                 }
             }
@@ -322,6 +353,15 @@ namespace PuTTY_Storm
             return output.ToString();
         }
 
+        public Dictionary<string, string> GetDataGridViewGetFullOutput()
+        {
+            return this.DataGridViewGetFullOutputDictionary;
+        }
+
+        public void ResetDataGridViewGetFullOutput()
+        {
+            this.DataGridViewGetFullOutputDictionary.Clear();
+        }
 
     }
 }

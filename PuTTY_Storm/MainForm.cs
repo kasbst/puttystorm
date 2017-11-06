@@ -34,7 +34,6 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Security.Cryptography;
 using System.Threading;
-using System.Net;
 using System.Threading.Tasks;
 
 namespace PuTTY_Storm
@@ -58,6 +57,10 @@ namespace PuTTY_Storm
             custom_controls = new SetControls();
             sessions = new SaveSessions();
             crypto = new CryptoHelper();
+           
+            timer = new System.Windows.Forms.Timer();
+            timer.Tick += timer_Tick;
+            timer.Interval = 400;
 
             // Set some controls scaling based on display DPI
             DPIAwareScaling.SetControlsExtendedDPISettings();
@@ -465,13 +468,21 @@ namespace PuTTY_Storm
         private void MainForm_Scroll(object sender, ScrollEventArgs e)
         {
             SettingPanel.Focus();
+            
+            // When scrollbox is being moved hide SettingPanel and SearchSessionConfigTextBox
+            // to prevent flickering
+            if (e.Type == ScrollEventType.ThumbTrack)
+            {
+                SettingPanel.Hide();
+                SearchSessionConfigTextBox.Hide();
+            }
 
             if (e.OldValue > e.NewValue)
             {
                 if (VerticalScroll.Value < LastScrollValue)
-                {
-                    SettingPanel.Location = DPIAwareScaling.ScalePoint(500, 255);
-                    SearchSessionConfigTextBox.Location = DPIAwareScaling.ScalePoint(507, 215);
+                {                  
+                    SettingPanel.Location = DPIAwareScaling.ScalePoint(500, 270);
+                    SearchSessionConfigTextBox.Location = DPIAwareScaling.ScalePoint(507, 230);
                 }
             }
             else
@@ -479,45 +490,88 @@ namespace PuTTY_Storm
                 if (VerticalScroll.Value > 0)
                 {
                     LastScrollValue = VerticalScroll.Value;
-                    SettingPanel.Location = DPIAwareScaling.ScalePoint(500, 255);
-                    SearchSessionConfigTextBox.Location = DPIAwareScaling.ScalePoint(507, 215);
+                    SettingPanel.Location = DPIAwareScaling.ScalePoint(500, 270);
+                    SearchSessionConfigTextBox.Location = DPIAwareScaling.ScalePoint(507, 230);
                 }
             }
 
-            // Move SearchSessionConfigTextBox to its original location when scrolle to top
+            // Move SearchSessionConfigTextBox to its original location when scrolled to top
             if (VerticalScroll.Value == 0)
             {
+                SettingPanel.Location = DPIAwareScaling.ScalePoint(500, 255);
                 SearchSessionConfigTextBox.Location = DPIAwareScaling.ScalePoint(507, 380);
             }
+
+            // When scrollbox stopped to move, show SettingPanel and SearchSessionConfigTextBox again
+            if (e.Type != ScrollEventType.ThumbTrack)
+            {
+                SettingPanel.Show();
+                SearchSessionConfigTextBox.Show();
+            }
+        }
+
+        /// <summary>
+        /// Use Timer to detect when MouseWheel scroll event stopped!
+        /// </summary>
+        System.Windows.Forms.Timer timer;
+        float someValue = 0;
+
+        void timer_Tick(object sender, EventArgs e)
+        {
+            //Prevent timer from looping
+            (sender as System.Windows.Forms.Timer).Stop();
+
+            SettingPanel.Show();
+            SearchSessionConfigTextBox.Show();
+
+            someValue = 0;
         }
 
         private void MainForm_MouseWheel(object sender, MouseEventArgs e)
         {
             SettingPanel.Focus();
+            someValue += e.Delta;
 
             if (e.Delta > 0)
             {
                 if (VerticalScroll.Value < LastScrollValue)
                 {
+                    Console.WriteLine(VerticalScroll.Value + "----" + LastScrollValue);
+               
+                    SettingPanel.Hide();
+                    SearchSessionConfigTextBox.Hide();
+
                     LastScrollValue = VerticalScroll.Value;
-                    SettingPanel.Location = DPIAwareScaling.ScalePoint(500, 255);
-                    SearchSessionConfigTextBox.Location = DPIAwareScaling.ScalePoint(507, 215);
+                    SettingPanel.Location = DPIAwareScaling.ScalePoint(500, 270);
+                    SearchSessionConfigTextBox.Location = DPIAwareScaling.ScalePoint(507, 230);
                 }
             } else
-            {
+            {              
                 if (VerticalScroll.Value > 0)
                 {
+                    // Prevent hiding of SettingPanel and SearchSessionConfigTextBox when
+                    // we reach bottom of the Form!
+                    if (VerticalScroll.Value != LastScrollValue)
+                    {
+                        SettingPanel.Hide();
+                        SearchSessionConfigTextBox.Hide();
+                    }
+
                     LastScrollValue = VerticalScroll.Value;
-                    SettingPanel.Location = DPIAwareScaling.ScalePoint(500, 255);
-                    SearchSessionConfigTextBox.Location = DPIAwareScaling.ScalePoint(507, 215);
+                    SettingPanel.Location = DPIAwareScaling.ScalePoint(500, 270);
+                    SearchSessionConfigTextBox.Location = DPIAwareScaling.ScalePoint(507, 230);
                 }
             }
 
             // Move SearchSessionConfigTextBox to its original location when scrolle to top
             if (VerticalScroll.Value == 0)
             {
+                SettingPanel.Location = DPIAwareScaling.ScalePoint(500, 255);
                 SearchSessionConfigTextBox.Location = DPIAwareScaling.ScalePoint(507, 380);
             }
+
+            timer.Stop();
+            timer.Start();
 
         }
 
@@ -1115,7 +1169,6 @@ namespace PuTTY_Storm
         private void Save_Groups_Click(object sender, EventArgs e)
         {
             sessions.Save_groups(Groups);
-            //MessageBox.Show("Groups Saved To The Config!", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
             SavedGroupInfo groups = saved_data.get_Groups();
             custom_controls.set_combobox_groups(containers_list, groups);
             custom_controls.set_passwords_combobox_groups(splitcontainer1, groups);
@@ -1773,8 +1826,14 @@ namespace PuTTY_Storm
                 Form Kotarak = Application.OpenForms["kotarak"];
                 Form GlobalHotKeysManager = Application.OpenForms["GlobalHotKeysManager"];
 
+                Control[] new_connect_panel_host_textbox = new_connect_panel.Controls.Find("new_connect_host_textbox", true);
+                Control[] new_connect_panel_username_textbox = new_connect_panel.Controls.Find("new_connect_username_textbox", true);
+                Control[] new_connect_panel_password_textbox = new_connect_panel.Controls.Find("new_connect_password_textbox", true);
+
                 if (!((this.Visible) || (SFTPManager != null && SFTPManager.Visible) || (SelectSFTPConnectionForm != null && SelectSFTPConnectionForm.Visible) 
-                    || (Kotarak != null && Kotarak.Visible) || (GlobalHotKeysManager != null && GlobalHotKeysManager.Visible)))
+                    || (Kotarak != null && Kotarak.Visible) || (GlobalHotKeysManager != null && GlobalHotKeysManager.Visible)
+                    || new_connect_panel_host_textbox[0].Focused || new_connect_panel_username_textbox[0].Focused
+                    || new_connect_panel_password_textbox[0].Focused))
                 {
                     if (my_ProcessInfo_List_TC_1.Count > 0) {
                         tabcontrol1.Focus();
@@ -1798,8 +1857,14 @@ namespace PuTTY_Storm
                 Form Kotarak = Application.OpenForms["kotarak"];
                 Form GlobalHotKeysManager = Application.OpenForms["GlobalHotKeysManager"];
 
+                Control[] new_connect_panel_host_textbox = new_connect_panel.Controls.Find("new_connect_host_textbox", true);
+                Control[] new_connect_panel_username_textbox = new_connect_panel.Controls.Find("new_connect_username_textbox", true);
+                Control[] new_connect_panel_password_textbox = new_connect_panel.Controls.Find("new_connect_password_textbox", true);
+
                 if (!((this.Visible) || (SFTPManager != null && SFTPManager.Visible) || (SelectSFTPConnectionForm != null && SelectSFTPConnectionForm.Visible) 
-                    || (Kotarak != null && Kotarak.Visible) || (GlobalHotKeysManager != null && GlobalHotKeysManager.Visible)))
+                    || (Kotarak != null && Kotarak.Visible) || (GlobalHotKeysManager != null && GlobalHotKeysManager.Visible)
+                    || new_connect_panel_host_textbox[0].Focused || new_connect_panel_username_textbox[0].Focused
+                    || new_connect_panel_password_textbox[0].Focused))
                 {
                     if (my_ProcessInfo_List_TC_2.Count > 0)
                     {
@@ -2111,7 +2176,19 @@ namespace PuTTY_Storm
                 }
                 if (control.Name == "new_connect_password_textbox")
                 {
-                    control.Text = null;
+                    // After connecting to pwdless session, searched via SearchTextbox_KeyDown, revert password textbox settings
+                    // back to the original (rw) state
+                    if (((TextBox)control).ReadOnly)
+                    {
+                        ((TextBox)control).UseSystemPasswordChar = true;
+                        ((TextBox)control).ForeColor = Color.Black;
+                        ((TextBox)control).ReadOnly = false;
+                        ((TextBox)control).BackColor = Color.White;
+                        ((TextBox)control).Text = null;
+                    } else
+                    {
+                        control.Text = null;
+                    }
                 }
             }
 

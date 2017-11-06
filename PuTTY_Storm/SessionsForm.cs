@@ -162,7 +162,7 @@ namespace PuTTY_Storm
                 {
                     if (Control.FromHandle(m.LParam) == null)
                     {
-                        if (isSwitchingViaAltTab == true)
+                        if (isSwitchingViaAltTab)
                         {
                             NativeMethods.SetForegroundWindow(my_ProcessInfo_List_TC_1.ElementAt(tabcontrol1.SelectedIndex).mainhandle);
                         }
@@ -219,7 +219,7 @@ namespace PuTTY_Storm
             // Handle SFTP manager activation
             if (m.Msg == 0x0312 && (short)m.WParam == this.SFTPManagerGlobalHotKeyWorker.HOTKEYID)
             {
-                if (SessionsSplitContainer.Panel2Collapsed == true)
+                if (SessionsSplitContainer.Panel2Collapsed)
                 {
                     if (tabcontrol1.TabCount > 0)
                     {

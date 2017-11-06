@@ -712,18 +712,9 @@ namespace PuTTY_Storm
                 foreach (GroupBox groupbox in containers_list)
                 {
                     foreach (ComboBox combobox in groupbox.Controls.OfType<ComboBox>())
-                    {
-                        string last_value = combobox.Text;
-                        combobox.Items.Clear();
-
-                        combobox.Items.Add("");
-                        foreach (string name in groups.names)
-                        {
-                            combobox.Items.Add(name);
-                        }
-
-                        combobox.Text = last_value;
-                        combobox.DropDownWidth = DropDownWidth(combobox);
+                    {                      
+                        UpdateComboBox(combobox, groups);
+                        combobox.DropDownWidth = DropDownWidth(combobox);                        
                     }
                 }
             }
@@ -738,15 +729,9 @@ namespace PuTTY_Storm
             "PuTTYStorm", "groups.xml")))
             {
                 foreach (ComboBox combobox in splitcontainer.Panel2.Controls.OfType<ComboBox>())
-                {
-                    combobox.Items.Clear();
-
-                    combobox.Items.Add("");
-                    foreach (string name in groups.names)
-                    {
-                        combobox.Items.Add(name);
-                    }
-                    combobox.DropDownWidth = DropDownWidth(combobox);
+                {                  
+                    UpdateComboBox(combobox, groups);
+                    combobox.DropDownWidth = DropDownWidth(combobox);                   
                 }
             }
         }
@@ -762,17 +747,43 @@ namespace PuTTY_Storm
                 foreach (ComboBox combobox in splitcontainer.Panel1.Controls.OfType<ComboBox>())
                 {
                     if (combobox.Name == "private_keys_group_combobox")
-                    {
-                        combobox.Items.Clear();
-
-                        combobox.Items.Add("");
-                        foreach (string name in groups.names)
-                        {
-                            combobox.Items.Add(name);
-                        }
-                        combobox.DropDownWidth = DropDownWidth(combobox);
+                    {                       
+                        UpdateComboBox(combobox, groups);
+                        combobox.DropDownWidth = DropDownWidth(combobox);                        
                     }
                 }
+            }
+        }
+
+        private void UpdateComboBox(ComboBox combobox, SavedGroupInfo groups)
+        {
+            List<string> ItemsToDelete = new List<string>();
+            ItemsToDelete.AddRange(combobox.Items.Cast<String>().ToList());
+
+            if (!combobox.Items.Contains(""))
+            {
+                combobox.Items.Add("");
+            }
+
+            foreach (string name in groups.names)
+            {
+                if (combobox.Items.Contains(name))
+                {
+                    ItemsToDelete.Remove(name);
+                    continue;
+                }
+                else
+                {
+                    combobox.Items.Add(name);
+                }
+            }
+
+            foreach (string name in ItemsToDelete)
+            {
+                if (name == "")
+                    continue;
+
+                combobox.Items.Remove(name);
             }
         }
 

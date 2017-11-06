@@ -139,9 +139,13 @@ namespace PuTTY_Storm
         /// </summary>
         private void RunCodeButton_Click(object sender, EventArgs e)
         {
+            run.ResetDataGridViewGetFullOutput();
 
             foreach (DataGridViewRow row in dataGridView1.Rows)
             {
+                if (row.Cells["ReturnCodeColumn"].HasStyle) {
+                    row.Cells["ReturnCodeColumn"].Style = null;
+                }
                 row.Cells["ReturnCodeColumn"].Value = null;
                 row.Cells["OutputColumn"].Value = null;
             }
@@ -357,6 +361,7 @@ namespace PuTTY_Storm
             this.dataGridView1.Size = DPIAwareScaling.ScaleSize(1200, 500);
             this.dataGridView1.AutoScrollOffset = DPIAwareScaling.ScalePoint(200, 300);
             this.dataGridView1.Columns[0].Width = 98;
+            this.dataGridView1.CellMouseDoubleClick += new DataGridViewCellMouseEventHandler(OnDataGridViewCellMouseDoubleClick);
 
             for (int i = 0; i < containers_list.Count; i++)
             {
@@ -380,6 +385,54 @@ namespace PuTTY_Storm
             }
 
             this.dataGridView1.AllowUserToAddRows = false;
+        }
+
+        /// <summary>
+        /// DataGridView output column is truncated in case output value is longer than 200 characters.
+        /// When double click on output cell column, show the Form which contains the full output for 
+        /// particular hostname.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnDataGridViewCellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            DataGridView dataGridView1 = sender as DataGridView;
+
+            Dictionary<string, string> DataGridViewGetFullOutputDictionary = run.GetDataGridViewGetFullOutput();
+
+            if (dataGridView1.CurrentCell.ColumnIndex.Equals(4) && e.RowIndex != -1)
+            {
+                if (dataGridView1.CurrentCell != null && dataGridView1.CurrentCell.Value != null && DataGridViewGetFullOutputDictionary.ContainsKey(dataGridView1.Rows[e.RowIndex].Cells["HostnameColumn"].Value.ToString()))
+                {
+                    string hostname = dataGridView1.Rows[e.RowIndex].Cells["HostnameColumn"].Value.ToString();
+                    CreateDataGridViewCellFullOutputForm(hostname, DataGridViewGetFullOutputDictionary[hostname]);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Create the Form with RichTextBox for OnDataGridViewCellMouseDoubleClick event method.
+        /// </summary>
+        /// <param name="hostname"></param>
+        /// <param name="output"></param>
+        private void CreateDataGridViewCellFullOutputForm(string hostname, string output)
+        {
+            FormHelper DataGridViewCellFullOutputForm = new FormHelper();
+            DataGridViewCellFullOutputForm.Size = DPIAwareScaling.ScaleSize(800, 600);
+            DataGridViewCellFullOutputForm.AutoSize = true;
+            DataGridViewCellFullOutputForm.Text = GlobalVar.VERSION + " - Kotarak - Full Output for " + hostname;
+            DataGridViewCellFullOutputForm.StartPosition = FormStartPosition.CenterScreen;
+
+            RichTextBox DataGridViewCellFullOutputTextBox = new RichTextBox();
+            DataGridViewCellFullOutputTextBox.Dock = DockStyle.Fill;
+            DataGridViewCellFullOutputTextBox.Font = new Font("courier new", 10);
+            DataGridViewCellFullOutputTextBox.Multiline = true;
+            DataGridViewCellFullOutputTextBox.Text = output;
+            DataGridViewCellFullOutputTextBox.ReadOnly = true;
+            DataGridViewCellFullOutputTextBox.BackColor = Color.White;
+
+            DataGridViewCellFullOutputForm.Controls.Add(DataGridViewCellFullOutputTextBox);
+            DataGridViewCellFullOutputForm.Show();
         }
 
         /// <summary>
@@ -469,6 +522,8 @@ namespace PuTTY_Storm
             if (MessageBox.Show("Are you sure you want to exit the Kotarak?", "Kotarak Exit", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) ==
                 System.Windows.Forms.DialogResult.No)
                 e.Cancel = true;
+
+            run.ResetDataGridViewGetFullOutput();
         }
     }
 }
