@@ -247,6 +247,40 @@ namespace PuTTY_Storm
             return xml_privatekeys_info;
         }
 
+        /// <summary>
+        /// Extract saved sessions from SavedConnectionInfo data structure to the List of Dictionaries (hashes).
+        /// This data structure is used to fill GlobalVar.ConfigSessionsData at the program startup. Later,
+        /// it is used to check whether there were any configuration changes.
+        /// </summary>
+        /// <param name="sessions"></param>
+        /// <returns></returns>
+        public List<Dictionary<string, object>> ExtractConfigSessionsData(SavedConnectionInfo sessions)
+        {
+            List<Dictionary<string, object>> ConfigSessionsData = new List<Dictionary<string, object>>();
+
+            for (int i = 0; i < sessions.hostnames.Count; i++)
+            {
+                string password = null;
+                if (sessions.passwords[i] == null)
+                {
+                    password = " ";
+                } else
+                {
+                    password = sessions.passwords[i];
+                }
+
+                ConfigSessionsData.Add(new Dictionary<string, object>()
+                {
+                    {"hostname", sessions.hostnames[i] },
+                    {"username", sessions.usernames[i] },
+                    {"password", password },
+                    {"c_count", sessions.counts[i] },
+                    {"group", (sessions.groups[i] == null ? " " : sessions.groups[i]) },
+                    {"sub_group", (sessions.sub_groups[i] == null ? " " :  sessions.sub_groups[i]) }
+                });
+            }
+            return ConfigSessionsData;
+        }
 
     }
 }

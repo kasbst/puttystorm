@@ -28,6 +28,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace PuTTY_Storm
 {
@@ -36,98 +37,57 @@ namespace PuTTY_Storm
         /// <summary>
         /// Save sessions to the sessions.xml configuration file.
         /// </summary>
-        public void Save_sessions(List<GroupBox> containers_list)
+        public void SaveSessionsData(List<Dictionary<string, object>> sessions_data)
         {
-            String filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-            "PuTTYStorm", "sessions.xml");
-
-            if (!Directory.Exists(Path.Combine(Environment.GetFolderPath
-                (Environment.SpecialFolder.MyDocuments), "PuTTYStorm")))
+            try
             {
-                Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath
-                    (Environment.SpecialFolder.MyDocuments), "PuTTYStorm"));
-            }
-            using (XmlWriter writer = XmlWriter.Create(filePath))
-            {
-                writer.WriteStartDocument();
-                writer.WriteStartElement("Sessions");
+                String filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                "PuTTYStorm", "sessions.xml");
 
-                foreach (GroupBox container in containers_list)
+                if (!Directory.Exists(Path.Combine(Environment.GetFolderPath
+                    (Environment.SpecialFolder.MyDocuments), "PuTTYStorm")))
                 {
-                    string hostname = null;
-                    string username = null;
-                    string password = null;
-                    string c_count = null;
-                    string group = null;
-                    string sub_group = null;
-
-                    foreach (Control control in container.Controls)
-                    {
-                        if (control.Name == "hostname_textbox")
-                        {
-                            hostname = control.Text;
-                        }
-                        if (control.Name == "username_textbox")
-                        {
-                            username = control.Text;
-                        }
-                        if (control.Name == "password_textbox")
-                        {
-                            // Handle passwordless login
-                            if (control.Text == "")
-                            {
-                                password = " ";
-                            } else
-                            {
-                                password = control.Text;
-                            }
-                        }
-                        if (control.Name == "combobox")
-                        {
-                            if (control.Text == "")
-                            {
-                                group = " ";
-                            } else
-                            {
-                                group = control.Text;
-                            }
-                        }
-
-                        if (control.Name == "sub_groups_combobox")
-                        {
-                            if (control.Text == "")
-                            {
-                                sub_group = " ";
-                            }
-                            else
-                            {
-                                sub_group = control.Text;
-                            }
-                        }
-                    }
-
-                    foreach (NumericUpDown ctlNumeric in container.Controls.OfType<NumericUpDown>())
-                    {
-                        c_count = ctlNumeric.Value.ToString();                       
-                    }
-
-                    if (hostname != "" && username != "")
-                    {
-                        writer.WriteStartElement("Session");
-
-                        writer.WriteElementString("hostname", hostname);
-                        writer.WriteElementString("username", username);
-                        writer.WriteElementString("password", AESEncryptDecrypt.Encrypt(password));
-                        writer.WriteElementString("count", c_count);
-                        writer.WriteElementString("group", group);
-                        writer.WriteElementString("subgroup", sub_group);
-
-                        writer.WriteEndElement();
-                    }
+                    Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath
+                        (Environment.SpecialFolder.MyDocuments), "PuTTYStorm"));
                 }
 
-                writer.WriteEndElement();
-                writer.WriteEndDocument();
+                using (XmlWriter writer = XmlWriter.Create(filePath))
+                {
+                    writer.WriteStartDocument();
+                    writer.WriteStartElement("Sessions");
+
+                    foreach (Dictionary<string, object> dictionary in sessions_data)
+                    {
+
+                        if (dictionary["hostname"].ToString() != "" && dictionary["username"].ToString() != "")
+                        {
+                            writer.WriteStartElement("Session");
+
+                            writer.WriteElementString("hostname", dictionary["hostname"].ToString());
+                            writer.WriteElementString("username", dictionary["username"].ToString());
+                            writer.WriteElementString("password", AESEncryptDecrypt.Encrypt(dictionary["password"].ToString()));
+                            writer.WriteElementString("count", dictionary["c_count"].ToString());
+                            writer.WriteElementString("group", dictionary["group"].ToString());
+                            writer.WriteElementString("subgroup", dictionary["sub_group"].ToString());
+
+                            writer.WriteEndElement();
+                        }
+                    }
+
+                    writer.WriteEndElement();
+                    writer.WriteEndDocument();
+                    writer.Close();
+
+                    if (writer.WriteState == WriteState.Closed)
+                    {
+                        GlobalVar.ConfigSavedSuccessfully = true;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                GlobalVar.ConfigSavedSuccessfully = false;
+                MessageBox.Show("Failed to save sessions! Try again! " + e.Message.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
             }
 
             Backup_Sessions();
@@ -459,6 +419,117 @@ namespace PuTTY_Storm
             }
         }
 
+        /// <summary>
+        /// Extract sessions data from Main Form's Controls to the List of Dictionaries (hashes).
+        /// This data structure is later used to check whether there were any configuration changes,
+        /// and also as the current and up to date structure passed to the SaveSessionsData method, so
+        /// all session changes are saved.
+        /// </summary>
+        /// <param name="containers_list"></param>
+        /// <returns></returns>
+        public List<Dictionary<string, object>> ExtractCurrentSessionsData(List<GroupBox> containers_list)
+        {
+            List<Dictionary<string, object>> SessionsData = new List<Dictionary<string, object>>();
+
+            foreach (GroupBox container in containers_list)
+            {
+                string hostname = null;
+                string username = null;
+                string password = null;
+                string c_count = null;
+                string group = null;
+                string sub_group = null;
+
+                foreach (Control control in container.Controls)
+                {
+                    if (control.Name == "hostname_textbox")
+                    {
+                        hostname = control.Text;
+                    }
+                    if (control.Name == "username_textbox")
+                    {
+                        username = control.Text;
+                    }
+                    if (control.Name == "password_textbox")
+                    {
+                        // Handle passwordless login
+                        if (control.Text == "" || control.Text == null)
+                        {
+                            password = " ";
+                        }
+                        else 
+                        {
+                            password = control.Text;
+                        }
+                    }
+                    if (control.Name == "combobox")
+                    {
+                        if (control.Text == "" || control.Text == null)
+                        {
+                            group = " ";
+                        }
+                        else
+                        {
+                            group = control.Text;
+                        }
+                    }
+
+                    if (control.Name == "sub_groups_combobox")
+                    {
+                        if (control.Text == "" || control.Text == null)
+                        {
+                            sub_group = " ";
+                        }
+                        else
+                        {
+                            sub_group = control.Text;
+                        }
+                    }
+                }
+
+                foreach (NumericUpDown ctlNumeric in container.Controls.OfType<NumericUpDown>())
+                {
+                    c_count = ctlNumeric.Value.ToString();
+                }
+
+                SessionsData.Add(new Dictionary<string, object>()
+                {
+                    {"hostname", hostname },
+                    {"username", username },
+                    {"password", password },
+                    {"c_count", c_count },
+                    {"group", group },
+                    {"sub_group", sub_group }
+                });
+            }
+
+            return SessionsData;
+        }
+
+        /// <summary>
+        /// Async wrapper used in two cases:
+        /// 1) During login secret change - we have to re-save all sessions again, so encrypted passwords
+        /// are updated with the new secret key.
+        /// 2) During session password changes for particular group - we have to re-save all sessions again, 
+        /// so encrypted passwords are updated with the new secret key.
+        /// </summary>
+        /// <param name="containers_list"></param>
+        public async void _SaveSessionsDataAsyncWrapper(List<GroupBox> containers_list)
+        {
+            List<Dictionary<string, object>> CurrentSessionsData = ExtractCurrentSessionsData(containers_list);
+            GlobalVar.ConfigSessionsData = ExtractCurrentSessionsData(containers_list);
+            await Task.Run(() => SaveSessionsData(CurrentSessionsData));
+        }
+
+        /// <summary>
+        /// Wrapper which is executed synchronously and it is used during the program exit (Main Form closing).
+        /// </summary>
+        /// <param name="containers_list"></param>
+        public void _SaveSessionsDataWrapper(List<GroupBox> containers_list)
+        {
+            List<Dictionary<string, object>> CurrentSessionsData = ExtractCurrentSessionsData(containers_list);
+            SaveSessionsData(CurrentSessionsData);
+        }
 
     }
 }

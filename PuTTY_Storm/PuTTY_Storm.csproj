@@ -97,6 +97,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\Common.cs" />
+    <Compile Include="Common\DictionaryCompare.cs" />
     <Compile Include="CryptoHelper.cs" />
     <Compile Include="DPIAwareScaling.cs" />
     <Compile Include="GlobalHotKeysManager\GlobalHotKeysManager.cs">

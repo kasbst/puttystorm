@@ -308,6 +308,7 @@ namespace PuTTY_Storm
             "PuTTYStorm", "sessions.xml")))
             {
                 SavedConnectionInfo sessions = saved_data.get_Sessions();
+                GlobalVar.ConfigSessionsData = saved_data.ExtractConfigSessionsData(sessions);
 
                 // If config doesn't contain any saved sessions load just first empty GroupBox container.
                 if (sessions.hostnames.Count == 0)
@@ -426,6 +427,7 @@ namespace PuTTY_Storm
                 containers_list.Add(Add_Main_Component());
                 Controls.Add(containers_list[i]);
                 i++;
+                GlobalVar.ConfigSessionsData = sessions.ExtractCurrentSessionsData(containers_list);
             }
 
             SettingPanel.Controls.Add(AddEntry);
@@ -666,7 +668,7 @@ namespace PuTTY_Storm
             Thread.Sleep(2000);
 
             // Save sessions
-            sessions.Save_sessions(containers_list);
+            sessions._SaveSessionsDataWrapper(containers_list);
 
             // Stop ending splash screen
             Splash_Screens.StopScreen.CloseStopScreen();
@@ -1091,7 +1093,9 @@ namespace PuTTY_Storm
                 mus.password_secret = crypto.ComputeHash(panel2_main_login_confirm_new_passwd_textbox[0].Text, new SHA256CryptoServiceProvider());
                 GlobalVar.SECRET = panel2_main_login_confirm_new_passwd_textbox[0].Text;
                 mus.Save();
-                sessions.Save_sessions(containers_list);
+
+                // Asynchronous sessions saving to prevent GUI Thread blocking
+                sessions._SaveSessionsDataAsyncWrapper(containers_list);
 
                 MessageBox.Show("Login Secret Changed Successfully! All Changes Saved Successfully!",
                     "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -1143,7 +1147,8 @@ namespace PuTTY_Storm
                 }
                 if (pwd_changed)
                 {
-                    sessions.Save_sessions(containers_list);
+                    // Asynchronous sessions saving to prevent GUI Thread blocking
+                    sessions._SaveSessionsDataAsyncWrapper(containers_list);
                     MessageBox.Show("New Password For Group " + new_password_combobox_group[0].Text + " Set And Saved!",
                         "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 } else
@@ -2034,7 +2039,7 @@ namespace PuTTY_Storm
         /// "Save and Close" button related to "Manage_sessions_Click". It saves new sessions to the
         /// sessions.xml configuration file and hides MainForm.
         /// </summary>
-        private void Save_Close_Click(object sender, EventArgs e)
+        private async void Save_Close_Click(object sender, EventArgs e)
         {
             this.Hide();
 
@@ -2043,20 +2048,28 @@ namespace PuTTY_Storm
             if (check_forms != null)
             {
                 custom_controls.LoadTreeViewPane(SimpleServerPane, containers_list, ServerPane_NodeMouseDoubleClick);
+
+                Control[] Connect = this.Controls.Find("Connect", true);
+                Connect[0].Show();
+
+                Control[] Save_Close = this.Controls.Find("Save_Close", true);
+                Save_Close[0].Hide();
+                this.ControlBox = true;
+
+                List<Dictionary<string, object>> CurrentSessionsData = sessions.ExtractCurrentSessionsData(containers_list);
+
+                if (Common._eqDeep(GlobalVar.ConfigSessionsData, CurrentSessionsData) && GlobalVar.ConfigSavedSuccessfully)
+                {
+                    Console.WriteLine("# There is no configuration change. Nothing to be saved!");
+                }
+                else
+                {
+                    GlobalVar.ConfigSessionsData = sessions.ExtractCurrentSessionsData(containers_list);
+                    await Task.Run(() => sessions.SaveSessionsData(CurrentSessionsData));
+                    Console.WriteLine("# Configuration change detected! Configuration saved!");
+                }
             }
-
-            Control[] Connect = this.Controls.Find("Connect", true);
-            Connect[0].Show();
-
-            Control[] Save_Close = this.Controls.Find("Save_Close", true);
-            Save_Close[0].Hide();
-            this.ControlBox = true;
-
-            sessions.Save_sessions(containers_list);
-
-            //Form check_forms = Application.OpenForms["Sessions"];
-
-            if (check_forms == null)
+            else
             {
                 this.Close();
             }
