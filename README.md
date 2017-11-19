@@ -14,6 +14,7 @@ Lightweight tabbed window manager for putty sessions with simple SFTP Manager an
  - Kotarak configuration management plugin (activate with CTRL + F3) with ability to execute Bash scripts and Shell commands. Managing and deploying config files will be added in the next release.
  
 ### ToDo
+ - Currently there is a limitation up to 120 sessions due to WinForm limitations and high encryption CPU usage. A pool of configs will be introduced to increase the limit up to max. 1000 sessions.
  - Managing and deploying config files with Kotarak
  - Kotarator - an experimental language with experimental "pseudo-compiler"
  - Security improvements (encryption) NOTE: This is an early test version - use at your own risk!
