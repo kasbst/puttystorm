@@ -57,10 +57,14 @@ namespace PuTTY_Storm
             custom_controls = new SetControls();
             sessions = new SaveSessions();
             crypto = new CryptoHelper();
-           
-            timer = new System.Windows.Forms.Timer();
-            timer.Tick += timer_Tick;
-            timer.Interval = 400;
+
+            MouseWheelScroll_timer = new System.Windows.Forms.Timer();
+            MouseWheelScroll_timer.Tick += timer_Tick;
+            MouseWheelScroll_timer.Interval = 400;
+
+            SearchFadeOut_timer = new System.Windows.Forms.Timer();
+            SearchFadeOut_timer.Tick += SearchFadeOut_timer_Tick;
+            SearchFadeOut_timer.Interval = 2000;
 
             // Set some controls scaling based on display DPI
             DPIAwareScaling.SetControlsExtendedDPISettings();
@@ -114,7 +118,7 @@ namespace PuTTY_Storm
             container.Controls.Add(numericupdown);
             container.Controls.Add(groups);
             container.Controls.Add(sub_groups);
-            
+
             return container;
         }
 
@@ -515,7 +519,7 @@ namespace PuTTY_Storm
         /// <summary>
         /// Use Timer to detect when MouseWheel scroll event stopped!
         /// </summary>
-        System.Windows.Forms.Timer timer;
+        System.Windows.Forms.Timer MouseWheelScroll_timer;
         float someValue = 0;
 
         void timer_Tick(object sender, EventArgs e)
@@ -572,9 +576,29 @@ namespace PuTTY_Storm
                 SearchSessionConfigTextBox.Location = DPIAwareScaling.ScalePoint(507, 380);
             }
 
-            timer.Stop();
-            timer.Start();
+            MouseWheelScroll_timer.Stop();
+            MouseWheelScroll_timer.Start();
 
+        }
+
+        /// <summary>
+        /// Use SearchFade_timer for searched GroupBox container ReDraw
+        /// </summary>
+        System.Windows.Forms.Timer SearchFadeOut_timer;
+        List<GroupBox> PaintGroupBoxes = new List<GroupBox>();
+
+        private void SearchFadeOut_timer_Tick(object sender, EventArgs e)
+        {
+            //Prevent timer from looping
+            (sender as System.Windows.Forms.Timer).Stop();
+
+            while (PaintGroupBoxes.Count > 0)
+            {
+                PaintGroupBoxes[0].Paint -= (paint_sender, paint_e) => custom_controls.GroupBoxYellowBorder(paint_sender, paint_e, new Font("Calibri", 25));
+                PaintGroupBoxes[0].Paint += (paint_sender, paint_e) => custom_controls.GroupBoxWhiteBorder(paint_sender, paint_e, new Font("Calibri", 25));
+                PaintGroupBoxes.RemoveAt(0);
+            }
+            this.Refresh();
         }
 
         /// <summary>
@@ -593,6 +617,7 @@ namespace PuTTY_Storm
                         return;
                     }
 
+                    bool found = false;
                     Regex regex = new Regex(Regex.Escape(txb.Text));
 
                     foreach (GroupBox container in containers_list)
@@ -602,13 +627,37 @@ namespace PuTTY_Storm
                         Match match = regex.Match(hostname_textbox[0].Text);
                         if (match.Success)
                         {
+                            found = true;
+
                             container.Focus();
-                            SettingPanel.Location = DPIAwareScaling.ScalePoint(500, 255);
-                            SearchSessionConfigTextBox.Location = DPIAwareScaling.ScalePoint(507, 215);
+                            container.Paint -= (paint_sender, paint_e) => custom_controls.GroupBoxWhiteBorder(paint_sender, paint_e, new Font("Calibri", 25));
+                            container.Paint += (paint_sender, paint_e) => custom_controls.GroupBoxYellowBorder(paint_sender, paint_e, new Font("Calibri", 25));
+                            PaintGroupBoxes.Add(container);
+
+                            SearchFadeOut_timer.Stop();
+                            SearchFadeOut_timer.Start();
+
+                            if (VerticalScroll.Value == 0)
+                            {
+                                SettingPanel.Location = DPIAwareScaling.ScalePoint(500, 255);
+                                SearchSessionConfigTextBox.Location = DPIAwareScaling.ScalePoint(507, 380);
+                            }
+                            else
+                            {
+                                SettingPanel.Location = DPIAwareScaling.ScalePoint(500, 270);
+                                SearchSessionConfigTextBox.Location = DPIAwareScaling.ScalePoint(507, 230);
+                            }
+                            LastScrollValue = VerticalScroll.Value;
                             txb.Text = "<search hostname>";
                             txb.ForeColor = SystemColors.GrayText;
+                            this.Refresh();
                             break;
                         }
+                    }
+
+                    if (!found)
+                    {
+                        MessageBox.Show("Hostname " + txb.Text + " not found!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
                 }
                 // Disable beep when enter is pressed

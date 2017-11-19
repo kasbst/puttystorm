@@ -39,7 +39,7 @@ namespace PuTTY_Storm
         GetSavedSessions saved_groups = new GetSavedSessions();
 
         /// <summary>
-        /// Initialize controls in Form1 (PuTTY STORM main configuration form).
+        /// Initialize controls in MainForm (PuTTY STORM main configuration form).
         /// </summary>
         public void initialize_container (GroupBox container)
         {
@@ -49,17 +49,70 @@ namespace PuTTY_Storm
             container.Text = "1";
             container.Location = DPIAwareScaling.ScalePoint(23, 91);
             container.Size = DPIAwareScaling.ScaleSize(380, 225);
+            container.Paint += (sender, e) => ContainerRePaint(sender, e, new Font("Calibri", 25));
+        }
+
+        private void ContainerRePaint(object sender, PaintEventArgs e, Font font)
+        {
+            GroupBox box = (GroupBox)sender;
+            DrawGroupBox(box, e.Graphics, Color.White, SystemColors.Control, font);
+        }
+
+        public void DrawGroupBox(GroupBox box, Graphics g, Color textColor, Color borderColor, Font font)
+        {
+            if (box != null)
+            {
+                Brush textBrush = new SolidBrush(textColor);
+                Brush borderBrush = new SolidBrush(borderColor);
+                Pen borderPen = new Pen(borderBrush);
+                SizeF strSize = g.MeasureString(box.Text, box.Font);
+                Rectangle rect = new Rectangle(box.ClientRectangle.X,
+                                               box.ClientRectangle.Y + (int)(strSize.Height / 2),
+                                               box.ClientRectangle.Width -1,
+                                               box.ClientRectangle.Height - (int)(strSize.Height / 2) -1 );
+
+                // Clear text and border
+                g.Clear(Color.SlateGray);
+
+                // Draw text
+                g.DrawString(box.Text, font, textBrush, box.Padding.Left, 0);
+
+                // Drawing Border
+                //Left
+                g.DrawLine(borderPen, rect.Location, new Point(rect.X, rect.Y + rect.Height));
+                //Right
+                g.DrawLine(borderPen, new Point(rect.X + rect.Width, rect.Y), new Point(rect.X + rect.Width, rect.Y + rect.Height));
+                //Bottom
+                g.DrawLine(borderPen, new Point(rect.X, rect.Y + rect.Height), new Point(rect.X + rect.Width, rect.Y + rect.Height));
+                //Top1
+                g.DrawLine(borderPen, new Point(rect.X, rect.Y), new Point(rect.X + box.Padding.Left, rect.Y));
+                //Top2
+                g.DrawLine(borderPen, new Point(rect.X + box.Padding.Left + (int)(strSize.Width), rect.Y), new Point(rect.X + rect.Width, rect.Y));
+            }
+        }
+
+        public void GroupBoxYellowBorder(object sender, PaintEventArgs e, Font font)
+        {
+            GroupBox box = (GroupBox)sender;
+            DrawGroupBox(box, e.Graphics, Color.Yellow, Color.Yellow, font);
+        }
+
+        public void GroupBoxWhiteBorder(object sender, PaintEventArgs e, Font font)
+        {
+            GroupBox box = (GroupBox)sender;
+            DrawGroupBox(box, e.Graphics, Color.White, SystemColors.Control, font);
         }
 
         public void initialize_putty_config_container(GroupBox container)
         {
             container.BackColor = Color.SlateGray;
             container.ForeColor = Color.White;
-            container.Font = new Font("Calibri", 14, FontStyle.Bold);
+            container.Font = new Font("Calibri", 15, FontStyle.Bold);
             container.Text = "PuTTY.exe";
             container.Location = DPIAwareScaling.ScalePoint(430, 100);
             container.Size = DPIAwareScaling.ScaleSize(370, 80);
             container.AutoSize = true;
+            container.Paint += (sender, e) => ContainerRePaint(sender, e, new Font("Calibri", 15, FontStyle.Bold));
         }
 
         public void initialize_putty_path_label(Label label)
